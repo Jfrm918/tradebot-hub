@@ -688,6 +688,45 @@
         }
         .ts { margin-top: 6px; font-size: 0.72em; color: rgba(0,212,255,0.18); letter-spacing: 1px; }
 
+        /* ── UPDATE BUTTON ── */
+        .update-btn {
+            margin-left: auto;
+            padding: 12px 28px;
+            background: rgba(255,107,0,0.1);
+            border: 1px solid rgba(255,107,0,0.4);
+            color: var(--orange);
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
+            box-shadow: 0 0 16px rgba(255,107,0,0.12);
+        }
+        .update-btn:hover {
+            background: rgba(255,107,0,0.2);
+            border-color: rgba(255,107,0,0.7);
+            box-shadow: 0 0 28px rgba(255,107,0,0.35);
+            transform: translateY(-2px);
+        }
+        .update-btn.spinning {
+            animation: spin 0.8s linear infinite;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .update-btn.done {
+            background: rgba(0,255,157,0.1);
+            border-color: rgba(0,255,157,0.5);
+            color: var(--green);
+            box-shadow: 0 0 20px rgba(0,255,157,0.25);
+        }
+
         @media (max-width: 1200px) {
             .bot-card { grid-column: span 6; }
         }
@@ -734,6 +773,7 @@
             <button class="tab-button active" onclick="switchTab('trading',this)">🤖 Trading</button>
             <button class="tab-button" onclick="switchTab('projects',this)">📊 Projects</button>
             <button class="tab-button" onclick="switchTab('settings',this)">⚙️ Settings</button>
+            <button class="update-btn" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
         </div>
 
         <!-- ── TRADING ── -->
@@ -952,6 +992,62 @@
             const now = new Date();
             document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
             document.getElementById('timestamp').textContent  = now.toLocaleString();
+        }
+
+        function manualUpdate() {
+            const btn = document.getElementById('updateBtn');
+            btn.textContent = '↺';
+            btn.classList.add('spinning');
+            btn.classList.remove('done');
+
+            Promise.all([
+                fetch('./snapshot.json?t=' + Date.now()).then(r => r.json()).catch(() => null),
+                fetch('/usage_tracker.json?t=' + Date.now()).then(r => r.json()).catch(() => null)
+            ]).then(([snap, usage]) => {
+                if (snap) {
+                    let pnl = 0, trades = 0;
+                    for (const [name, bot] of Object.entries(snap.bots)) {
+                        const p = bot.pnl || 0, t = bot.trades || 0, w = bot.wins || 0;
+                        const wr = t > 0 ? ((w/t)*100).toFixed(1) + '%' : '—';
+                        pnl += p; trades += t;
+                        const pe = document.getElementById(`${name}-pnl`);
+                        if (pe) { pe.textContent = fmt(p); pe.className = 'metric-value' + (p > 0 ? ' pos' : p < 0 ? ' neg' : ''); }
+                        const te = document.getElementById(`${name}-trades`);
+                        const we = document.getElementById(`${name}-wr`);
+                        if (te) te.textContent = t;
+                        if (we) we.textContent = wr;
+                    }
+                    const pe = document.getElementById('totalPnL');
+                    if (pe) { pe.textContent = fmt(pnl); pe.className = 'summary-value' + (pnl > 0 ? ' green' : pnl < 0 ? ' neg' : ''); }
+                    const te = document.getElementById('totalTrades');
+                    const pve = document.getElementById('portfolioValue');
+                    if (te)  te.textContent  = trades;
+                    if (pve) pve.textContent = `$${(500 + pnl).toFixed(2)}`;
+                }
+                if (usage) {
+                    const c = usage.credits, b = usage.burn_rate;
+                    const bal = parseFloat(c.current_balance);
+                    const dly = parseFloat(b.daily_average);
+                    document.getElementById('credits').textContent       = `$${bal.toFixed(2)}`;
+                    document.getElementById('creditsBalance').textContent = `$${bal.toFixed(2)}`;
+                    document.getElementById('creditsSpent').textContent   = `$${parseFloat(c.total_spent).toFixed(2)}`;
+                    document.getElementById('dailyBurn').textContent     = `$${dly.toFixed(3)}/day`;
+                    document.getElementById('hourlyBurn').textContent    = `$${parseFloat(b.hourly_average).toFixed(4)}/hr`;
+                    document.getElementById('burnRate').textContent      = `$${parseFloat(b.hourly_average).toFixed(4)}`;
+                    document.getElementById('daysRemaining').textContent = `${b.days_remaining || Math.floor(bal/dly)} days`;
+                }
+                const now = new Date();
+                document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+                document.getElementById('timestamp').textContent  = now.toLocaleString();
+
+                btn.classList.remove('spinning');
+                btn.classList.add('done');
+                btn.textContent = '✓ UPDATED';
+                setTimeout(() => {
+                    btn.textContent = '↺ UPDATE';
+                    btn.classList.remove('done');
+                }, 2500);
+            });
         }
 
         updateTrading();
