@@ -1276,7 +1276,7 @@
         }
 
         function updateCredits() {
-            fetch('/usage_tracker.json?t=' + Date.now())
+            fetch('./usage_tracker.json?t=' + Date.now())
                 .then(r => r.json())
                 .then(data => {
                     const c = data.credits, b = data.burn_rate;
@@ -1434,7 +1434,7 @@
 
             Promise.all([
                 fetch('./snapshot.json?t=' + Date.now()).then(r => r.json()).catch(() => null),
-                fetch('/usage_tracker.json?t=' + Date.now()).then(r => r.json()).catch(() => null)
+                fetch('./usage_tracker.json?t=' + Date.now()).then(r => r.json()).catch(() => null)
             ]).then(([snap, usage]) => {
                 if (snap) {
                     let pnl = 0, trades = 0;
