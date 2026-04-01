@@ -885,19 +885,7 @@
                 })
                 .catch(() => {});
 
-            fetch('/usage_tracker.json')
-                .then(r => r.json())
-                .then(data => {
-                    const c = data.credits, b = data.burn_rate;
-                    document.getElementById('credits').textContent     = `$${c.current_balance.toFixed(2)}`;
-                    document.getElementById('creditsBalance').textContent = `$${c.current_balance.toFixed(2)}`;
-                    document.getElementById('creditsSpent').textContent   = `$${c.total_spent.toFixed(2)}`;
-                    document.getElementById('dailyBurn').textContent    = `$${b.daily_average.toFixed(2)}/day`;
-                    document.getElementById('hourlyBurn').textContent   = `$${b.hourly_average.toFixed(3)}/hr`;
-                    document.getElementById('burnRate').textContent     = `$${b.hourly_average.toFixed(3)}`;
-                    document.getElementById('daysRemaining').textContent = `${Math.floor(c.current_balance / b.daily_average)} days`;
-                })
-                .catch(() => {});
+
 
             const now = new Date();
             const t = now.toLocaleTimeString();
@@ -905,8 +893,26 @@
             document.getElementById('timestamp').textContent   = now.toLocaleString();
         }
 
+        function updateCredits() {
+            fetch('/usage_tracker.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const c = data.credits, b = data.burn_rate;
+                    document.getElementById('credits').textContent       = `$${parseFloat(c.current_balance).toFixed(2)}`;
+                    document.getElementById('creditsBalance').textContent = `$${parseFloat(c.current_balance).toFixed(2)}`;
+                    document.getElementById('creditsSpent').textContent   = `$${parseFloat(c.total_spent).toFixed(2)}`;
+                    document.getElementById('dailyBurn').textContent     = `$${parseFloat(b.daily_average).toFixed(3)}/day`;
+                    document.getElementById('hourlyBurn').textContent    = `$${parseFloat(b.hourly_average).toFixed(4)}/hr`;
+                    document.getElementById('burnRate').textContent      = `$${parseFloat(b.hourly_average).toFixed(4)}`;
+                    document.getElementById('daysRemaining').textContent = `${b.days_remaining} days`;
+                })
+                .catch(() => {});
+        }
+
         updateDashboard();
+        updateCredits();
         setInterval(updateDashboard, 5000);
+        setInterval(updateCredits, 30000);
     </script>
 </body>
 </html>
