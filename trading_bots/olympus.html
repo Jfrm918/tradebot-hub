@@ -138,6 +138,12 @@
             100% { left: 140%; }
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
         h1 {
             font-family: 'Space Mono', monospace;
             font-size: 3.8em;
@@ -150,6 +156,33 @@
                 0 0 40px rgba(0, 212, 255, 0.5),
                 0 0 80px rgba(0, 212, 255, 0.2);
             animation: titlePulse 4s ease-in-out infinite;
+        }
+
+        .credits-inline {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 12px 20px;
+            background: rgba(255, 107, 0, 0.08);
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            border-radius: 3px;
+            box-shadow: 0 0 20px rgba(255, 107, 0, 0.15), inset 0 0 15px rgba(255, 107, 0, 0.05);
+        }
+
+        .credits-label {
+            font-size: 0.65em;
+            color: rgba(255, 107, 0, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .credits-amount {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--orange);
+            text-shadow: 0 0 20px var(--orange-glow), 0 0 40px rgba(255,107,0,0.2);
         }
 
         @keyframes titlePulse {
@@ -621,12 +654,14 @@
     <div class="container">
         <!-- HEADER -->
         <header>
-            <h1>⚡ OLYMPUS</h1>
-            <div class="header-stats">
-                <div class="stat-box">
-                    <div class="stat-label">Athena Credits</div>
-                    <div class="stat-value" id="credits">—</div>
+            <div class="header-left">
+                <h1>⚡ OLYMPUS</h1>
+                <div class="credits-inline">
+                    <span class="credits-label">ATHENA CREDITS</span>
+                    <span class="credits-amount" id="credits">—</span>
                 </div>
+            </div>
+            <div class="header-stats">
                 <div class="stat-box">
                     <div class="stat-label">Hourly Burn</div>
                     <div class="stat-value" id="burnRate">—</div>
