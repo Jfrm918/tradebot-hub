@@ -636,7 +636,7 @@
                 .catch(error => console.log('Snapshot not yet available'));
             
             // Fetch usage/credits data
-            fetch('../usage_tracker.json')
+            fetch('/usage_tracker.json')
                 .then(response => response.json())
                 .then(data => {
                     const credits = data.credits;
