@@ -1,21 +1,7 @@
 {
-  "buildCommand": "mkdir -p .vercel/output/static && cp *.html .vercel/output/static/ && cp *.css .vercel/output/static/ 2>/dev/null || true",
+  "buildCommand": "mkdir -p .vercel/output/static && cp *.html .vercel/output/static/ && cp *.json .vercel/output/static/ 2>/dev/null || true",
   "outputDirectory": ".vercel/output/static",
   "rewrites": [
-    {
-      "source": "/hub_dashboard.html",
-      "destination": "/hub_dashboard.html"
-    },
-    {
-      "source": "/snapshot.json",
-      "destination": "/snapshot.json"
-    },
-    {
-      "source": "/",
-      "destination": "/hub_dashboard.html"
-    }
-  ],
-  "env": {
-    "PYTHON_VERSION": "3.9"
-  }
+    { "source": "/", "destination": "/olympus.html" }
+  ]
 }
