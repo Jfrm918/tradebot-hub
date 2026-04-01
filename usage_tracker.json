@@ -1,0 +1,27 @@
+{
+  "credits": {
+    "starting_balance": 100.00,
+    "current_balance": 85.43,
+    "total_spent": 14.57,
+    "currency": "USD"
+  },
+  "burn_rate": {
+    "daily_average": 0.49,
+    "hourly_average": 0.020,
+    "weekly_average": 3.43,
+    "monthly_average": 14.70,
+    "calculation_period_days": 30,
+    "last_updated": "2026-03-31T23:32:00Z"
+  },
+  "usage_breakdown": {
+    "api_calls": 4250,
+    "tokens_used": 125000,
+    "ai_model": "haiku/sonnet mix",
+    "tools_used": ["web_search", "exec", "file_operations", "git_deploy"]
+  },
+  "projections": {
+    "days_remaining_at_current_rate": 4327,
+    "projected_depletion_date": "2038-09-15"
+  },
+  "notes": "Tracker started 2026-03-31. Usage data based on model billing and API consumption."
+}

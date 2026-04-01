@@ -310,6 +310,14 @@
                     <div class="stat-value" id="activeProjects">2</div>
                 </div>
                 <div class="stat">
+                    <div class="stat-label">Athena Credits</div>
+                    <div class="stat-value" id="credits">—</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Hourly Burn</div>
+                    <div class="stat-value" id="burnRate">—</div>
+                </div>
+                <div class="stat">
                     <div class="stat-label">Last Update</div>
                     <div class="stat-value" id="lastUpdate">—</div>
                 </div>
@@ -530,6 +538,16 @@
         <div id="settings" class="tab-content">
             <div class="projects-grid">
                 <div class="project-card">
+                    <div class="project-name">💳 Athena Credits</div>
+                    <div class="project-status">
+                        <strong>Current Balance:</strong> <span style="color: #ffd700;" id="creditsBalance">—</span><br><br>
+                        <strong>Total Spent (30d):</strong> <span style="color: #ffd700;" id="creditsSpent">—</span><br><br>
+                        <strong>Daily Burn Rate:</strong> <span id="dailyBurn">—</span><br><br>
+                        <strong>Hourly Burn Rate:</strong> <span id="hourlyBurn">—</span><br><br>
+                        <strong>Days Remaining:</strong> <span id="daysRemaining">—</span><br><br>
+                    </div>
+                </div>
+                <div class="project-card">
                     <div class="project-name">⚙️ Configuration</div>
                     <div class="project-status">
                         <strong>Trading Bots:</strong> 5 strategies, $100 each = $500 paper capital<br><br>
@@ -616,6 +634,22 @@
                     document.getElementById('portfolioValue').textContent = `$${(500 + totalPnL).toFixed(2)}`;
                 })
                 .catch(error => console.log('Snapshot not yet available'));
+            
+            // Fetch usage/credits data
+            fetch('../usage_tracker.json')
+                .then(response => response.json())
+                .then(data => {
+                    const credits = data.credits;
+                    const burnRate = data.burn_rate;
+                    
+                    document.getElementById('credits').textContent = `$${credits.current_balance.toFixed(2)}`;
+                    document.getElementById('creditsBalance').textContent = `$${credits.current_balance.toFixed(2)}`;
+                    document.getElementById('creditsSpent').textContent = `$${credits.total_spent.toFixed(2)}`;
+                    document.getElementById('dailyBurn').textContent = `$${burnRate.daily_average.toFixed(2)}/day`;
+                    document.getElementById('hourlyBurn').textContent = `$${burnRate.hourly_average.toFixed(3)}/hr`;
+                    document.getElementById('daysRemaining').textContent = `${burnRate.monthly_average > 0 ? Math.floor(credits.current_balance / burnRate.daily_average) : '∞'} days`;
+                })
+                .catch(error => console.log('Usage data not available'));
             
             // Update timestamp
             const now = new Date();
