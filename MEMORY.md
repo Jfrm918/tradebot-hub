@@ -86,6 +86,51 @@ Run for 1-2 weeks, collect 100+ trades per bot, then analyze logs to find the wi
 - ✅ Full trade logging for pattern analysis
 - ✅ NO geo-blocking (Binance testnet is US-accessible)
 
+### Olympus Command Center (Permanent Hub)
+**Status:** ✅ Live and Operational  
+**Created:** 2026-03-31 19:00 CDT  
+**Purpose:** Unified dashboard to monitor all projects without messaging Athena
+
+**Access URLs:**
+- **Local (Home Wi-Fi):** `http://localhost:8000/olympus.html`
+- **Remote (Anywhere):** `https://tradingbots-tau.vercel.app/olympus.html`
+- **Direct Link:** `https://tradingbots-tau.vercel.app`
+
+**Dashboard Tabs:**
+1. **🤖 Trading** — 5 bot live metrics (PnL, trades, win rates, capital), portfolio summary
+2. **📊 Projects** — Spray Foam Intelligence & TradeBot Intelligence status
+3. **⚙️ Settings** — System status, running services, deployment info
+
+**Technical Stack:**
+- **Frontend:** `olympus.html` (golden theme, responsive design)
+- **Data:** `snapshot.json` (auto-updates every 50 trading cycles)
+- **Hosting:** Vercel (deployed via GitHub actions)
+- **Repository:** `https://github.com/Jfrm918/tradebot-hub`
+- **Local Server:** Python HTTP server on port 8000
+
+**Running Services (Permanent):**
+- **Trading Bot:** `blofin_simulator_continuous.py` (runs 24/7)
+- **Web Server:** `python3 -m http.server 8000` (local dashboard)
+- **Auto-Deploy:** GitHub push → Vercel auto-deploy (instant updates)
+
+**How It Works:**
+1. Trading bots run locally → update `snapshot.json` every 50 cycles
+2. Olympus reads snapshot.json → displays live metrics
+3. Auto-refreshes every 5 seconds
+4. Changes pushed to GitHub → instantly deployed to Vercel
+5. Accessible from anywhere via remote URL
+
+**To Access from Devices:**
+- **Mac Dock:** Safari → https://tradingbots-tau.vercel.app/olympus.html → File → Add to Dock
+- **iPhone/iPad Home Screen:** Safari → Share → Add to Home Screen
+
+**GitHub + Vercel Automation (Established 2026-03-31):**
+- All code in: `https://github.com/Jfrm918/tradebot-hub`
+- GitHub CLI authenticated as: `Jfrm918`
+- Vercel authenticated as: `jfrm918`
+- Commits automatically trigger Vercel deployments
+- Dashboard updates live on each push
+
 
 
 ## Life Goals & Constraints
