@@ -18,3 +18,4 @@ simulator.log
 simulator_output.log
 trading_logs.txt
 hub_server.log
+.vercel
