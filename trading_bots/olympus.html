@@ -3,25 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olympus - Command Center</title>
+    <title>OLYMPUS • ATHENA COMMAND CENTER</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        @keyframes grid-pulse {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.2; }
+            100% { opacity: 0.1; }
+        }
+        
+        @keyframes glow-pulse {
+            0% { text-shadow: 0 0 10px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 150, 255, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(0, 150, 255, 0.8), 0 0 40px rgba(0, 150, 255, 0.5); }
+            100% { text-shadow: 0 0 10px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 150, 255, 0.3); }
+        }
+        
+        @keyframes button-glow {
+            0% { box-shadow: 0 0 5px rgba(0, 150, 255, 0.5), inset 0 0 5px rgba(0, 150, 255, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(0, 150, 255, 0.8), inset 0 0 10px rgba(0, 150, 255, 0.4); }
+            100% { box-shadow: 0 0 5px rgba(0, 150, 255, 0.5), inset 0 0 5px rgba(0, 150, 255, 0.2); }
+        }
+        
+        @keyframes line-scan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        
         body {
-            font-family: 'Monaco', 'Menlo', monospace;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
-            color: #e0e0e0;
-            padding: 20px;
+            font-family: 'Orbitron', monospace;
+            background: #000011;
+            color: #00ffff;
+            padding: 0;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0, 150, 255, 0.05) 25%, rgba(0, 150, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 150, 255, 0.05) 75%, rgba(0, 150, 255, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0, 150, 255, 0.05) 25%, rgba(0, 150, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 150, 255, 0.05) 75%, rgba(0, 150, 255, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+            animation: grid-pulse 4s ease-in-out infinite;
         }
         
         .container {
             max-width: 1800px;
             margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
         }
         
         header {
@@ -30,17 +77,19 @@
             align-items: center;
             margin-bottom: 40px;
             padding: 25px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 12px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid rgba(0, 150, 255, 0.5);
+            border-radius: 0;
             backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 150, 255, 0.3), inset 0 0 20px rgba(0, 150, 255, 0.1);
         }
         
         h1 {
-            font-size: 2.5em;
-            color: #ffd700;
-            letter-spacing: 3px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            font-size: 3em;
+            color: #00ffff;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: glow-pulse 2s ease-in-out infinite;
         }
         
         .header-stats {
@@ -51,47 +100,53 @@
         
         .stat {
             font-size: 0.85em;
-            color: #999;
+            color: #0099ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .stat-value {
             font-size: 1.8em;
-            font-weight: bold;
-            color: #ffd700;
+            font-weight: 900;
+            color: #ff6600;
             margin-top: 6px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.6);
         }
         
         .tabs {
             display: flex;
             gap: 15px;
             margin-bottom: 30px;
-            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+            border-bottom: 2px solid rgba(0, 150, 255, 0.3);
             padding-bottom: 15px;
         }
         
         .tab-button {
             padding: 12px 24px;
             background: transparent;
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            color: #999;
+            border: 2px solid rgba(0, 150, 255, 0.3);
+            color: #0099ff;
             cursor: pointer;
-            border-radius: 6px;
-            font-family: 'Monaco', monospace;
+            border-radius: 0;
+            font-family: 'Orbitron', monospace;
             font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             transition: all 0.3s ease;
+            animation: button-glow 3s ease-in-out infinite;
         }
         
         .tab-button.active {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: #ffd700;
-            color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            background: rgba(0, 150, 255, 0.2);
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), inset 0 0 10px rgba(0, 255, 255, 0.2);
         }
         
         .tab-button:hover {
-            border-color: #ffd700;
-            color: #ffd700;
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
         }
         
         .tab-content {
@@ -102,14 +157,15 @@
             display: block;
         }
         
-        /* Trading Tab */
+        /* Portfolio Summary */
         .portfolio-summary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 215, 0, 0.2);
-            border-radius: 12px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid rgba(0, 150, 255, 0.4);
+            border-radius: 0;
             padding: 25px;
             margin-bottom: 30px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.2), inset 0 0 15px rgba(0, 150, 255, 0.05);
         }
         
         .summary-grid {
@@ -120,26 +176,29 @@
         
         .summary-stat {
             text-align: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            border-left: 3px solid #ffd700;
+            padding: 20px;
+            background: rgba(0, 40, 80, 0.6);
+            border: 1px solid rgba(0, 150, 255, 0.3);
+            border-radius: 0;
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.2), inset 0 0 10px rgba(0, 150, 255, 0.05);
         }
         
         .summary-label {
             font-size: 0.75em;
-            color: #666;
+            color: #0099ff;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             margin-bottom: 8px;
         }
         
         .summary-value {
             font-size: 2em;
-            font-weight: bold;
-            color: #ffd700;
+            font-weight: 900;
+            color: #ff6600;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.6);
         }
         
+        /* Dashboard Grid */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -148,17 +207,18 @@
         }
         
         .bot-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: 8px;
+            background: rgba(0, 20, 40, 0.7);
+            border: 2px solid rgba(0, 150, 255, 0.3);
+            border-radius: 0;
             padding: 20px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.15), inset 0 0 10px rgba(0, 150, 255, 0.05);
         }
         
         .bot-card:hover {
-            border-color: rgba(255, 215, 0, 0.4);
-            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.1);
         }
         
         .bot-header {
@@ -167,28 +227,31 @@
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 150, 255, 0.2);
         }
         
         .bot-name {
             font-size: 1.1em;
-            font-weight: bold;
-            color: #fff;
+            font-weight: 700;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .status-indicator {
             display: inline-block;
             width: 10px;
             height: 10px;
-            background: #ffd700;
+            background: #00ff00;
             border-radius: 50%;
             margin-right: 8px;
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #00ff00;
+            animation: pulse 1s infinite;
         }
         
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+            0%, 100% { box-shadow: 0 0 10px #00ff00, 0 0 5px #00ff00; }
+            50% { box-shadow: 0 0 20px #00ff00, 0 0 10px #00ff00; }
         }
         
         .metrics-grid {
@@ -199,15 +262,16 @@
         }
         
         .metric {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 40, 80, 0.5);
             padding: 12px;
-            border-radius: 4px;
-            border-left: 3px solid #ffd700;
+            border-radius: 0;
+            border-left: 3px solid #ff6600;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.2);
         }
         
         .metric-label {
             font-size: 0.7em;
-            color: #666;
+            color: #0099ff;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 4px;
@@ -215,15 +279,17 @@
         
         .metric-value {
             font-size: 1.3em;
-            font-weight: bold;
-            color: #ffd700;
+            font-weight: 900;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
         }
         
         .metric-value.negative {
-            color: #ff6b6b;
+            color: #ff3333;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.6);
         }
         
-        /* Projects Tab */
+        /* Projects Grid */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -231,30 +297,34 @@
         }
         
         .project-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: 8px;
+            background: rgba(0, 20, 40, 0.7);
+            border: 2px solid rgba(0, 150, 255, 0.3);
+            border-radius: 0;
             padding: 25px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.15), inset 0 0 10px rgba(0, 150, 255, 0.05);
         }
         
         .project-name {
             font-size: 1.3em;
-            font-weight: bold;
-            color: #ffd700;
+            font-weight: 700;
+            color: #ff6600;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
         }
         
         .project-status {
             font-size: 0.95em;
-            color: #999;
+            color: #0099ff;
             line-height: 1.6;
         }
         
         .project-metrics {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            border-top: 1px solid rgba(0, 150, 255, 0.2);
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
@@ -265,38 +335,42 @@
         }
         
         .project-metric-label {
-            color: #666;
+            color: #0099ff;
             margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 0.75em;
+            letter-spacing: 1px;
         }
         
         .project-metric-value {
-            color: #ffd700;
-            font-weight: bold;
+            color: #00ffff;
+            font-weight: 900;
             font-size: 1.1em;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
         }
         
         footer {
             text-align: center;
             margin-top: 50px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
-            color: #666;
+            border-top: 2px solid rgba(0, 150, 255, 0.2);
+            color: #0099ff;
             font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .athena-signature {
+            color: #ff6600;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
         }
         
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-            .summary-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
+            h1 { font-size: 1.8em; }
+            .summary-grid { grid-template-columns: 1fr 1fr; }
+            .dashboard { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -305,10 +379,6 @@
         <header>
             <h1>⚡ OLYMPUS</h1>
             <div class="header-stats">
-                <div class="stat">
-                    <div class="stat-label">Active Projects</div>
-                    <div class="stat-value" id="activeProjects">2</div>
-                </div>
                 <div class="stat">
                     <div class="stat-label">Athena Credits</div>
                     <div class="stat-value" id="credits">—</div>
@@ -500,7 +570,6 @@
         <!-- Projects Tab -->
         <div id="projects" class="tab-content">
             <div class="projects-grid">
-                <!-- Spray Foam Project -->
                 <div class="project-card">
                     <div class="project-name">🔧 Spray Foam Intelligence</div>
                     <div class="project-status">Building FoamDial algorithm with field logs and market data integration. Real-time installer support for optimal spray parameters.</div>
@@ -516,7 +585,6 @@
                     </div>
                 </div>
                 
-                <!-- TradeBot Project -->
                 <div class="project-card">
                     <div class="project-name">🤖 TradeBot Intelligence</div>
                     <div class="project-status">Paper trading 5 strategies simultaneously. Collecting data to identify best performer, then building real-money algorithm with alert system.</div>
@@ -540,56 +608,52 @@
                 <div class="project-card">
                     <div class="project-name">💳 Athena Credits</div>
                     <div class="project-status">
-                        <strong>Current Balance:</strong> <span style="color: #ffd700;" id="creditsBalance">—</span><br><br>
-                        <strong>Total Spent (30d):</strong> <span style="color: #ffd700;" id="creditsSpent">—</span><br><br>
-                        <strong>Daily Burn Rate:</strong> <span id="dailyBurn">—</span><br><br>
-                        <strong>Hourly Burn Rate:</strong> <span id="hourlyBurn">—</span><br><br>
-                        <strong>Days Remaining:</strong> <span id="daysRemaining">—</span><br><br>
+                        <strong style="color: #ff6600;">Current Balance:</strong> <span style="color: #ff6600;" id="creditsBalance">—</span><br><br>
+                        <strong style="color: #ff6600;">Total Spent (30d):</strong> <span style="color: #ff6600;" id="creditsSpent">—</span><br><br>
+                        <strong style="color: #0099ff;">Daily Burn Rate:</strong> <span id="dailyBurn">—</span><br><br>
+                        <strong style="color: #0099ff;">Hourly Burn Rate:</strong> <span id="hourlyBurn">—</span><br><br>
+                        <strong style="color: #0099ff;">Days Remaining:</strong> <span id="daysRemaining">—</span><br><br>
                     </div>
                 </div>
+                
                 <div class="project-card">
                     <div class="project-name">⚙️ Configuration</div>
                     <div class="project-status">
-                        <strong>Trading Bots:</strong> 5 strategies, $100 each = $500 paper capital<br><br>
-                        <strong>Data:</strong> Snapshot updated every 50 cycles<br><br>
-                        <strong>Deployment:</strong> GitHub + Vercel auto-deploy enabled<br><br>
-                        <strong>Simulator:</strong> Running 24/7 on local machine<br><br>
+                        <strong style="color: #0099ff;">Trading Bots:</strong> 5 strategies, $100 each = $500 paper capital<br><br>
+                        <strong style="color: #0099ff;">Data:</strong> Snapshot updated every 50 cycles<br><br>
+                        <strong style="color: #0099ff;">Deployment:</strong> GitHub + Vercel auto-deploy enabled<br><br>
+                        <strong style="color: #0099ff;">Simulator:</strong> Running 24/7 on local machine<br><br>
                     </div>
                 </div>
+                
                 <div class="project-card">
                     <div class="project-name">📡 System Status</div>
                     <div class="project-status">
-                        <strong>Trading Bot:</strong> <span style="color: #1aff00;">● Active</span><br><br>
-                        <strong>Web Server:</strong> <span style="color: #1aff00;">● Running on port 8000</span><br><br>
-                        <strong>GitHub:</strong> <span style="color: #1aff00;">● Connected (Jfrm918/tradebot-hub)</span><br><br>
-                        <strong>Vercel:</strong> <span style="color: #1aff00;">● Live (tradingbots-tau.vercel.app)</span><br><br>
+                        <strong style="color: #00ff00;">Trading Bot:</strong> <span style="color: #00ff00;">● Active</span><br><br>
+                        <strong style="color: #00ff00;">Web Server:</strong> <span style="color: #00ff00;">● Running on port 8000</span><br><br>
+                        <strong style="color: #00ff00;">GitHub:</strong> <span style="color: #00ff00;">● Connected (Jfrm918/tradebot-hub)</span><br><br>
+                        <strong style="color: #00ff00;">Vercel:</strong> <span style="color: #00ff00;">● Live (tradingbots-tau.vercel.app)</span><br><br>
                     </div>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p>⚡ OLYMPUS Command Center | Real-Time Dashboard | All Systems Active</p>
-            <p style="margin-top: 10px; color: #555;">Last refresh: <span id="timestamp">—</span></p>
+            <p>⚡ OLYMPUS COMMAND CENTER • TRON INTERFACE</p>
+            <p style="margin-top: 10px; color: #ff6600;">System Status: <span class="athena-signature">ATHENA_ONLINE</span></p>
+            <p style="margin-top: 10px; font-size: 0.8em;">Last refresh: <span id="timestamp">—</span></p>
         </footer>
     </div>
     
     <script>
         function switchTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
-            // Remove active class from all buttons
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Show selected tab
             document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button
             event.target.classList.add('active');
         }
         
@@ -602,7 +666,6 @@
         }
         
         function updateDashboard() {
-            // Fetch snapshot
             fetch('./snapshot.json')
                 .then(response => response.json())
                 .then(data => {
@@ -635,7 +698,6 @@
                 })
                 .catch(error => console.log('Snapshot not yet available'));
             
-            // Fetch usage/credits data
             fetch('/usage_tracker.json')
                 .then(response => response.json())
                 .then(data => {
@@ -651,16 +713,12 @@
                 })
                 .catch(error => console.log('Usage data not available'));
             
-            // Update timestamp
             const now = new Date();
             document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
             document.getElementById('timestamp').textContent = now.toLocaleString();
         }
         
-        // Initial update
         updateDashboard();
-        
-        // Auto-refresh every 5 seconds
         setInterval(updateDashboard, 5000);
     </script>
 </body>
