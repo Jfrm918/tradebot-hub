@@ -688,6 +688,205 @@
         }
         .ts { margin-top: 6px; font-size: 0.72em; color: rgba(0,212,255,0.18); letter-spacing: 1px; }
 
+        /* ── STATUS REPORT MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,5,16,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal {
+            background: rgba(1,13,46,0.97);
+            border: 1px solid rgba(0,212,255,0.35);
+            border-radius: var(--radius);
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow:
+                0 0 60px rgba(0,212,255,0.2),
+                inset 0 1px 0 rgba(0,212,255,0.2),
+                0 40px 80px rgba(0,0,0,0.8);
+            position: relative;
+            animation: modalIn 0.3s cubic-bezier(0.23,1,0.32,1);
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6), transparent);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,212,255,0.1);
+        }
+        .modal-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 14px var(--cyan);
+        }
+        .modal-close {
+            background: transparent;
+            border: 1px solid rgba(0,212,255,0.3);
+            color: var(--cyan-dim);
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9em;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            border-color: rgba(255,107,0,0.6);
+            color: var(--orange);
+            box-shadow: 0 0 14px rgba(255,107,0,0.2);
+        }
+
+        .report-timestamp {
+            font-size: 0.75em;
+            color: rgba(0,212,255,0.35);
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .report-bot {
+            background: rgba(0,212,255,0.03);
+            border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .report-bot:hover {
+            border-color: rgba(0,212,255,0.25);
+            background: rgba(0,212,255,0.06);
+        }
+
+        .report-bot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .report-bot-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95em;
+            font-weight: 700;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .report-bot-pnl {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        .report-bot-pnl.pos { color: var(--green); text-shadow: 0 0 10px var(--green-glow); }
+        .report-bot-pnl.neg { color: #ff4444; text-shadow: 0 0 10px rgba(255,68,68,0.4); }
+        .report-bot-pnl.neu { color: var(--cyan-dim); }
+
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .report-stat {
+            text-align: center;
+            padding: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 6px;
+        }
+        .report-stat-label {
+            font-size: 0.65em;
+            color: var(--cyan-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .report-stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Win/loss bar */
+        .wl-bar-wrap {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .wl-bar-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,68,68,0.25);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .wl-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), rgba(0,255,157,0.6));
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(0.23,1,0.32,1);
+        }
+        .wl-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75em;
+            color: var(--cyan-dim);
+            white-space: nowrap;
+        }
+
+        .report-total {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,107,0,0.07);
+            border: 1px solid rgba(255,107,0,0.25);
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            text-align: center;
+        }
+        .report-total-label {
+            font-size: 0.68em;
+            color: rgba(255,107,0,0.6);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+        .report-total-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--orange);
+            text-shadow: 0 0 12px var(--orange-glow);
+        }
+
         /* ── UPDATE BUTTON ── */
         .update-btn {
             margin-left: auto;
@@ -768,12 +967,25 @@
             </div>
         </header>
 
+        <!-- STATUS REPORT MODAL -->
+        <div class="modal-overlay" id="reportModal" onclick="closeReport(event)">
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-title">📊 Bot Status Report</div>
+                    <button class="modal-close" onclick="document.getElementById('reportModal').classList.remove('open')">✕ Close</button>
+                </div>
+                <div class="report-timestamp" id="reportTs">—</div>
+                <div id="reportContent">Loading...</div>
+            </div>
+        </div>
+
         <!-- TABS -->
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('trading',this)">🤖 Trading</button>
             <button class="tab-button" onclick="switchTab('projects',this)">📊 Projects</button>
             <button class="tab-button" onclick="switchTab('settings',this)">⚙️ Settings</button>
             <button class="update-btn" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
+            <button class="update-btn" style="background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.4);color:var(--cyan);margin-left:8px;" onclick="showReport()">📊 STATUS REPORT</button>
         </div>
 
         <!-- ── TRADING ── -->
@@ -992,6 +1204,132 @@
             const now = new Date();
             document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
             document.getElementById('timestamp').textContent  = now.toLocaleString();
+        }
+
+        function closeReport(e) {
+            if (e.target === document.getElementById('reportModal')) {
+                document.getElementById('reportModal').classList.remove('open');
+            }
+        }
+
+        const BOT_LABELS = {
+            momentum: 'Momentum', reversion: 'Mean Reversion',
+            grid: 'Grid', scalp: 'Scalping', swing: 'Swing'
+        };
+
+        function showReport() {
+            document.getElementById('reportModal').classList.add('open');
+            document.getElementById('reportTs').textContent = 'Fetching latest data...';
+            document.getElementById('reportContent').innerHTML = '<div style="text-align:center;padding:30px;color:var(--cyan-dim);">Loading...</div>';
+
+            fetch('./snapshot.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const now = new Date();
+                    document.getElementById('reportTs').textContent = `Generated: ${now.toLocaleString()} — Cycle #${data.cycle || '—'}`;
+
+                    let totalPnL = 0, totalTrades = 0, totalWins = 0;
+                    let html = '';
+
+                    for (const [name, bot] of Object.entries(data.bots)) {
+                        const pnl    = parseFloat(bot.pnl)    || 0;
+                        const trades = parseInt(bot.trades)   || 0;
+                        const wins   = parseInt(bot.wins)     || 0;
+                        const losses = trades - wins;
+                        const wr     = trades > 0 ? ((wins / trades) * 100).toFixed(1) : 0;
+                        const balance= parseFloat(bot.balance) || 100;
+                        const roi    = ((balance - 100) / 100 * 100).toFixed(1);
+
+                        totalPnL    += pnl;
+                        totalTrades += trades;
+                        totalWins   += wins;
+
+                        const pnlClass = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : 'neu';
+                        const pnlStr   = pnl >= 0 ? `+$${pnl.toFixed(2)}` : `-$${Math.abs(pnl).toFixed(2)}`;
+
+                        let statusIcon = '⚡';
+                        let statusText = 'Active';
+                        if (pnl > 2)        { statusIcon = '🔥'; statusText = 'Strong'; }
+                        else if (pnl > 0)   { statusIcon = '📈'; statusText = 'Profitable'; }
+                        else if (pnl < -2)  { statusIcon = '⚠️'; statusText = 'Struggling'; }
+                        else if (pnl < 0)   { statusIcon = '📉'; statusText = 'Losing'; }
+
+                        html += `
+                        <div class="report-bot">
+                            <div class="report-bot-header">
+                                <div class="report-bot-name">${statusIcon} ${BOT_LABELS[name] || name}</div>
+                                <div class="report-bot-pnl ${pnlClass}">${pnlStr}</div>
+                            </div>
+                            <div class="report-stats">
+                                <div class="report-stat">
+                                    <div class="report-stat-label">Trades</div>
+                                    <div class="report-stat-value">${trades}</div>
+                                </div>
+                                <div class="report-stat">
+                                    <div class="report-stat-label">Wins</div>
+                                    <div class="report-stat-value" style="color:var(--green)">${wins}</div>
+                                </div>
+                                <div class="report-stat">
+                                    <div class="report-stat-label">Losses</div>
+                                    <div class="report-stat-value" style="color:#ff4444">${losses}</div>
+                                </div>
+                                <div class="report-stat">
+                                    <div class="report-stat-label">ROI</div>
+                                    <div class="report-stat-value" style="color:${parseFloat(roi)>=0?'var(--green)':'#ff4444'}">${roi}%</div>
+                                </div>
+                            </div>
+                            <div class="wl-bar-wrap">
+                                <span class="wl-label">W/L</span>
+                                <div class="wl-bar-track">
+                                    <div class="wl-bar-fill" style="width:${wr}%"></div>
+                                </div>
+                                <span class="wl-label">${wr}%</span>
+                            </div>
+                            <div style="font-size:0.7em;color:rgba(0,212,255,0.35);margin-top:6px;font-family:'Space Mono',monospace;">
+                                Status: ${statusText} &nbsp;|&nbsp; Balance: $${balance.toFixed(2)}
+                            </div>
+                        </div>`;
+                    }
+
+                    const totalLosses = totalTrades - totalWins;
+                    const totalWR = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : 0;
+                    const portfolioVal = (500 + totalPnL).toFixed(2);
+
+                    html += `
+                    <div class="report-total">
+                        <div>
+                            <div class="report-total-label">Portfolio</div>
+                            <div class="report-total-value">$${portfolioVal}</div>
+                        </div>
+                        <div>
+                            <div class="report-total-label">Total PnL</div>
+                            <div class="report-total-value" style="color:${totalPnL>=0?'var(--green)':'#ff4444'}">${totalPnL>=0?'+':''}$${totalPnL.toFixed(2)}</div>
+                        </div>
+                        <div>
+                            <div class="report-total-label">W / L</div>
+                            <div class="report-total-value">${totalWins} / ${totalLosses}</div>
+                        </div>
+                        <div>
+                            <div class="report-total-label">Win Rate</div>
+                            <div class="report-total-value">${totalWR}%</div>
+                        </div>
+                    </div>`;
+
+                    document.getElementById('reportContent').innerHTML = html;
+
+                    // Animate win bars
+                    setTimeout(() => {
+                        document.querySelectorAll('.wl-bar-fill').forEach(bar => {
+                            const w = bar.style.width;
+                            bar.style.width = '0%';
+                            setTimeout(() => { bar.style.width = w; }, 50);
+                        });
+                    }, 100);
+                })
+                .catch(() => {
+                    document.getElementById('reportContent').innerHTML =
+                        '<div style="text-align:center;padding:30px;color:var(--orange);">⚠️ No bot data available yet. Bots may still be warming up.</div>';
+                });
         }
 
         function manualUpdate() {
