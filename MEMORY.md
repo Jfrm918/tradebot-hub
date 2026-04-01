@@ -48,11 +48,19 @@
 - Dashboard: `hub.html` (real-time performance, projects overview, mobile-friendly)
 - Docs: `SETUP.md` (complete walkthrough)
 
+**Core Philosophy — REAL WORLD MODEL FROM GROUND UP:**
+- Every parameter must mirror actual market behavior
+- Paper trading = training data for the real algorithm
+- If it's not realistic in simulation, it won't work with real money
+- No shortcuts — build it right or don't build it
+- Research benchmarks: Wall Street quant standards + real crypto market data
+
 **Phase Timeline:**
-- **Phase 1 (Week 1-2):** Paper trading live on Binance testnet | Collect 50-100 trades per bot
-- **Phase 2 (Week 3-4):** Analyze logs | Identify best performer | Build final algorithm
-- **Phase 3 (Real Money):** Deploy winning bot + alert system | Jason hits START/STOP only
-- **End State:** Fully autonomous trading bot | Daily alerts | Risk management automated
+- **Phase 1 (Now):** Build realistic simulator using real market parameters (volatility, win rates, PnL ranges from actual quant research)
+- **Phase 2 (Week 2-4):** Collect 500+ trades per bot under realistic conditions
+- **Phase 3 (Analysis):** Identify best performer, extract its logic, validate against historical data
+- **Phase 4 (Real Money):** Deploy winning bot with real capital | Alert system | Jason hits START/STOP only
+- **End State:** Fully autonomous, battle-tested trading algorithm built on real market intelligence
 
 **Deployment Status (2026-03-31):**
 ✅ All 5 bots coded and tested
