@@ -982,6 +982,7 @@
         <!-- TABS -->
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('trading',this)">🤖 Trading</button>
+            <button class="tab-button" onclick="switchTab('foamdial',this)">🔧 FoamDial</button>
             <button class="tab-button" onclick="switchTab('projects',this)">📊 Projects</button>
             <button class="tab-button" onclick="switchTab('settings',this)">⚙️ Settings</button>
             <button class="update-btn" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
@@ -1059,6 +1060,97 @@
                         <div class="metric"><div class="metric-label">Win %</div><div class="metric-value" id="swing-wr">—</div></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ── FOAMDIAL ── -->
+        <div id="foamdial" class="tab-content">
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <div class="project-title">⚡ Graco Reactor² E-30</div>
+                    <div class="project-desc" style="font-size:0.85em;line-height:2;">
+                        <strong style="color:var(--cyan);">Pressure:</strong> Target 1,080 psi | Both sides controlled together — cannot set A/B independently<br>
+                        <strong style="color:var(--cyan);">Temps:</strong> A, B, Hose set independently via Targets screen<br>
+                        <strong style="color:var(--cyan);">A/B Imbalance:</strong> Mechanical issue — check inlet filter, check valves, T1 pump wear<br>
+                        <strong style="color:var(--cyan);">Guns:</strong> Graco Fusion AP | Tips: 4242 / 4747 / 5252 only<br>
+                        <strong style="color:var(--cyan);">PASSENGER:</strong> 300 ft hose + 10 ft whip (primary active rig)<br>
+                        <strong style="color:var(--cyan);">DRIVER:</strong> 300 ft hose + 20 ft whip (not yet in rotation)
+                    </div>
+                    <div class="project-badges" style="margin-top:14px;">
+                        <span class="badge active">✅ Active Rig</span>
+                        <span class="badge" style="color:#ffaa00;border-color:rgba(255,170,0,0.4);background:rgba(255,170,0,0.08);">🔄 Full Manual Pending</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">🧪 Chemical Reference</div>
+                    <div class="project-desc" style="font-size:0.85em;line-height:2;">
+                        <strong style="color:var(--orange);">Ambit AMBI-SEAL 5.0 (current)</strong><br>
+                        Open cell | Wide temp range | Less rise than Enverge | 2-pass for 5-6"<br>
+                        Air bubbles = product characteristic or A/B imbalance<br>
+                        Substrate min: 40°F | Excellent wood adhesion<br><br>
+                        <strong style="color:var(--orange);">Enverge (transitioning to)</strong><br>
+                        OC + CC | Baseline: 145°F / 1,400 psi | Proven on metal + wood<br>
+                        Full brief: memory/spray-foam-mission.md
+                    </div>
+                    <div class="project-badges" style="margin-top:14px;">
+                        <span class="badge live">🔴 Ambit Active</span>
+                        <span class="badge">Enverge Coming</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">🌡️ Critical Field Parameters</div>
+                    <div class="project-desc" style="font-size:0.85em;line-height:2;">
+                        <strong style="color:var(--cyan);">Substrate min:</strong> 40°F+ and ≥5°F above dew point — no exceptions<br>
+                        <strong style="color:var(--cyan);">Humidity watch:</strong> Above 70% — adhesion risk increases<br>
+                        <strong style="color:var(--cyan);">4242:</strong> General walls, standard coverage<br>
+                        <strong style="color:var(--cyan);">4747:</strong> Higher output, larger cavities<br>
+                        <strong style="color:var(--cyan);">5252:</strong> Max output<br>
+                        <strong style="color:var(--cyan);">Bullard Box:</strong> April–August (heat — no filters)<br>
+                        <strong style="color:var(--cyan);">Filter System:</strong> September–March
+                    </div>
+                    <div class="project-badges" style="margin-top:14px;">
+                        <span class="badge active">✅ Active Reference</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">📚 Knowledge Status</div>
+                    <div class="project-desc" style="font-size:0.85em;line-height:2;">
+                        <span style="color:var(--green);">✅</span> Enverge TDS + application guide<br>
+                        <span style="color:var(--green);">✅</span> Ambit AMBI-SEAL 5.0 product specs<br>
+                        <span style="color:var(--green);">✅</span> Graco Fusion AP gun + tip selection<br>
+                        <span style="color:var(--green);">✅</span> Field conditions protocol<br>
+                        <span style="color:var(--green);">✅</span> Spray log: 2 jobs<br>
+                        <span style="color:#ffaa00;">🔄</span> Graco Reactor² E-30 full manual — in progress<br>
+                        <span style="color:#ffaa00;">🔄</span> Graco T1 pump specs — pending<br>
+                        <span style="color:var(--cyan-dim);">⏳</span> Generator make/model — need from Jason<br>
+                        <span style="color:var(--cyan-dim);">⏳</span> Compressor make/model — need from Jason<br>
+                        <span style="color:var(--cyan-dim);">⏳</span> 300 ft hose pressure/heat data — pending
+                    </div>
+                    <div class="project-badges" style="margin-top:14px;">
+                        <span class="badge">5 / 10 Complete</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">📋 Spray Log Summary</div>
+                    <div class="project-desc" style="font-size:0.85em;line-height:2;">
+                        <strong style="color:var(--orange);">Job #1 — 2026-03-30 — Chouteau, OK</strong><br>
+                        Metal | Enverge OC | 4242 | 71°F | 145°F / 1,400 psi | ✅ EXCELLENT<br><br>
+                        <strong style="color:var(--orange);">Job #2 — 2026-04-01 — Monkey Island, OK</strong><br>
+                        Wood 76°F | Ambit OC | 4242 | 74°F / 69% RH<br>
+                        131/133°F | 1,080–1,094 psi | A/B gap 54 psi noted<br>
+                        2-pass to 5-6" | In progress
+                    </div>
+                    <div class="project-badges" style="margin-top:14px;">
+                        <span class="badge active">2 Jobs Logged</span>
+                        <span class="badge">FoamDial Training Data</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
