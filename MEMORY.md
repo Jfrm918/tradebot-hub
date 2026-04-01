@@ -18,8 +18,11 @@
 
 ## Projects
 
-### Spray Foam Intelligence System
+### Spray Foam Intelligence System (FoamDial)
 - Full mission brief stored in `memory/spray-foam-mission.md`
+- Brand guide: `memory/foamdial-brand-guide.md`
+- Employer: Insulation Services of Tulsa (istulsa.com) — inspiration for colors/aesthetic
+- **Brand Colors:** Professional Blue (#0052CC), Safety Orange (#FF8C00), Charcoal Gray (#2C3E50)
 - Rig: Two Graco E-30 reactors (DRIVER + PASSENGER), Fusion AP guns, Enverge chemical, 40KW gen, 10HP compressor
 - Spray log to be maintained — format pending (brief was cut off)
 - Pending: generator specs, compressor make/model, spray log entry format
