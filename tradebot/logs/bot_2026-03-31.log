@@ -1,0 +1,106 @@
+[2026-03-31T23:17:27Z] 🚀 Momentum Bot starting | Capital: $100.0 | Pairs: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:17:27Z]    Strategy: EMA(5/20) + RSI(14) | TP: +3% | SL: -2%
+[2026-03-31T23:17:27Z] ── Cycle 1 | 23:17:27 UTC | Balance: $100.00 | Open: []
+[2026-03-31T23:17:27Z]   🟢 BUY  BTC-USDT @ $68193.6000 | Qty: 0.000367 | Cost: $25.00 | RSI: 66.9
+[2026-03-31T23:17:28Z]   🟢 BUY  ETH-USDT @ $2095.8800 | Qty: 0.008946 | Cost: $18.75 | RSI: 62.6
+[2026-03-31T23:17:28Z]   🟢 BUY  SOL-USDT @ $82.7500 | Qty: 0.169940 | Cost: $14.06 | RSI: 57.7
+[2026-03-31T23:17:29Z]   🟢 BUY  BNB-USDT @ $617.7600 | Qty: 0.017073 | Cost: $10.55 | RSI: 67.9
+[2026-03-31T23:18:00Z] ── Cycle 2 | 23:18:00 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:18:00Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:18:00Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:18:00Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:18:01Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:18:31Z] ── Cycle 3 | 23:18:31 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:18:31Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:18:31Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:18:32Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:18:32Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:19:02Z] ── Cycle 4 | 23:19:02 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:19:02Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:19:02Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:19:03Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:19:03Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:19:33Z] ── Cycle 5 | 23:19:33 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:19:33Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:19:33Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:19:34Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:19:34Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:20:04Z] ── Cycle 6 | 23:20:04 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:20:04Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:20:04Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:20:05Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:20:05Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:20:35Z] ── Cycle 7 | 23:20:35 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:20:35Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:20:36Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:20:36Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:20:36Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:21:06Z] ── Cycle 8 | 23:21:06 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:21:06Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:21:07Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:21:07Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:21:07Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:21:37Z] ── Cycle 9 | 23:21:37 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:21:38Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:21:38Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:21:38Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:21:38Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:22:08Z] ── Cycle 10 | 23:22:08 UTC | Balance: $31.64 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'BNB-USDT']
+[2026-03-31T23:22:09Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:22:09Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:22:09Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:22:09Z]   ❌ SELL BNB-USDT @ $617.5100 | PnL: $-0.0043 (-0.04%) | Reason: rsi_weak | RSI: 41.2
+[2026-03-31T23:22:40Z] ── Cycle 11 | 23:22:40 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:22:40Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:22:40Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:22:41Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:22:41Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:23:11Z] ── Cycle 12 | 23:23:11 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:23:11Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:23:11Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:23:12Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:23:12Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:23:42Z] ── Cycle 13 | 23:23:42 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:23:42Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:23:42Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:23:43Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:23:43Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:24:13Z] ── Cycle 14 | 23:24:13 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:24:13Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:24:14Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:24:14Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:24:14Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:24:44Z] ── Cycle 15 | 23:24:44 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:24:44Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:24:45Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:24:45Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:24:45Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:25:15Z] ── Cycle 16 | 23:25:15 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:25:15Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:25:16Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:25:16Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:25:16Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:25:46Z] ── Cycle 17 | 23:25:46 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:25:46Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:25:47Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:25:47Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:25:47Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:26:17Z] ── Cycle 18 | 23:26:17 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:26:18Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:26:18Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:26:18Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:26:18Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:26:48Z] ── Cycle 19 | 23:26:48 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:26:49Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:26:49Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:26:49Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:26:49Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:27:19Z] ── Cycle 20 | 23:27:19 UTC | Balance: $42.18 | Open: ['BTC-USDT', 'ETH-USDT', 'SOL-USDT']
+[2026-03-31T23:27:20Z]   ⚠️  Error processing BTC-USDT: Invalid format specifier
+[2026-03-31T23:27:20Z]   ⚠️  Error processing ETH-USDT: Invalid format specifier
+[2026-03-31T23:27:20Z]   ⚠️  Error processing SOL-USDT: Invalid format specifier
+[2026-03-31T23:27:20Z]   ⚠️  Error processing BNB-USDT: Invalid format specifier
+[2026-03-31T23:27:20Z] ✅ Reached max_cycles=20, stopping.
+[2026-03-31T23:27:20Z] 📊 DAILY REPORT | Date: 2026-03-31 | Balance: $42.18 | Trades: 1 | WinRate: 0.0% | PnL: $-0.0043
+[2026-03-31T23:27:20Z]   🏆 Best:  BNB-USDT +$-0.0043 (-0.0405%) [rsi_weak]
+[2026-03-31T23:27:20Z]   📉 Worst: BNB-USDT $-0.0043 (-0.0405%) [rsi_weak]

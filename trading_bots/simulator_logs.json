@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-03-31T18:41:14.783388",
+  "cycles": 10,
+  "bots": {
+    "momentum": {
+      "capital": 100,
+      "trades": [
+        {
+          "timestamp": "2026-03-31T18:40:56.736190",
+          "pair": "BTC-USDT",
+          "action": "BUY",
+          "price": 67931.7,
+          "amount": 0.000442,
+          "cost": 30.0
+        }
+      ],
+      "balance": 70.0,
+      "pnl": 0.0
+    },
+    "mean_reversion": {
+      "capital": 100,
+      "trades": [],
+      "balance": 100.0,
+      "pnl": 0.0
+    },
+    "grid": {
+      "capital": 100,
+      "trades": [],
+      "balance": 100.0,
+      "pnl": 0.0
+    },
+    "scalp": {
+      "capital": 100,
+      "trades": [],
+      "balance": 100.0,
+      "pnl": 0.0
+    },
+    "swing": {
+      "capital": 100,
+      "trades": [],
+      "balance": 100.0,
+      "pnl": 0.0
+    }
+  }
+}

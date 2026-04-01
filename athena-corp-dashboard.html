@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATHENA CORP — Regional Operations Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0ede5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2c3e50;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #1e3a8a;
+        }
+
+        .stat-card h3 {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .agent-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .agent-name {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .agent-role {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .agent-content {
+            padding: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .status.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1e3a8a;
+            transition: width 0.3s;
+        }
+
+        .quote {
+            font-size: 0.85em;
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .cost {
+            font-size: 0.9em;
+            color: #dc2626;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .agents-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ATHENA CORP</h1>
+        <p>Regional Operations Dashboard — Jason's Portfolio Division</p>
+    </div>
+
+    <div class="container">
+        <div class="stats-row">
+            <div class="stat-card">
+                <h3>Total Revenue</h3>
+                <div class="value">$0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Projects</h3>
+                <div class="value">3</div>
+            </div>
+            <div class="stat-card">
+                <h3>Weekly Cost</h3>
+                <div class="value">~$50</div>
+            </div>
+            <div class="stat-card">
+                <h3>Goal (6mo)</h3>
+                <div class="value">$4.5K</div>
+            </div>
+        </div>
+
+        <div class="agents-grid">
+            <!-- Michael Scott - KDP -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Michael Scott</div>
+                    <div class="agent-role">KDP Publishing</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status active">ACTIVE</span>
+                    <div><strong>Mission:</strong> Week 1 Manuscript</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%;"></div>
+                    </div>
+                    <div class="quote">"That's what she said... about KDP profits."</div>
+                    <div class="cost">Est. Cost: $50/book</div>
+                </div>
+            </div>
+
+            <!-- Dwight Schrute - FoamDial -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Dwight Schrute</div>
+                    <div class="agent-role">FoamDial Algorithm</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status active">ACTIVE</span>
+                    <div><strong>Mission:</strong> Research & Pattern Mapping</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                    <div class="quote">"I am a foam foam assistant. I will dominate this field."</div>
+                    <div class="cost">Est. Cost: $0.50/day</div>
+                </div>
+            </div>
+
+            <!-- Jim Halpert - Lead Gen -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Jim Halpert</div>
+                    <div class="agent-role">Lead Generation</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status pending">ON HOLD</span>
+                    <div><strong>Mission:</strong> B2B Data Scraping</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="quote">"I could do this with my eyes closed."</div>
+                    <div class="cost">Est. Cost: $200/launch</div>
+                </div>
+            </div>
+
+            <!-- Pam Beesly - Content -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Pam Beesly</div>
+                    <div class="agent-role">Content & Design</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status pending">STANDBY</span>
+                    <div><strong>Mission:</strong> Visual Assets</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 25%;"></div>
+                    </div>
+                    <div class="quote">"I'm actually not a receptionist."</div>
+                    <div class="cost">Est. Cost: $0.20/day</div>
+                </div>
+            </div>
+
+            <!-- Ryan - Video Content -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Ryan the Temp</div>
+                    <div class="agent-role">AI Video Production</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status pending">QUEUED</span>
+                    <div><strong>Mission:</strong> TikTok/YouTube Strategy</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 15%;"></div>
+                    </div>
+                    <div class="quote">"I'm a temp. But like, a cool temp."</div>
+                    <div class="cost">Est. Cost: $300/launch</div>
+                </div>
+            </div>
+
+            <!-- Stanley - Finance -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Stanley Hudson</div>
+                    <div class="agent-role">Finance & Tracking</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status active">ACTIVE</span>
+                    <div><strong>Mission:</strong> Budget Oversight</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="quote">"Why are we doing any of this?"</div>
+                    <div class="cost">Est. Cost: $0.15/day</div>
+                </div>
+            </div>
+
+            <!-- Angela - QC -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Angela Martin</div>
+                    <div class="agent-role">Quality Control</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status active">ACTIVE</span>
+                    <div><strong>Mission:</strong> Standards Enforcement</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="quote">"That is below our standards."</div>
+                    <div class="cost">Est. Cost: $0.10/day</div>
+                </div>
+            </div>
+
+            <!-- Oscar - Data Science -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">Oscar Martinez</div>
+                    <div class="agent-role">Data Science</div>
+                </div>
+                <div class="agent-content">
+                    <span class="status active">ACTIVE</span>
+                    <div><strong>Mission:</strong> Pattern Recognition</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 70%;"></div>
+                    </div>
+                    <div class="quote">"The data suggests we're going to win."</div>
+                    <div class="cost">Est. Cost: $0.25/day</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
