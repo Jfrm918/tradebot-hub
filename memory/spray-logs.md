@@ -141,7 +141,8 @@
 - Adhesion: **PHENOMENAL** — excellent bond to wood substrate
 - Cream time: Good throughout
 - Pressures: ~100 psi off at end of day
-- **Root cause of A/B imbalance (IDENTIFIED):** ISO drum (A-side) ran low toward end of job — low drum = A-side can't maintain pressure. NOT a mechanical issue. Switched to new drum set.
+- **A/B pressure gap context:** 54–100 psi difference is NORMAL and within spec. Graco's factory E24 alarm default = 500 psi. Settable range 100–999 psi. Techs/installers confirm open cell tolerates up to ~400 psi difference without quality issues. NOT a problem.
+- Had full ISO barrel most of the day — drum level was NOT the cause of the gap.
 - Ran slightly B-rich (resin heavy) before ISO drum swap — product still acceptable quality
 - Overall result: **GOOD**
 

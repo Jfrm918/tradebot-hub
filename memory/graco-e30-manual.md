@@ -98,9 +98,11 @@ Same procedure — select A, B, or Hose zone independently. **Each zone is fully
 6. **Drum running low** → pickup tube pulling air
 
 ### E24 Alarm = Pressure Imbalance
-- Fires when A and B pressures differ by more than the threshold set in System 1
-- Threshold is configurable — default varies by setup
-- Fix the mechanical/material root cause, not a software setting
+- **Factory default alarm threshold: 500 psi** (settable 100–999 psi)
+- Machine does NOT alarm or shut down until gap exceeds the threshold
+- 50–200 psi gap = completely normal, no action needed
+- 400 psi gap = still within acceptable range for open cell SPF (field-verified)
+- Only investigate root cause if gap is large AND foam quality is suffering
 
 ### Field Diagnosis Steps
 1. Check inlet strainer on both sides — clean if dirty
