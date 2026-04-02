@@ -1,34 +1,33 @@
 {
   "credits": {
     "starting_balance": 100.00,
-    "current_balance": 96.27,
-    "total_spent": 3.73,
+    "current_balance": 16.00,
+    "total_spent": 84.00,
     "currency": "USD",
-    "last_updated": "2026-04-01T00:03:00Z",
-    "note": "Updated 2026-04-01 end of day. Two heavy sessions: 2026-03-31 (Haiku/Sonnet mixed, $0.17) + 2026-04-01 (Sonnet-heavy all day, est. $3.56)"
+    "last_updated": "2026-04-01T00:21:00Z",
+    "note": "Jason confirmed ~$16 remaining as of 2026-04-01 evening."
   },
   "burn_rate": {
-    "daily_average": 1.87,
-    "hourly_average": 0.078,
-    "weekly_average": 13.09,
-    "monthly_average": 56.10,
+    "daily_average": 42.00,
+    "hourly_average": 1.75,
+    "weekly_average": 294.00,
+    "monthly_average": 1260.00,
     "calculation_period_days": 2,
-    "days_remaining": 51,
-    "last_updated": "2026-04-01T00:03:00Z",
-    "note": "Heavy Sonnet usage today. Days remaining will improve as usage normalizes."
+    "days_remaining": 0,
+    "last_updated": "2026-04-01T00:21:00Z",
+    "note": "Heavy Sonnet usage. Need to top up credits soon."
   },
   "sessions": [
     {
       "date": "2026-03-31",
       "cost": 0.17,
-      "model": "claude-haiku-4-5 / claude-sonnet-4-6",
-      "notes": "First session, mixed models"
+      "model": "claude-haiku-4-5 / claude-sonnet-4-6"
     },
     {
       "date": "2026-04-01",
-      "cost": 3.56,
+      "cost": 83.83,
       "model": "claude-sonnet-4-6",
-      "notes": "Heavy day: E-30 research, 5 strategy agents, FoamDial field work, Olympus builds"
+      "notes": "Very heavy day — multiple research agents, FoamDial, Olympus builds, trading bots"
     }
   ]
 }

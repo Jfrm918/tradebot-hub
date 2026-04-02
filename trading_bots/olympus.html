@@ -688,6 +688,11 @@
         }
         .ts { margin-top: 6px; font-size: 0.72em; color: rgba(0,212,255,0.18); letter-spacing: 1px; }
 
+        @keyframes athenaFloat {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-10px); }
+        }
+
         /* ── STATUS REPORT MODAL ── */
         .modal-overlay {
             position: fixed;
@@ -1068,25 +1073,49 @@
         <div id="athena" class="tab-content">
             <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:40px;">
 
-                <!-- Avatar Placeholder -->
+                <!-- Athena Avatar -->
                 <div style="
-                    width:220px;height:220px;
-                    border-radius:50%;
-                    border:2px solid rgba(0,212,255,0.4);
-                    box-shadow:0 0 60px rgba(0,212,255,0.2),0 0 120px rgba(0,212,255,0.08),inset 0 0 40px rgba(0,212,255,0.05);
-                    display:flex;align-items:center;justify-content:center;
-                    font-size:5em;
-                    background:radial-gradient(circle,rgba(0,40,80,0.8) 0%,rgba(0,5,16,0.9) 100%);
-                    animation:athenaGlow 4s ease-in-out infinite;
-                    position:relative;
-                    overflow:hidden;
-                ">
-                    🦉
-                    <div style="
-                        position:absolute;inset:0;border-radius:50%;
-                        background:linear-gradient(135deg,rgba(0,212,255,0.1) 0%,transparent 60%);
-                        pointer-events:none;
-                    "></div>
+                    perspective:800px;
+                    cursor:pointer;
+                " id="athenaWrap" onmousemove="tiltAthena(event)" onmouseleave="resetAthena()">
+                    <div id="athenaCard" style="
+                        width:260px;height:340px;
+                        border-radius:16px;
+                        border:2px solid rgba(255,215,0,0.4);
+                        box-shadow:
+                            0 0 40px rgba(255,215,0,0.2),
+                            0 0 80px rgba(255,215,0,0.08),
+                            0 0 120px rgba(0,212,255,0.06),
+                            inset 0 0 40px rgba(255,215,0,0.05);
+                        position:relative;
+                        overflow:hidden;
+                        transform-style:preserve-3d;
+                        transition:transform 0.15s ease-out;
+                        animation:athenaFloat 6s ease-in-out infinite;
+                    ">
+                        <img src="./athena.jpg" style="
+                            width:100%;height:100%;
+                            object-fit:cover;
+                            object-position:center top;
+                            display:block;
+                        "/>
+                        <!-- Gold top edge -->
+                        <div style="
+                            position:absolute;top:0;left:0;right:0;height:2px;
+                            background:linear-gradient(90deg,transparent,rgba(255,215,0,0.8),transparent);
+                        "></div>
+                        <!-- Cyan glow overlay -->
+                        <div style="
+                            position:absolute;inset:0;
+                            background:linear-gradient(180deg,transparent 60%,rgba(0,5,16,0.7) 100%);
+                            pointer-events:none;
+                        "></div>
+                        <!-- Corner marks -->
+                        <div style="position:absolute;top:0;left:0;width:20px;height:20px;border-top:2px solid rgba(255,215,0,0.6);border-left:2px solid rgba(255,215,0,0.6);border-radius:16px 0 0 0;"></div>
+                        <div style="position:absolute;top:0;right:0;width:20px;height:20px;border-top:2px solid rgba(255,215,0,0.6);border-right:2px solid rgba(255,215,0,0.6);border-radius:0 16px 0 0;"></div>
+                        <div style="position:absolute;bottom:0;left:0;width:20px;height:20px;border-bottom:2px solid rgba(255,215,0,0.6);border-left:2px solid rgba(255,215,0,0.6);border-radius:0 0 0 16px;"></div>
+                        <div style="position:absolute;bottom:0;right:0;width:20px;height:20px;border-bottom:2px solid rgba(255,215,0,0.6);border-right:2px solid rgba(255,215,0,0.6);border-radius:0 0 16px 0;"></div>
+                    </div>
                 </div>
 
                 <!-- Name + Status -->
@@ -1335,6 +1364,28 @@
                 card.style.transform = '';
             });
         });
+
+        /* ── ATHENA 3D TILT ── */
+        function tiltAthena(e) {
+            const wrap = document.getElementById('athenaWrap');
+            const card = document.getElementById('athenaCard');
+            if (!wrap || !card) return;
+            const r = wrap.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            card.style.transform = `perspective(800px) rotateY(${x * 20}deg) rotateX(${-y * 20}deg) scale(1.04)`;
+            card.style.boxShadow = `
+                ${x * -20}px ${y * -20}px 40px rgba(255,215,0,0.25),
+                0 0 80px rgba(255,215,0,0.12),
+                inset 0 0 40px rgba(255,215,0,0.07)
+            `;
+        }
+        function resetAthena() {
+            const card = document.getElementById('athenaCard');
+            if (!card) return;
+            card.style.transform = '';
+            card.style.boxShadow = '';
+        }
 
         /* ── PNL FORMAT ── */
         function fmt(v) {
