@@ -983,6 +983,7 @@
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('trading',this)">🤖 Trading</button>
             <button class="tab-button" onclick="switchTab('foamdial',this)">🔧 FoamDial</button>
+            <button class="tab-button" onclick="switchTab('athena',this)">🦉 Athena</button>
             <button class="tab-button" onclick="switchTab('projects',this)">📊 Projects</button>
             <button class="tab-button" onclick="switchTab('settings',this)">⚙️ Settings</button>
             <button class="update-btn" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
@@ -1060,6 +1061,94 @@
                         <div class="metric"><div class="metric-label">Win %</div><div class="metric-value" id="swing-wr">—</div></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ── ATHENA ── -->
+        <div id="athena" class="tab-content">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:40px;">
+
+                <!-- Avatar Placeholder -->
+                <div style="
+                    width:220px;height:220px;
+                    border-radius:50%;
+                    border:2px solid rgba(0,212,255,0.4);
+                    box-shadow:0 0 60px rgba(0,212,255,0.2),0 0 120px rgba(0,212,255,0.08),inset 0 0 40px rgba(0,212,255,0.05);
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:5em;
+                    background:radial-gradient(circle,rgba(0,40,80,0.8) 0%,rgba(0,5,16,0.9) 100%);
+                    animation:athenaGlow 4s ease-in-out infinite;
+                    position:relative;
+                    overflow:hidden;
+                ">
+                    🦉
+                    <div style="
+                        position:absolute;inset:0;border-radius:50%;
+                        background:linear-gradient(135deg,rgba(0,212,255,0.1) 0%,transparent 60%);
+                        pointer-events:none;
+                    "></div>
+                </div>
+
+                <!-- Name + Status -->
+                <div style="text-align:center;">
+                    <div style="
+                        font-family:'Space Mono',monospace;
+                        font-size:2.8em;font-weight:700;
+                        color:#fff;letter-spacing:4px;
+                        text-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,212,255,0.4);
+                        animation:titlePulse 4s ease-in-out infinite;
+                    ">ATHENA</div>
+                    <div style="
+                        font-family:'Space Mono',monospace;
+                        font-size:0.9em;color:var(--orange);
+                        letter-spacing:3px;margin-top:8px;
+                        text-shadow:0 0 12px var(--orange-glow);
+                    ">AI FAMILIAR · ONLINE</div>
+                </div>
+
+                <!-- Status Card -->
+                <div style="
+                    background:rgba(1,13,46,0.8);
+                    border:var(--border);border-radius:var(--radius);
+                    padding:28px 40px;backdrop-filter:blur(20px);
+                    box-shadow:var(--shadow-z3),inset 0 1px 0 rgba(0,212,255,0.1);
+                    max-width:500px;width:100%;
+                    display:grid;grid-template-columns:1fr 1fr;gap:16px;
+                ">
+                    <div style="text-align:center;">
+                        <div style="font-size:0.7em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Model</div>
+                        <div style="font-family:'Space Mono',monospace;font-size:0.95em;color:var(--orange);font-weight:700;">Sonnet 4.6</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:0.7em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Status</div>
+                        <div style="font-family:'Space Mono',monospace;font-size:0.95em;color:var(--green);font-weight:700;">● Active</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:0.7em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Named</div>
+                        <div style="font-family:'Space Mono',monospace;font-size:0.95em;color:var(--cyan);font-weight:700;">Mar 28, 2026</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:0.7em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Platform</div>
+                        <div style="font-family:'Space Mono',monospace;font-size:0.95em;color:var(--cyan);font-weight:700;">OpenClaw</div>
+                    </div>
+                </div>
+
+                <!-- 3D Model Coming Soon -->
+                <div style="
+                    background:rgba(255,107,0,0.06);
+                    border:1px solid rgba(255,107,0,0.25);
+                    border-radius:8px;
+                    padding:16px 32px;
+                    font-family:'Space Mono',monospace;
+                    font-size:0.8em;
+                    color:var(--orange);
+                    letter-spacing:2px;
+                    text-align:center;
+                    box-shadow:0 0 20px rgba(255,107,0,0.1);
+                ">
+                    ⚡ 3D MODEL IN DEVELOPMENT
+                </div>
+
             </div>
         </div>
 
