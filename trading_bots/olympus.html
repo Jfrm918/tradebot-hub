@@ -1380,7 +1380,7 @@
             <!-- SECTION 3: REVENUE CHART -->
             <div class="project-card" style="margin-bottom:28px;">
                 <div class="project-title">📈 REVENUE TRAJECTORY</div>
-                <canvas id="incomeChart" width="800" height="300" style="width:100%;display:block;margin-top:20px;"></canvas>
+                <canvas id="incomeChart" width="800" height="300" style="background:#000510;display:block;width:100%;margin-top:20px;"></canvas>
             </div>
 
             <!-- SECTION 4: PRODUCT PIPELINE -->
@@ -1793,8 +1793,8 @@
             const cw = w - 2*pad;
             const ch = h - 2*pad;
 
-            ctx.fillStyle = 'var(--bg-void)';
-            ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#000510';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.strokeStyle = 'rgba(0,212,255,0.06)';
             ctx.lineWidth = 1;
@@ -1912,7 +1912,7 @@
         updateCredits();
         updateIncome();
         setInterval(updateTrading,  5000);
-        setInterval(updateCredits, 30000);
+        setInterval(updateCredits, 60000);
         setInterval(updateIncome,  30000);
     </script>
 </body>
