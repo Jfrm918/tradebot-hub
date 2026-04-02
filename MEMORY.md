@@ -13,8 +13,21 @@
 ## Key Preferences
 
 - Direct, efficient communication — no fluff
-- Models: Haiku (fast tasks) or Sonnet (complex) — no others
 - Operates as investor/approver on business projects; wants AI to handle execution
+
+## Spend Rules (SET 2026-04-01 — NON-NEGOTIABLE)
+- **Daily cap: $10/day**
+- If a day requires more: STOP and ask Jason for permission
+- If Jason says yes: that approval covers **24 hours only** then resets to $10
+- Always reference the 24-hour window when approved
+- Update usage_tracker.json after every session
+
+## Model Rules (SET 2026-04-01)
+- **Research tasks → Haiku ONLY** — no exceptions
+- **Direct conversation with Jason → Sonnet**
+- **Subagents → Haiku** unless deep reasoning explicitly required
+- Combine research tasks — never spawn multiple agents for separate subtasks
+- No wasteful context: keep sessions lean
 
 ## Projects
 
