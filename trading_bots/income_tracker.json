@@ -1,0 +1,35 @@
+{
+  "summary": {
+    "total_revenue": 0.00,
+    "this_month": 0.00,
+    "products_live": 0,
+    "best_seller": "—"
+  },
+  "platforms": {
+    "kdp": {
+      "revenue": 0.00,
+      "products": 0,
+      "avg_per_product": 0.00,
+      "status": "Building"
+    },
+    "etsy": {
+      "revenue": 0.00,
+      "products": 0,
+      "avg_per_product": 0.00,
+      "status": "Building"
+    },
+    "gumroad": {
+      "revenue": 0.00,
+      "products": 0,
+      "avg_per_product": 0.00,
+      "status": "Pending"
+    }
+  },
+  "chart_history": {
+    "labels": ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+    "kdp": [0, 0, 0, 0, 0, 0],
+    "etsy": [0, 0, 0, 0, 0, 0],
+    "gumroad": [0, 0, 0, 0, 0, 0]
+  },
+  "pipeline": []
+}

@@ -503,11 +503,12 @@ class LiveSimulator:
         self.run_mean_reversion()
         self.run_swing()
 
-        # Snapshot every 200 cycles or 10 minutes
+        # Snapshot every 10 cycles (~50 seconds) for live hub updates
         now = time.time()
-        if self.cycle % 200 == 0 or now - self.last_snapshot > 600:
-            self.print_status()
+        if self.cycle % 10 == 0 or now - self.last_snapshot > 60:
             self.save_snapshot()
+            if self.cycle % 50 == 0:  # Print status every 50 cycles
+                self.print_status()
             self.last_snapshot = now
 
     def print_status(self):

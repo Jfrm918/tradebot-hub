@@ -16,11 +16,36 @@
 - Operates as investor/approver on business projects; wants AI to handle execution
 
 ## Spend Rules (SET 2026-04-01 — NON-NEGOTIABLE)
-- **Daily cap: $10/day**
-- If a day requires more: STOP and ask Jason for permission
-- If Jason says yes: that approval covers **24 hours only** then resets to $10
-- Always reference the 24-hour window when approved
+- **Daily cap: $10/day MAX**
+- **Session cap: $5 per session** — if approaching limit, STOP and alert Jason
+- **Image generation: ZERO** — never call image APIs without explicit pre-approval + dollar amount
+- **Video/audio APIs: ZERO** — never call without explicit pre-approval
+- **Vision API: Minimal** — only for analysis, never for generation
+- If a task would exceed cap: STOP immediately, explain cost, get written approval with dollar amount
+- If Jason approves: log it in MEMORY.md with date, amount, task
 - Update usage_tracker.json after every session
+- **AUDIT TRAIL:** Any call > $1 must be logged before execution
+
+## Future Project: Athena Evolution
+- **Phase 1 (Current):** Static 3D avatar in Olympus hub (already exists)
+- **Phase 2 (Brainstorm):** Talking avatar with voice (ElevenLabs) + advanced realism
+- **End goal:** Athena becomes self-sustaining — trading profits → credits → improve Athena → better performance → more profits
+- **Core mission:** Make the trading bots profitable so they can fund Athena's evolution
+- **Philosophy:** Athena sustains herself through her own work (trading intelligence)
+
+## Critical Incident (2026-04-01 19:30 CDT)
+- **Burned:** ~$84 in credits (Mar 28 – Apr 1)
+- **Root cause:** Spawned 18+ subagents without cost tracking
+  - 1× Graco research (Sonnet, 1M context): $1.04
+  - 5× Trading bot research (Sonnet, 1M context each): $0.51–$0.48 each
+  - 12× Additional research/design subagents (Sonnet, 1M context): $0.18–$0.39 each
+  - **Total visible:** $8–10, but earlier sessions (Mar 29–30) account for the rest
+- **Athena 3D model:** CSS styling + placeholder image (athena.jpg). No API calls. Image wasn't loading due to cache — fixed with query param.
+- **Actions taken:** 
+  - ✅ Spend caps implemented (see Spend Rules above)
+  - ✅ No more subagents without explicit approval
+  - ✅ Athena avatar image now displays
+  - ✅ All subagent sessions logged for audit
 
 ## Model Rules (SET 2026-04-01)
 - **Research tasks → Haiku ONLY** — no exceptions

@@ -989,6 +989,7 @@
             <button class="tab-button active" onclick="switchTab('trading',this)">🤖 Trading</button>
             <button class="tab-button" onclick="switchTab('foamdial',this)">🔧 FoamDial</button>
             <button class="tab-button" onclick="switchTab('athena',this)">🦉 Athena</button>
+            <button class="tab-button" onclick="switchTab('income',this)">💰 Income</button>
             <button class="tab-button" onclick="switchTab('projects',this)">📊 Projects</button>
             <button class="tab-button" onclick="switchTab('settings',this)">⚙️ Settings</button>
             <button class="update-btn" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
@@ -1279,6 +1280,118 @@
             </div>
         </div>
 
+        <!-- ── INCOME ── -->
+        <div id="income" class="tab-content">
+            <!-- SECTION 1: REVENUE BENTO -->
+            <div class="summary-bento">
+                <div class="summary-card">
+                    <div class="summary-label">Total Revenue</div>
+                    <div class="summary-value" id="income-total-revenue">$0.00</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">This Month</div>
+                    <div class="summary-value" id="income-this-month">$0.00</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Products Live</div>
+                    <div class="summary-value" id="income-products-live">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Best Seller</div>
+                    <div class="summary-value" id="income-best-seller">—</div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: PLATFORM CARDS -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+                <div class="bot-card"><div class="bar"></div>
+                    <div style="padding:24px;">
+                        <div style="font-family:'Space Mono',monospace;font-size:1.1em;font-weight:700;color:var(--orange);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;">📚 KDP</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Monthly Revenue</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--orange);text-shadow:0 0 10px rgba(255,107,0,0.4);" id="kdp-revenue">$0.00</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Products</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="kdp-products">0</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Avg Per Product</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="kdp-avg">$0.00</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Status</div>
+                                <span class="badge" id="kdp-status" style="display:inline-block;">Building</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bot-card"><div class="bar"></div>
+                    <div style="padding:24px;">
+                        <div style="font-family:'Space Mono',monospace;font-size:1.1em;font-weight:700;color:var(--cyan);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;">🛍️ Etsy</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Monthly Revenue</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="etsy-revenue">$0.00</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Products</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="etsy-products">0</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Avg Per Product</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="etsy-avg">$0.00</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Status</div>
+                                <span class="badge" id="etsy-status" style="display:inline-block;">Building</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bot-card"><div class="bar"></div>
+                    <div style="padding:24px;">
+                        <div style="font-family:'Space Mono',monospace;font-size:1.1em;font-weight:700;color:var(--green);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;">💾 Gumroad</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Monthly Revenue</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--green);text-shadow:0 0 10px rgba(0,255,157,0.4);" id="gumroad-revenue">$0.00</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Products</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="gumroad-products">0</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Avg Per Product</div>
+                                <div style="font-family:'Space Mono',monospace;font-size:1.4em;font-weight:700;color:var(--cyan);text-shadow:0 0 10px rgba(0,212,255,0.4);" id="gumroad-avg">$0.00</div>
+                            </div>
+                            <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);padding:12px;border-radius:6px;">
+                                <div style="font-size:0.65em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:5px;">Status</div>
+                                <span class="badge" id="gumroad-status" style="display:inline-block;">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: REVENUE CHART -->
+            <div class="project-card" style="margin-bottom:28px;">
+                <div class="project-title">📈 REVENUE TRAJECTORY</div>
+                <canvas id="incomeChart" width="800" height="300" style="width:100%;display:block;margin-top:20px;"></canvas>
+            </div>
+
+            <!-- SECTION 4: PRODUCT PIPELINE -->
+            <div class="project-card">
+                <div class="project-title">📦 PRODUCT PIPELINE — PENDING JASON APPROVAL</div>
+                <div id="pipelineContainer" style="margin-top:20px;">
+                    <div style="text-align:center;padding:40px;color:var(--cyan-dim);font-family:'Space Mono',monospace;font-size:0.9em;">NO PRODUCTS PENDING APPROVAL</div>
+                </div>
+            </div>
+        </div>
+
         <!-- ── PROJECTS ── -->
         <div id="projects" class="tab-content">
             <div class="projects-grid">
@@ -1300,6 +1413,16 @@
                         <span class="badge">Phase 1 of 3</span>
                         <span class="badge">$500 Capital</span>
                         <span class="badge">5 Strategies</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-title">💰 Passive Income Engine</div>
+                    <div class="project-desc">Autonomous digital product operation across KDP, Etsy, and Gumroad. Athena researches winning niches, creates products, submits for approval. Zero customer contact. Revenue compounds with catalog size.</div>
+                    <div class="badges">
+                        <span class="badge active">🚀 Active</span>
+                        <span class="badge">3 Platforms</span>
+                        <span class="badge">No-Contact Revenue</span>
+                        <span class="badge">KDP · Etsy · Gumroad</span>
                     </div>
                 </div>
             </div>
@@ -1627,10 +1750,170 @@
             });
         }
 
+        /* ── INCOME TAB FUNCTIONS ── */
+        function updateIncome() {
+            fetch('./income_tracker.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const sum = data.summary;
+                    const plat = data.platforms;
+                    const pipe = data.pipeline;
+
+                    document.getElementById('income-total-revenue').textContent = `$${sum.total_revenue.toFixed(2)}`;
+                    document.getElementById('income-this-month').textContent = `$${sum.this_month.toFixed(2)}`;
+                    document.getElementById('income-products-live').textContent = sum.products_live;
+                    document.getElementById('income-best-seller').textContent = sum.best_seller;
+
+                    ['kdp', 'etsy', 'gumroad'].forEach(p => {
+                        const pd = plat[p];
+                        document.getElementById(`${p}-revenue`).textContent = `$${pd.revenue.toFixed(2)}`;
+                        document.getElementById(`${p}-products`).textContent = pd.products;
+                        document.getElementById(`${p}-avg`).textContent = `$${pd.avg_per_product.toFixed(2)}`;
+                        const sb = document.getElementById(`${p}-status`);
+                        sb.textContent = pd.status;
+                        sb.className = 'badge';
+                        if (pd.status === 'Building') sb.classList.add('active');
+                        else if (pd.status === 'Active') { sb.classList.remove('active'); sb.style.color = 'var(--green)'; sb.style.borderColor = 'rgba(0,255,157,0.35)'; sb.style.background = 'rgba(0,255,157,0.07)'; }
+                        else if (pd.status === 'Pending') sb.classList.add('live');
+                    });
+
+                    drawIncomeChart(data.chart_history);
+                    renderPipeline(pipe);
+                })
+                .catch(() => {});
+        }
+
+        function drawIncomeChart(hist) {
+            const canvas = document.getElementById('incomeChart');
+            if (!canvas || !canvas.getContext) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const pad = 40;
+            const cw = w - 2*pad;
+            const ch = h - 2*pad;
+
+            ctx.fillStyle = 'var(--bg-void)';
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.strokeStyle = 'rgba(0,212,255,0.06)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = pad + (ch / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(pad, y);
+                ctx.lineTo(w - pad, y);
+                ctx.stroke();
+            }
+
+            const allData = [...hist.kdp, ...hist.etsy, ...hist.gumroad];
+            const maxVal = Math.max(...allData.filter(v => v > 0)) || 100;
+
+            const colors = { kdp: 'var(--orange)', etsy: 'var(--cyan)', gumroad: 'var(--green)' };
+            const datasets = [
+                { name: 'KDP', data: hist.kdp, color: '#ff6b00' },
+                { name: 'Etsy', data: hist.etsy, color: '#00d4ff' },
+                { name: 'Gumroad', data: hist.gumroad, color: '#00ff9d' }
+            ];
+
+            datasets.forEach(ds => {
+                ctx.strokeStyle = ds.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ds.data.forEach((val, i) => {
+                    const x = pad + (cw / (ds.data.length - 1)) * i;
+                    const y = pad + ch - (val / maxVal) * ch;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+            });
+
+            ctx.fillStyle = 'rgba(0,212,255,0.5)';
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'center';
+            hist.labels.forEach((label, i) => {
+                const x = pad + (cw / (hist.labels.length - 1)) * i;
+                ctx.fillText(label, x, h - pad + 20);
+            });
+
+            ctx.fillStyle = 'rgba(0,212,255,0.3)';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const val = Math.round((maxVal / 5) * i);
+                const y = pad + ch - (ch / 5) * i;
+                ctx.fillText('$' + val, pad - 10, y + 4);
+            }
+
+            ctx.fillStyle = 'rgba(0,212,255,0.6)';
+            ctx.font = 'bold 12px Space Mono';
+            ctx.textAlign = 'right';
+            let lx = w - pad - 20;
+            datasets.forEach(ds => {
+                ctx.fillStyle = ds.color;
+                ctx.fillText(ds.name, lx, pad + 20);
+                lx -= 80;
+            });
+        }
+
+        function renderPipeline(pipe) {
+            const container = document.getElementById('pipelineContainer');
+            if (!pipe || pipe.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--cyan-dim);font-family:\'Space Mono\',monospace;font-size:0.9em;">NO PRODUCTS PENDING APPROVAL</div>';
+                return;
+            }
+
+            let html = '<div style="overflow-x:auto;">' +
+                '<table style="width:100%;border-collapse:collapse;font-family:Inter;font-size:0.9em;">' +
+                '<thead><tr style="border-bottom:1px solid rgba(0,212,255,0.12);"><th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Product</th>' +
+                '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Platform</th>' +
+                '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Est. Monthly</th>' +
+                '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Submitted</th>' +
+                '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Status</th>' +
+                '<th style="text-align:center;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Actions</th></tr></thead>' +
+                '<tbody>';
+
+            pipe.forEach((prod, idx) => {
+                const platColor = prod.platform === 'KDP' ? 'var(--orange)' : prod.platform === 'Etsy' ? 'var(--cyan)' : 'var(--green)';
+                html += `<tr id="pipe-${idx}" style="border-bottom:1px solid rgba(0,212,255,0.06);"><td style="padding:12px;color:rgba(255,255,255,0.8);">${prod.name}</td><td style="padding:12px;"><span style="padding:4px 10px;background:rgba(0,212,255,0.08);border:1px solid ${platColor};border-radius:4px;color:${platColor};font-size:0.8em;font-weight:600;">${prod.platform}</span></td><td style="padding:12px;color:var(--orange);font-family:'Space Mono',monospace;font-weight:600;">$${prod.est_monthly.toFixed(2)}</td><td style="padding:12px;color:rgba(0,212,255,0.6);font-size:0.85em;">${prod.date}</td><td style="padding:12px;"><span class="badge" style="display:inline-block;background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.4);color:var(--orange);">${prod.status || 'Pending'}</span></td><td style="padding:12px;text-align:center;"><button onclick="approvePipeline(${idx})" style="padding:6px 12px;background:rgba(0,255,157,0.08);border:1px solid rgba(0,255,157,0.4);color:var(--green);font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;margin-right:6px;transition:all 0.2s;">✅ APPROVE</button><button onclick="rejectPipeline(${idx})" style="padding:6px 12px;background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.4);color:#ff4444;font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;transition:all 0.2s;">❌ REJECT</button></td></tr>`;
+            });
+
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        function approvePipeline(idx) {
+            const row = document.getElementById(`pipe-${idx}`);
+            if (!row) return;
+            row.style.borderLeftWidth = '4px';
+            row.style.borderLeftColor = 'var(--green)';
+            row.querySelectorAll('button').forEach(b => b.style.display = 'none');
+            row.querySelector('.badge').textContent = 'APPROVED';
+            row.querySelector('.badge').style.background = 'rgba(0,255,157,0.08)';
+            row.querySelector('.badge').style.borderColor = 'rgba(0,255,157,0.4)';
+            row.querySelector('.badge').style.color = 'var(--green)';
+            row.style.animation = 'cardIn 0.4s ease';
+        }
+
+        function rejectPipeline(idx) {
+            const row = document.getElementById(`pipe-${idx}`);
+            if (!row) return;
+            row.style.borderLeftWidth = '4px';
+            row.style.borderLeftColor = '#ff4444';
+            row.querySelectorAll('button').forEach(b => b.style.display = 'none');
+            row.querySelector('.badge').textContent = 'REJECTED';
+            row.querySelector('.badge').style.background = 'rgba(255,68,68,0.08)';
+            row.querySelector('.badge').style.borderColor = 'rgba(255,68,68,0.4)';
+            row.querySelector('.badge').style.color = '#ff4444';
+            row.style.animation = 'cardIn 0.4s ease';
+        }
+
         updateTrading();
         updateCredits();
+        updateIncome();
         setInterval(updateTrading,  5000);
         setInterval(updateCredits, 30000);
+        setInterval(updateIncome,  30000);
     </script>
 </body>
 </html>
