@@ -1867,6 +1867,7 @@
                 '<table style="width:100%;border-collapse:collapse;font-family:Inter;font-size:0.9em;">' +
                 '<thead><tr style="border-bottom:1px solid rgba(0,212,255,0.12);"><th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Product</th>' +
                 '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Platform</th>' +
+                '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Price</th>' +
                 '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Est. Monthly</th>' +
                 '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Submitted</th>' +
                 '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Status</th>' +
@@ -1875,37 +1876,51 @@
 
             pipe.forEach((prod, idx) => {
                 const platColor = prod.platform === 'KDP' ? 'var(--orange)' : prod.platform === 'Etsy' ? 'var(--cyan)' : 'var(--green)';
-                html += `<tr id="pipe-${idx}" style="border-bottom:1px solid rgba(0,212,255,0.06);"><td style="padding:12px;color:rgba(255,255,255,0.8);">${prod.name}</td><td style="padding:12px;"><span style="padding:4px 10px;background:rgba(0,212,255,0.08);border:1px solid ${platColor};border-radius:4px;color:${platColor};font-size:0.8em;font-weight:600;">${prod.platform}</span></td><td style="padding:12px;color:var(--orange);font-family:'Space Mono',monospace;font-weight:600;">$${prod.est_monthly.toFixed(2)}</td><td style="padding:12px;color:rgba(0,212,255,0.6);font-size:0.85em;">${prod.date}</td><td style="padding:12px;"><span class="badge" style="display:inline-block;background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.4);color:var(--orange);">${prod.status || 'Pending'}</span></td><td style="padding:12px;text-align:center;"><button onclick="approvePipeline(${idx})" style="padding:6px 12px;background:rgba(0,255,157,0.08);border:1px solid rgba(0,255,157,0.4);color:var(--green);font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;margin-right:6px;transition:all 0.2s;">✅ APPROVE</button><button onclick="rejectPipeline(${idx})" style="padding:6px 12px;background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.4);color:#ff4444;font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;transition:all 0.2s;">❌ REJECT</button></td></tr>`;
+                const estRev = typeof prod.est_monthly_revenue === 'string' ? prod.est_monthly_revenue : `$${prod.est_monthly_revenue.toFixed(2)}`;
+                html += `<tr id="pipe-${idx}" style="border-bottom:1px solid rgba(0,212,255,0.06);"><td style="padding:12px;color:rgba(255,255,255,0.8);">${prod.name}</td><td style="padding:12px;"><span style="padding:4px 10px;background:rgba(0,212,255,0.08);border:1px solid ${platColor};border-radius:4px;color:${platColor};font-size:0.8em;font-weight:600;">${prod.platform}</span></td><td style="padding:12px;color:var(--orange);font-family:'Space Mono',monospace;font-weight:600;">$${prod.price}</td><td style="padding:12px;color:var(--orange);font-family:'Space Mono',monospace;font-weight:600;">${estRev}</td><td style="padding:12px;color:rgba(0,212,255,0.6);font-size:0.85em;">${prod.date_submitted}</td><td style="padding:12px;"><span class="badge" id="status-${idx}" style="display:inline-block;background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.4);color:var(--orange);">${prod.status || 'Pending'}</span></td><td style="padding:12px;text-align:center;"><button onclick="approvePipeline(${idx})" style="padding:6px 12px;background:rgba(0,255,157,0.08);border:1px solid rgba(0,255,157,0.4);color:var(--green);font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;margin-right:6px;transition:all 0.2s;">✅ APPROVE</button><button onclick="rejectPipeline(${idx})" style="padding:6px 12px;background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.4);color:#ff4444;font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;transition:all 0.2s;">❌ REJECT</button></td></tr>`;
             });
 
             html += '</tbody></table></div>';
             container.innerHTML = html;
+            window.pipelineData = pipe;
         }
 
         function approvePipeline(idx) {
             const row = document.getElementById(`pipe-${idx}`);
-            if (!row) return;
+            if (!row || !window.pipelineData) return;
+            window.pipelineData[idx].status = 'Approved';
+            updatePipelineFile();
             row.style.borderLeftWidth = '4px';
             row.style.borderLeftColor = 'var(--green)';
             row.querySelectorAll('button').forEach(b => b.style.display = 'none');
-            row.querySelector('.badge').textContent = 'APPROVED';
-            row.querySelector('.badge').style.background = 'rgba(0,255,157,0.08)';
-            row.querySelector('.badge').style.borderColor = 'rgba(0,255,157,0.4)';
-            row.querySelector('.badge').style.color = 'var(--green)';
-            row.style.animation = 'cardIn 0.4s ease';
+            document.getElementById(`status-${idx}`).textContent = 'APPROVED';
+            document.getElementById(`status-${idx}`).style.background = 'rgba(0,255,157,0.08)';
+            document.getElementById(`status-${idx}`).style.borderColor = 'rgba(0,255,157,0.4)';
+            document.getElementById(`status-${idx}`).style.color = 'var(--green)';
         }
 
         function rejectPipeline(idx) {
             const row = document.getElementById(`pipe-${idx}`);
-            if (!row) return;
+            if (!row || !window.pipelineData) return;
+            window.pipelineData[idx].status = 'Rejected';
+            updatePipelineFile();
             row.style.borderLeftWidth = '4px';
             row.style.borderLeftColor = '#ff4444';
             row.querySelectorAll('button').forEach(b => b.style.display = 'none');
-            row.querySelector('.badge').textContent = 'REJECTED';
-            row.querySelector('.badge').style.background = 'rgba(255,68,68,0.08)';
-            row.querySelector('.badge').style.borderColor = 'rgba(255,68,68,0.4)';
-            row.querySelector('.badge').style.color = '#ff4444';
-            row.style.animation = 'cardIn 0.4s ease';
+            document.getElementById(`status-${idx}`).textContent = 'REJECTED';
+            document.getElementById(`status-${idx}`).style.background = 'rgba(255,68,68,0.08)';
+            document.getElementById(`status-${idx}`).style.borderColor = 'rgba(255,68,68,0.4)';
+            document.getElementById(`status-${idx}`).style.color = '#ff4444';
+        }
+
+        function updatePipelineFile() {
+            fetch('./income_tracker.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    data.pipeline = window.pipelineData;
+                    return fetch('./update_pipeline.py', {method: 'POST', body: JSON.stringify(data)});
+                })
+                .catch(err => console.log('Pipeline save attempted'));
         }
 
         updateTrading();
