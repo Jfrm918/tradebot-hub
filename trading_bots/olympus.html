@@ -1288,6 +1288,39 @@
 
         <!-- ── INCOME ── -->
         <div id="income" class="tab-content">
+            <!-- AD FUND POWER BAR -->
+            <div class="project-card ad-fund-card" style="margin-bottom:28px;text-align:center;padding:40px 48px;">
+                <div id="adFundLogo" style="font-family:'Space Mono',monospace;font-size:4em;font-weight:700;letter-spacing:4px;margin-bottom:8px;transition:all 0.5s;">$5K</div>
+                <div style="font-size:0.7em;color:var(--cyan-dim);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px;">AD FUND DEPLOYMENT TARGET</div>
+                <div style="font-size:0.65em;color:rgba(0,212,255,0.35);letter-spacing:1.5px;margin-bottom:32px;">50 SALES · 1.5% CVR · $20 AOV · POSITIVE ROAS</div>
+                <div style="position:relative;margin-bottom:40px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;position:relative;">
+                        <div class="milestone" data-pct="25" style="position:absolute;left:25%;transform:translateX(-50%);text-align:center;">
+                            <div style="font-size:0.6em;color:rgba(0,212,255,0.3);letter-spacing:1px;margin-bottom:4px;">FIRST SALES</div>
+                            <div style="width:2px;height:10px;background:rgba(0,212,255,0.2);margin:0 auto;"></div>
+                        </div>
+                        <div class="milestone" data-pct="50" style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;">
+                            <div style="font-size:0.6em;color:rgba(0,212,255,0.3);letter-spacing:1px;margin-bottom:4px;">50 SALES</div>
+                            <div style="width:2px;height:10px;background:rgba(0,212,255,0.2);margin:0 auto;"></div>
+                        </div>
+                        <div class="milestone" data-pct="75" style="position:absolute;left:75%;transform:translateX(-50%);text-align:center;">
+                            <div style="font-size:0.6em;color:rgba(0,212,255,0.3);letter-spacing:1px;margin-bottom:4px;">ROAS PROVEN</div>
+                            <div style="width:2px;height:10px;background:rgba(0,212,255,0.2);margin:0 auto;"></div>
+                        </div>
+                        <div class="milestone" data-pct="100" style="position:absolute;right:0;text-align:center;">
+                            <div style="font-size:0.6em;color:rgba(0,212,255,0.3);letter-spacing:1px;margin-bottom:4px;">🚀 DEPLOY</div>
+                            <div style="width:2px;height:10px;background:rgba(0,212,255,0.2);margin:0 auto;"></div>
+                        </div>
+                    </div>
+                    <div style="height:28px;background:rgba(0,0,0,0.4);border:1px solid rgba(0,212,255,0.15);border-radius:14px;overflow:hidden;position:relative;margin-top:20px;">
+                        <div id="adFundBar" style="height:100%;width:0%;border-radius:14px;transition:width 1.5s cubic-bezier(0.23,1,0.32,1);position:relative;">
+                            <span id="adFundPct" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:'Space Mono',monospace;font-size:0.8em;font-weight:700;color:#fff;"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="adFundStatus" style="font-family:'Space Mono',monospace;font-size:0.75em;letter-spacing:2px;color:var(--cyan-dim);">BUILDING TOWARD DEPLOYMENT</div>
+            </div>
+
             <!-- SECTION 1: REVENUE BENTO -->
             <div class="summary-bento">
                 <div class="summary-card">
@@ -1759,6 +1792,57 @@
         }
 
         /* ── INCOME TAB FUNCTIONS ── */
+        function updateAdFund(pct, unlocked) {
+            const logo = document.getElementById('adFundLogo');
+            const bar = document.getElementById('adFundBar');
+            const pctEl = document.getElementById('adFundPct');
+            const status = document.getElementById('adFundStatus');
+            if (!logo || !bar) return;
+
+            let color, glow, gradient;
+            if (pct < 50) {
+                color = '#ff4444';
+                glow = 'rgba(255,68,68,0.6)';
+                gradient = 'linear-gradient(90deg, #ff4444, #ff6b00)';
+            } else if (pct < 80) {
+                color = '#ffd700';
+                glow = 'rgba(255,215,0,0.6)';
+                gradient = 'linear-gradient(90deg, #ff6b00, #ffd700)';
+            } else if (pct < 100) {
+                color = '#00d4ff';
+                glow = 'rgba(0,212,255,0.6)';
+                gradient = 'linear-gradient(90deg, #ffd700, #00d4ff)';
+            } else {
+                color = '#00ff9d';
+                glow = 'rgba(0,255,157,0.8)';
+                gradient = 'linear-gradient(90deg, #00d4ff, #00ff9d)';
+            }
+
+            logo.style.color = color;
+            logo.style.textShadow = `0 0 20px ${glow}, 0 0 40px ${glow}, 0 0 80px ${glow}`;
+            bar.style.background = gradient;
+            bar.style.boxShadow = `0 0 20px ${glow}`;
+            bar.style.width = Math.min(pct, 100) + '%';
+            if (pctEl) pctEl.textContent = pct + '%';
+
+            document.querySelectorAll('.milestone').forEach(m => {
+                const mpct = parseInt(m.dataset.pct);
+                const line = m.querySelector('div:last-child');
+                const label = m.querySelector('div:first-child');
+                if (pct >= mpct) {
+                    if (line) line.style.background = color;
+                    if (label) label.style.color = color;
+                }
+            });
+
+            if (unlocked) {
+                status.textContent = '⚡ DEPLOYMENT AUTHORIZED — CONSULT CLAUDE BEFORE PROCEEDING';
+                status.style.color = 'var(--green)';
+                status.style.textShadow = '0 0 20px var(--green)';
+                logo.style.animation = 'pulse 1.5s ease-in-out infinite';
+            }
+        }
+
         function updateIncome() {
             fetch('./income_tracker.json?t=' + Date.now())
                 .then(r => r.json())
@@ -1766,6 +1850,12 @@
                     const sum = data.summary;
                     const plat = data.platforms;
                     const pipe = data.pipeline;
+
+                    if (data.ad_fund_progress) {
+                        updateAdFund(data.ad_fund_progress.percentage, data.ad_fund_progress.unlocked);
+                    } else {
+                        updateAdFund(0, false);
+                    }
 
                     document.getElementById('income-total-revenue').textContent = `$${sum.total_revenue.toFixed(2)}`;
                     document.getElementById('income-this-month').textContent = `$${sum.this_month.toFixed(2)}`;
