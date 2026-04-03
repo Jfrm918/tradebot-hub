@@ -1184,6 +1184,12 @@
                     ⚡ 3D MODEL IN DEVELOPMENT
                 </div>
 
+                <!-- ATHENA TASK LOG -->
+                <div class="project-card" style="max-height:350px;overflow-y:auto;width:90%;max-width:600px;">
+                    <div class="project-title">⚡ ATHENA TASK LOG</div>
+                    <div id="athenaLogContainer" style="margin-top:16px;"></div>
+                </div>
+
             </div>
         </div>
 
@@ -1391,6 +1397,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- ATHENA TASK LOG (in athena tab) - populated by JS -->
 
         <!-- ── PROJECTS ── -->
         <div id="projects" class="tab-content">
@@ -1863,7 +1871,7 @@
                 return;
             }
 
-            let html = '<div style="margin-bottom:16px;"><button onclick="downloadPipelineState()" style="padding:10px 16px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);color:var(--cyan);font-weight:600;border-radius:4px;cursor:pointer;font-size:0.85em;">💾 DOWNLOAD APPROVALS (Replace income_tracker.json)</button></div><div style="overflow-x:auto;">' +
+            let html = '<div style="margin-bottom:12px;color:var(--cyan-dim);font-family:Inter;font-size:0.8em;">After approving products click SAVE APPROVALS to persist changes.</div><div style="overflow-x:auto;">' +
                 '<table style="width:100%;border-collapse:collapse;font-family:Inter;font-size:0.9em;">' +
                 '<thead><tr style="border-bottom:1px solid rgba(0,212,255,0.12);"><th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Product</th>' +
                 '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Platform</th>' +
@@ -1880,7 +1888,7 @@
                 html += `<tr id="pipe-${idx}" style="border-bottom:1px solid rgba(0,212,255,0.06);"><td style="padding:12px;color:rgba(255,255,255,0.8);">${prod.name}</td><td style="padding:12px;"><span style="padding:4px 10px;background:rgba(0,212,255,0.08);border:1px solid ${platColor};border-radius:4px;color:${platColor};font-size:0.8em;font-weight:600;">${prod.platform}</span></td><td style="padding:12px;color:var(--orange);font-family:'Space Mono',monospace;font-weight:600;">$${prod.price}</td><td style="padding:12px;color:var(--orange);font-family:'Space Mono',monospace;font-weight:600;">${estRev}</td><td style="padding:12px;color:rgba(0,212,255,0.6);font-size:0.85em;">${prod.date_submitted}</td><td style="padding:12px;"><span class="badge" id="status-${idx}" style="display:inline-block;background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.4);color:var(--orange);">${prod.status || 'Pending'}</span></td><td style="padding:12px;text-align:center;"><button onclick="approvePipeline(${idx})" style="padding:6px 12px;background:rgba(0,255,157,0.08);border:1px solid rgba(0,255,157,0.4);color:var(--green);font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;margin-right:6px;transition:all 0.2s;">✅ APPROVE</button><button onclick="rejectPipeline(${idx})" style="padding:6px 12px;background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.4);color:#ff4444;font-size:0.75em;font-weight:700;border-radius:4px;cursor:pointer;transition:all 0.2s;">❌ REJECT</button></td></tr>`;
             });
 
-            html += '</tbody></table></div>';
+            html += '</tbody></table></div><div style="margin-top:16px;text-align:right;"><button onclick="downloadPipelineState()" style="padding:10px 16px;background:rgba(0,255,157,0.1);border:1px solid rgba(0,255,157,0.4);color:var(--green);font-weight:600;border-radius:4px;cursor:pointer;font-size:0.85em;">💾 SAVE APPROVALS</button></div>';
             container.innerHTML = html;
             window.pipelineData = pipe;
         }
@@ -1936,12 +1944,34 @@
                 .catch(e => alert('Error downloading: ' + e));
         }
 
+        /* ── ATHENA LOG ── */
+        function updateAthenaLog() {
+            fetch('./athena_log.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const container = document.getElementById('athenaLogContainer');
+                    if (!container) return;
+                    
+                    let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+                    data.tasks.reverse().forEach(task => {
+                        const statusColor = task.status === 'complete' ? 'var(--green)' : task.status === 'in_progress' ? 'var(--orange)' : task.status === 'failed' ? '#ff4444' : 'var(--cyan-dim)';
+                        const statusDot = task.status === 'in_progress' ? '<span style="display:inline-block;width:8px;height:8px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite;"></span>' : `<span style="display:inline-block;width:8px;height:8px;background:${statusColor};border-radius:50%;"></span>`;
+                        html += `<div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(0,212,255,0.04);border-radius:6px;border-left:2px solid ${statusColor};"><div style="flex-shrink:0;margin-top:3px;">${statusDot}</div><div style="flex:1;"><div style="font-size:0.75em;color:var(--cyan-dim);margin-bottom:4px;">${task.date}</div><div style="font-size:0.9em;color:${statusColor};">${task.task}</div></div></div>`;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                })
+                .catch(() => {});
+        }
+
         updateTrading();
         updateCredits();
         updateIncome();
+        updateAthenaLog();
         setInterval(updateTrading,  5000);
         setInterval(updateCredits, 60000);
         setInterval(updateIncome,  30000);
+        setInterval(updateAthenaLog, 60000);
     </script>
 </body>
 </html>
