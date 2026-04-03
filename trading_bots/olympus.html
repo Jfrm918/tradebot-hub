@@ -1863,7 +1863,7 @@
                 return;
             }
 
-            let html = '<div style="overflow-x:auto;">' +
+            let html = '<div style="margin-bottom:16px;"><button onclick="downloadPipelineState()" style="padding:10px 16px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);color:var(--cyan);font-weight:600;border-radius:4px;cursor:pointer;font-size:0.85em;">💾 DOWNLOAD APPROVALS (Replace income_tracker.json)</button></div><div style="overflow-x:auto;">' +
                 '<table style="width:100%;border-collapse:collapse;font-family:Inter;font-size:0.9em;">' +
                 '<thead><tr style="border-bottom:1px solid rgba(0,212,255,0.12);"><th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Product</th>' +
                 '<th style="text-align:left;padding:10px;color:var(--cyan-dim);font-weight:600;text-transform:uppercase;font-size:0.75em;letter-spacing:1px;">Platform</th>' +
@@ -1914,13 +1914,26 @@
         }
 
         function updatePipelineFile() {
+            // Button click triggers manual download instead of auto-save
+        }
+
+        function downloadPipelineState() {
             fetch('./income_tracker.json?t=' + Date.now())
                 .then(r => r.json())
                 .then(data => {
-                    data.pipeline = window.pipelineData;
-                    return fetch('./update_pipeline.py', {method: 'POST', body: JSON.stringify(data)});
+                    data.pipeline = window.pipelineData || data.pipeline;
+                    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `income_tracker_${new Date().getTime()}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    alert('✓ Downloaded. Replace /trading_bots/income_tracker.json with this file to persist approvals.');
                 })
-                .catch(err => console.log('Pipeline save attempted'));
+                .catch(e => alert('Error downloading: ' + e));
         }
 
         updateTrading();
