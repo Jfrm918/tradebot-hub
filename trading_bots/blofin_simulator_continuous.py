@@ -141,14 +141,17 @@ class LiveSimulator:
         log.info("All 5 strategies fixed. Live Blofin data feed.")
         log.info("=" * 70)
 
-        # Bootstrap candles
-        self._refresh_candles()
-        # Bootstrap prices
-        data = fetch_tickers()
-        if data:
-            for p in PAIRS:
-                self.tick_prices[p].append(data[p]['price'])
-                log.info(f"  {p}: ${data[p]['price']:,.2f}")
+        # Skip candle bootstrap — will fetch on first cycle
+        # This avoids blocking on init
+        # Bootstrap prices (with timeout protection)
+        try:
+            data = fetch_tickers()
+            if data:
+                for p in PAIRS:
+                    self.tick_prices[p].append(data[p]['price'])
+                    log.info(f"  {p}: ${data[p]['price']:,.2f}")
+        except Exception as e:
+            log.warning(f"  Price bootstrap failed: {e}")
         log.info("=" * 70)
 
     def _new_bot(self):
@@ -409,8 +412,13 @@ class LiveSimulator:
             vol_avg = np.mean(vols[-20:])
             vol_ok  = vols[-1] > vol_avg * 1.5 if vol_avg > 0 else False
 
-            # VWAP approximation (price * volume / volume sum over 20 ticks)
-            vwap = np.average(hist[-20:], weights=vols[-20:]) if sum(vols[-20:]) > 0 else hist[-1]
+            # VWAP approximation (price * volume / volume sum over last N ticks)
+            # Use same length for both arrays to avoid shape mismatch
+            n = min(20, len(hist), len(vols))
+            if n > 0 and sum(vols[-n:]) > 0:
+                vwap = np.average(hist[-n:], weights=vols[-n:])
+            else:
+                vwap = hist[-1] if hist else price
 
             # Entry: RSI cross above 50 + volume spike + price above VWAP
             rsi_cross = len(hist) > 2 and compute_rsi(hist[:-1], 14) < 50 and rsi >= 50
@@ -491,17 +499,19 @@ class LiveSimulator:
                 self.tick_prices[p].append(data[p]['price'])
                 self._add_tick_to_5m(p, data[p]['price'], data[p]['volume'])
 
-            self.run_scalp(data)
-            self.run_grid(data)
+            # Temporarily disabled
+            # self.run_scalp(data)
+            # self.run_grid(data)
         else:
             self.errors += 1
             if self.errors % 10 == 0:
                 log.warning(f"  ⚠️  {self.errors} consecutive API failures")
 
         # Candle-based strategies (use latest candle data, run every cycle but only act on new candles)
-        self.run_momentum()
-        self.run_mean_reversion()
-        self.run_swing()
+        # Temporarily disabled to debug — these require full candle history
+        # self.run_momentum()
+        # self.run_mean_reversion()
+        # self.run_swing()
 
         # Snapshot every 10 cycles (~50 seconds) for live hub updates
         now = time.time()

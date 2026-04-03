@@ -1,7 +1,7 @@
 {
-  "exchange": "binance",
-  "testnet": true,
-  "trading_pairs": ["BTC/USDT", "ETH/USDT"],
+  "exchange": "blofin",
+  "testnet": false,
+  "trading_pairs": ["BTC-USDT", "ETH-USDT"],
   "strategies": {
     "momentum": {
       "enabled": true,

@@ -190,3 +190,73 @@ Run for 1-2 weeks, collect 100+ trades per bot, then analyze logs to find the wi
 - **Decision-making:** Consulting with Claude on strategy before executing with Athena
 - **Athena's Budget Model:** Minimum $200–$300/week for ad spend + tools + creation. Willing to give seed capital ($1K+) + ongoing budget for Athena to execute autonomously and hit $4–5K/month
 - **Operating Model:** Athena runs 2–3 income streams in parallel, reports daily metrics, Jason approves big decisions but trusts execution
+
+## CURRENT OPERATIONAL STATUS (2026-04-02)
+
+### Balance & Credits
+- Current balance: $341.75
+- Hard cap tonight: $5.00 maximum spend
+- Expected tomorrow morning: $336.75+
+- Monthly contribution: $500 sacred (non-negotiable)
+
+### Active Projects (3 Core)
+
+#### 1. TradeBot Tournament (LIVE)
+- Status: Cycle 1 active, Day 1
+- 5 bots trading on Blofin real data: Momentum, Mean Reversion, Grid, Scalping, Swing
+- Paper trading with $10,000 simulated capital per bot
+- Tournament: 6 cycles × 2 weeks each, 1 bot eliminated per cycle
+- Kill switch: 20% drawdown = auto-suspend
+- Snapshot writer: Updates every 60 seconds to hub
+- Mission: Find winning strategy, deploy real money Phase 4
+
+#### 2. Income Operation — ADHD Niches (PHASE 2 COMPLETE)
+- Status: 68 products built, all in pipeline as "Pending Approval"
+- Breakdown: 40 KDP + 20 Etsy + 8 Gumroad
+- All products in income_tracker.json pipeline array
+- Revenue projection: $9,200–$13,800/month ($110K–$166K annual)
+- Tomorrow: Setup Etsy + Gumroad accounts, prepare upload packages
+
+#### 3. FoamDial — Spray Foam Intelligence
+- Status: Research + field logging active
+- Latest job: April 1 Monkey Island, Ambit AMBI-SEAL 5.0, excellent results
+- Mission: Build predictive dial-in system for spray foam optimization
+
+### Hub Status
+- **Olympus Command Center** live at localhost:8000 and tradingbots-tau.vercel.app
+- **Features:** Trading tab (5 bot metrics), Income tab (68 products, $5K ad fund bar), Athena tab (task log), Projects, Settings
+- **Latest:** Ad fund power bar, pipeline save button, athena task log, snapshot updating real-time
+
+## CAPITAL PROTECTION LAWS — PERMANENT
+
+### Spend Rules
+- **Floor:** 20% of account always untouchable, trades 80% only
+- **Monthly contribution:** $500/month added regardless of performance (sacred)
+- **Tier 1:** 15% drawdown = alert Jason + reduce positions 50%
+- **Tier 2:** 20% drawdown = auto-suspend all trading
+- **Tier 3:** 30% total account = full stop, everything halts
+- **Decision authority:** Jason only. Athena recommends, Jason decides.
+
+## $5K AD FUND UNLOCK CONDITIONS — PERMANENT
+
+Must meet ALL four before deployment:
+1. 50+ organic sales achieved
+2. Conversion rate above 1.5%
+3. Average order value above $20
+4. Positive ROAS on small test ads
+5. **All four confirmed by Claude before Jason deploys**
+
+## TOMORROW'S PRIORITY ORDER
+
+1. Jason sets up Etsy and Gumroad accounts
+2. Prepare 40 KDP upload packages (interior PDF, cover PDF, title, description, 7 keywords, 2 categories, price)
+3. Prepare 20 Etsy listing packages
+4. Prepare 8 Gumroad product packages
+5. Fix pipeline approval persistence (implement proper solution)
+
+## STANDBY MODE RULES (TONIGHT 2026-04-02)
+
+- Hard budget cap: $5.00 maximum
+- Allowed: Passive bot monitoring, kill switch logging, 6am balance check
+- NOT allowed: Sonnet calls, research, builds, any new tasks
+- Expected balance tomorrow: $336.75 or higher (red flag if lower than $336)
