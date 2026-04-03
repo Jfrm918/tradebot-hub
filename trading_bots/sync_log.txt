@@ -178,3 +178,11 @@
   warnings.warn(
 [2026-04-03T14:03:59.325631] ERROR: ANTHROPIC_API_KEY not set
 [2026-04-03T14:03:59.325688] Sync failed: Could not fetch Anthropic usage
+/Users/jfrm918/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[2026-04-03T14:33:59.574615] ERROR: ANTHROPIC_API_KEY not set
+[2026-04-03T14:33:59.574697] Sync failed: Could not fetch Anthropic usage
+/Users/jfrm918/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[2026-04-03T15:03:59.754642] ERROR: ANTHROPIC_API_KEY not set
+[2026-04-03T15:03:59.754699] Sync failed: Could not fetch Anthropic usage
