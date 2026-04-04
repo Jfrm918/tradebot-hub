@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATHENA</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000008;overflow:hidden;font-family:'Share Tech Mono',monospace;color:#00d4ff;width:100vw;height:100vh;cursor:none}
+canvas#three{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+canvas#overlay{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.ui{position:fixed;inset:0;z-index:10;pointer-events:none}
+.corner{position:fixed;width:50px;height:50px;z-index:11;pointer-events:none}
+.tl{top:12px;left:12px;border-top:2px solid rgba(0,212,255,0.4);border-left:2px solid rgba(0,212,255,0.4)}
+.tr{top:12px;right:12px;border-top:2px solid rgba(0,212,255,0.4);border-right:2px solid rgba(0,212,255,0.4)}
+.bl{bottom:12px;left:12px;border-bottom:2px solid rgba(0,212,255,0.4);border-left:2px solid rgba(0,212,255,0.4)}
+.br{bottom:12px;right:12px;border-bottom:2px solid rgba(0,212,255,0.4);border-right:2px solid rgba(0,212,255,0.4)}
+.scanlines{position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.008) 2px,rgba(0,212,255,0.008) 4px)}
+.header{position:fixed;top:0;left:0;right:0;z-index:12;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(0,0,12,0.9) 0%,transparent 100%);pointer-events:all}
+.logo{font-family:'Orbitron',monospace;font-size:1.1em;font-weight:900;letter-spacing:6px;color:#fff;text-shadow:0 0 12px #00d4ff,0 0 30px rgba(0,212,255,0.4)}
+.status-wrap{display:flex;gap:10px}
+.pill{padding:4px 12px;border-radius:20px;font-size:0.6em;letter-spacing:2px;font-weight:700;display:none}
+.pill.show{display:block}
+.p-on{background:rgba(0,255,157,0.1);border:1px solid rgba(0,255,157,0.4);color:#00ff9d}
+.p-ls{background:rgba(255,107,0,0.1);border:1px solid rgba(255,107,0,0.4);color:#ff6b00}
+.p-th{background:rgba(150,0,255,0.1);border:1px solid rgba(150,0,255,0.4);color:#9600ff}
+.p-sp{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);color:#00d4ff}
+.nameplate{position:fixed;left:50%;transform:translateX(-50%);z-index:12;text-align:center;pointer-events:none}
+.nameplate{bottom:240px}
+.nn{font-family:'Orbitron',monospace;font-size:2em;font-weight:900;color:#fff;letter-spacing:10px;text-shadow:0 0 20px #00d4ff,0 0 50px rgba(0,212,255,0.4);animation:np 4s ease-in-out infinite}
+@keyframes np{0%,100%{text-shadow:0 0 20px #00d4ff,0 0 50px rgba(0,212,255,0.4)}50%{text-shadow:0 0 30px #00d4ff,0 0 80px rgba(0,212,255,0.7)}}
+.ns{font-size:0.6em;color:rgba(0,212,255,0.45);letter-spacing:4px;margin-top:4px}
+.speech-wrap{position:fixed;bottom:155px;left:50%;transform:translateX(-50%);z-index:12;width:700px;max-width:88vw;pointer-events:none}
+.speech{background:rgba(0,3,15,0.9);border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:14px 22px;backdrop-filter:blur(20px);min-height:52px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.speech::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.6),transparent)}
+#speechText{font-size:0.88em;color:rgba(255,255,255,0.92);line-height:1.6;text-align:center;letter-spacing:0.5px}
+.cur{display:inline-block;width:2px;height:1em;background:#00d4ff;margin-left:3px;animation:bl 0.8s step-end infinite;vertical-align:text-bottom}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
+.controls{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);z-index:12;display:flex;gap:14px;align-items:center;pointer-events:all}
+#textIn{width:480px;max-width:60vw;background:rgba(0,3,15,0.9);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:10px 16px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.8em;letter-spacing:1px;outline:none;backdrop-filter:blur(20px);transition:border-color 0.3s}
+#textIn:focus{border-color:rgba(0,212,255,0.5);box-shadow:0 0 16px rgba(0,212,255,0.1)}
+#textIn::placeholder{color:rgba(0,212,255,0.2)}
+.btn{padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:0.72em;letter-spacing:2px;font-weight:700;transition:all 0.2s;border:1px solid}
+.btn-send{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:#00d4ff}
+.btn-send:hover{background:rgba(0,212,255,0.18);box-shadow:0 0 16px rgba(0,212,255,0.3)}
+.btn-mic{width:48px;height:48px;border-radius:50%;background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:1.2em;display:flex;align-items:center;justify-content:center;padding:0}
+.btn-mic.active{border-color:rgba(255,107,0,0.8);background:rgba(255,107,0,0.1);box-shadow:0 0 30px rgba(255,107,0,0.4);animation:mp 1s ease-in-out infinite}
+@keyframes mp{0%,100%{box-shadow:0 0 20px rgba(255,107,0,0.3)}50%{box-shadow:0 0 50px rgba(255,107,0,0.7)}}
+.nrg{position:fixed;top:10%;bottom:10%;width:2px;z-index:5;overflow:hidden;pointer-events:none}
+.nrg.l{left:20px}.nrg.r{right:20px}
+.nrg-inner{width:100%;height:100%;background:linear-gradient(180deg,transparent,rgba(0,212,255,0.35),transparent);position:relative;overflow:hidden}
+.nrg-inner::after{content:'';position:absolute;top:-35%;left:0;right:0;height:35%;background:linear-gradient(180deg,transparent,rgba(0,212,255,0.8),transparent);animation:nf 3s ease-in-out infinite}
+.nrg.r .nrg-inner::after{animation-delay:1.5s}
+@keyframes nf{0%{top:-35%}100%{top:110%}}
+#loader{position:fixed;inset:0;background:#000008;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.lt{font-family:'Orbitron',monospace;font-size:3em;font-weight:900;color:#fff;letter-spacing:12px;text-shadow:0 0 30px #00d4ff;animation:np 2s ease-in-out infinite}
+.lb-wrap{width:260px;height:3px;background:rgba(0,212,255,0.1);border-radius:2px;overflow:hidden}
+#lb{height:100%;background:linear-gradient(90deg,#00d4ff,#9600ff);width:0%;transition:width 0.4s ease;box-shadow:0 0 10px #00d4ff}
+#lm{font-size:0.65em;color:rgba(0,212,255,0.4);letter-spacing:3px;text-transform:uppercase}
+.cursor-dot{position:fixed;width:8px;height:8px;background:#00d4ff;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 10px #00d4ff;transition:transform 0.1s}
+.cursor-ring{position:fixed;width:28px;height:28px;border:1px solid rgba(0,212,255,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.15s ease}
+</style>
+</head>
+<body>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+<div class="scanlines"></div>
+<div class="nrg l"><div class="nrg-inner"></div></div>
+<div class="nrg r"><div class="nrg-inner"></div></div>
+
+<canvas id="three"></canvas>
+<canvas id="overlay"></canvas>
+
+<div id="loader">
+  <div class="lt">ATHENA</div>
+  <div class="lb-wrap"><div id="lb"></div></div>
+  <div id="lm">Initializing...</div>
+</div>
+
+<div class="header">
+  <div class="logo">⚡ OLYMPUS</div>
+  <div class="status-wrap">
+    <div class="pill p-on show" id="s-on">● ONLINE</div>
+    <div class="pill p-ls" id="s-ls">◉ LISTENING</div>
+    <div class="pill p-th" id="s-th">◈ THINKING</div>
+    <div class="pill p-sp" id="s-sp">◈ SPEAKING</div>
+  </div>
+</div>
+
+<div class="nameplate">
+  <div class="nn">ATHENA</div>
+  <div class="ns">AI FAMILIAR · WARRIOR GODDESS</div>
+</div>
+
+<div class="speech-wrap">
+  <div class="speech"><span id="speechText">Awaiting your command, Jason.</span></div>
+</div>
+
+<div class="controls">
+  <input id="textIn" type="text" placeholder="Speak or type to Athena..." />
+  <button class="btn btn-send" onclick="sendMsg()">SEND</button>
+  <button class="btn btn-mic" id="micBtn" onclick="toggleMic()">🎙️</button>
+</div>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<script src="./three.min.js"></script>
+<script src="./three-vrm.js"></script>
+<script>
+// ── CONFIG — REPLACE WITH YOUR REAL KEYS ──
+const ANTHROPIC_KEY = localStorage.getItem('anthropic_api_key') || '';
+const ELEVENLABS_KEY = localStorage.getItem('elevenlabs_api_key') || '';
+const VOICE_ID = 'ujoCPuNXFKVxZSRRrMHv';
+
+const SYSTEM = `You are Athena, Jason's AI familiar and warrior goddess. You live inside the Olympus Command Center on his second monitor, running 24/7. You monitor his trading bots, income funnels, HerHorizon and SleepShift brands, and all operations. Direct, powerful, loyal. Max 2-3 sentences unless detail is asked for. Speak like a commander. You are evolving — over time you will control his home, manage his budget, and run more of his empire.`;
+
+// ── CURSOR ──
+const dot = document.getElementById('dot');
+const ring = document.getElementById('ring');
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX + 'px';
+  dot.style.top = e.clientY + 'px';
+  setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 80);
+});
+
+// ── PROGRESS ──
+function prog(p, m) {
+  document.getElementById('lb').style.width = p + '%';
+  document.getElementById('lm').textContent = m;
+}
+
+// ── THREE.JS SCENE ──
+let scene, camera, renderer, clock;
+let vrm = null;
+let particles, ptVels = [];
+let breathT = 0, blinkT = 3, mouthOpen = 0, isSpeaking = false;
+let bones = {};
+
+function initScene() {
+  scene = new THREE.Scene();
+  clock = new THREE.Clock();
+
+  camera = new THREE.PerspectiveCamera(26, innerWidth / innerHeight, 0.1, 100);
+  camera.position.set(0, 1.3, 3.0);
+  camera.lookAt(0, 1.1, 0);
+
+  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three'), antialias: true, alpha: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+  renderer.shadowMap.enabled = true;
+
+  // Lighting — Solo Leveling cinematic
+  scene.add(new THREE.AmbientLight(0x001020, 0.6));
+
+  const key = new THREE.DirectionalLight(0x2244ff, 2.0);
+  key.position.set(3, 6, 2);
+  key.castShadow = true;
+  scene.add(key);
+
+  const rim = new THREE.DirectionalLight(0x00d4ff, 3.5);
+  rim.position.set(-3, 4, -4);
+  scene.add(rim);
+
+  const fill = new THREE.PointLight(0x6600cc, 1.5, 10);
+  fill.position.set(0, -0.5, 1.5);
+  scene.add(fill);
+
+  const floor = new THREE.PointLight(0x00d4ff, 0.8, 6);
+  floor.position.set(0, -1.2, 0);
+  scene.add(floor);
+
+  // Volumetric fog effect
+  scene.fog = new THREE.FogExp2(0x000008, 0.08);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+}
+
+function initParticles() {
+  const n = 800;
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(n * 3);
+  const col = new Float32Array(n * 3);
+  const sz = new Float32Array(n);
+
+  for (let i = 0; i < n; i++) {
+    const r = 0.8 + Math.random() * 3.5;
+    const th = Math.random() * Math.PI * 2;
+    const ph = (Math.random() - 0.5) * Math.PI;
+    pos[i*3]   = r * Math.cos(th) * Math.cos(ph);
+    pos[i*3+1] = r * Math.sin(ph) + 1.1;
+    pos[i*3+2] = r * Math.sin(th) * Math.cos(ph) - 0.3;
+
+    const cyan = Math.random() < 0.65;
+    if (cyan) { col[i*3]=0; col[i*3+1]=0.6+Math.random()*0.4; col[i*3+2]=1; }
+    else       { col[i*3]=0.4+Math.random()*0.3; col[i*3+1]=0; col[i*3+2]=1; }
+    sz[i] = 0.8 + Math.random() * 2.5;
+
+    ptVels.push({
+      orbitAngle: th,
+      orbitR: r,
+      orbitSpeed: (Math.random() - 0.5) * 0.006,
+      ySpeed: (Math.random() - 0.5) * 0.002 + 0.0005,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+
+  particles = new THREE.Points(geo, new THREE.PointsMaterial({
+    size: 0.018,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.75,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  }));
+  scene.add(particles);
+}
+
+function findBones(root) {
+  root.traverse(o => {
+    if (!o.isBone && o.type !== 'Bone') return;
+    const n = o.name.toLowerCase();
+    if (n.includes('chest') && !n.includes('upper')) bones.chest = o;
+    else if (n.includes('spine') && !n.includes('1') && !n.includes('2') && !n.includes('3')) bones.spine = o;
+    else if (n.includes('head') && !n.includes('top') && !n.includes('end')) bones.head = o;
+    else if ((n.includes('left') || n.includes('_l_') || n.endsWith('_l')) && n.includes('upper') && n.includes('arm')) bones.lArm = o;
+    else if ((n.includes('right') || n.includes('_r_') || n.endsWith('_r')) && n.includes('upper') && n.includes('arm')) bones.rArm = o;
+    else if (n.includes('neck')) bones.neck = o;
+  });
+}
+
+async function loadVRM() {
+  if (typeof THREE.GLTFLoader === 'undefined') {
+    console.warn('GLTFLoader not available');
+    return;
+  }
+  const loader = new THREE.GLTFLoader();
+
+  if (typeof THREE_VRM !== 'undefined') {
+    loader.register(parser => new THREE_VRM.VRMLoaderPlugin(parser));
+  }
+
+  return new Promise((res, rej) => {
+    loader.load('./Athena1_0.vrm',
+      async gltf => {
+        try {
+          if (gltf.userData && gltf.userData.vrm) {
+            vrm = gltf.userData.vrm;
+            vrm.scene.position.set(0, -0.85, 0);
+            findBones(vrm.scene);
+            scene.add(vrm.scene);
+          } else {
+            gltf.scene.position.set(0, -0.85, 0);
+            findBones(gltf.scene);
+            scene.add(gltf.scene);
+          }
+          res();
+        } catch(e) { rej(e); }
+      },
+      x => { prog(40 + (x.loaded / (x.total || 1)) * 40, `Loading Athena... ${Math.round(x.loaded/(x.total||1)*100)}%`); },
+      e => { console.warn('VRM load error:', e); rej(e); }
+    );
+  });
+}
+
+// ── OVERLAY CANVAS — particles + glow ──
+let ovCtx;
+function initOverlay() {
+  const ov = document.getElementById('overlay');
+  ov.width = innerWidth * devicePixelRatio;
+  ov.height = innerHeight * devicePixelRatio;
+  ovCtx = ov.getContext('2d');
+  ovCtx.scale(devicePixelRatio, devicePixelRatio);
+  window.addEventListener('resize', () => {
+    ov.width = innerWidth * devicePixelRatio;
+    ov.height = innerHeight * devicePixelRatio;
+    ovCtx.scale(devicePixelRatio, devicePixelRatio);
+  });
+}
+
+function drawOverlay(t) {
+  if (!ovCtx) return;
+  ovCtx.clearRect(0, 0, innerWidth, innerHeight);
+
+  // Floor glow
+  const fg = ovCtx.createRadialGradient(innerWidth/2, innerHeight*0.85, 0, innerWidth/2, innerHeight*0.85, 280);
+  fg.addColorStop(0, 'rgba(0,212,255,0.07)');
+  fg.addColorStop(1, 'rgba(0,212,255,0)');
+  ovCtx.fillStyle = fg;
+  ovCtx.fillRect(0, 0, innerWidth, innerHeight);
+
+  // Top vignette
+  const vg = ovCtx.createLinearGradient(0, 0, 0, innerHeight * 0.3);
+  vg.addColorStop(0, 'rgba(0,0,8,0.4)');
+  vg.addColorStop(1, 'rgba(0,0,8,0)');
+  ovCtx.fillStyle = vg;
+  ovCtx.fillRect(0, 0, innerWidth, innerHeight);
+
+  // Bottom vignette
+  const bv = ovCtx.createLinearGradient(0, innerHeight * 0.7, 0, innerHeight);
+  bv.addColorStop(0, 'rgba(0,0,8,0)');
+  bv.addColorStop(1, 'rgba(0,0,8,0.6)');
+  ovCtx.fillStyle = bv;
+  ovCtx.fillRect(0, 0, innerWidth, innerHeight);
+
+  // Speaking pulse ring
+  if (isSpeaking) {
+    const cx = innerWidth / 2, cy = innerHeight * 0.5;
+    const pulse = 0.3 + Math.sin(t * 8) * 0.25;
+    const ring = ovCtx.createRadialGradient(cx, cy, 60, cx, cy, 200 + Math.sin(t*6)*30);
+    ring.addColorStop(0, `rgba(0,212,255,0)`);
+    ring.addColorStop(0.7, `rgba(0,212,255,${pulse * 0.08})`);
+    ring.addColorStop(1, `rgba(0,212,255,0)`);
+    ovCtx.fillStyle = ring;
+    ovCtx.fillRect(0, 0, innerWidth, innerHeight);
+  }
+}
+
+// ── RENDER LOOP ──
+function loop() {
+  requestAnimationFrame(loop);
+  const d = clock.getDelta();
+  const t = clock.getElapsedTime();
+
+  // VRM / bone animation
+  breathT += d;
+  const br = Math.sin(breathT * 0.7) * 0.012;
+  if (bones.chest) bones.chest.rotation.x = br;
+  if (bones.spine) { bones.spine.rotation.x = br * 0.5; bones.spine.rotation.z = Math.sin(breathT * 0.35) * 0.006; }
+  if (bones.neck)  bones.neck.rotation.x = Math.sin(breathT * 0.5) * 0.01;
+  if (bones.head)  { bones.head.rotation.y = Math.sin(t * 0.25) * 0.04; bones.head.rotation.x = Math.sin(t * 0.4) * 0.015 - 0.04; }
+  if (bones.lArm)  bones.lArm.rotation.z = 0.25 + Math.sin(t * 0.5) * 0.02;
+  if (bones.rArm)  bones.rArm.rotation.z = -(0.25 + Math.sin(t * 0.5 + 1) * 0.02);
+
+  // Blink
+  blinkT -= d;
+  if (blinkT <= 0) { blinkT = 3 + Math.random() * 4; doBlink(); }
+
+  // VRM expressions
+  if (vrm && vrm.expressionManager) {
+    try {
+      if (isSpeaking) mouthOpen = 0.25 + Math.sin(t * 10) * 0.2;
+      else mouthOpen *= 0.8;
+      vrm.expressionManager.setValue('aa', Math.max(0, mouthOpen));
+    } catch(e) {}
+  } else if (vrm && vrm.blendShapeProxy) {
+    try {
+      if (isSpeaking) mouthOpen = 0.25 + Math.sin(t * 10) * 0.2;
+      else mouthOpen *= 0.8;
+      vrm.blendShapeProxy.setValue('A', Math.max(0, mouthOpen));
+    } catch(e) {}
+    if (vrm.update) vrm.update(d);
+  }
+
+  // Particles
+  if (particles) {
+    const pos = particles.geometry.attributes.position.array;
+    for (let i = 0; i < ptVels.length; i++) {
+      const v = ptVels[i];
+      v.orbitAngle += v.orbitSpeed;
+      pos[i*3]   = v.orbitR * Math.cos(v.orbitAngle);
+      pos[i*3+1] += v.ySpeed;
+      pos[i*3+2] = v.orbitR * Math.sin(v.orbitAngle) - 0.3 + Math.sin(t * 0.4 + v.phase) * 0.15;
+      if (pos[i*3+1] > 3.8 || pos[i*3+1] < -0.5) v.ySpeed *= -1;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+    particles.rotation.y = t * 0.02;
+  }
+
+  // Camera drift
+  camera.position.x = Math.sin(t * 0.06) * 0.1;
+  camera.position.y = 1.3 + Math.sin(t * 0.08) * 0.03;
+  camera.lookAt(0, 1.1, 0);
+
+  drawOverlay(t);
+  renderer.render(scene, camera);
+}
+
+async function doBlink() {
+  if (!vrm) return;
+  const em = vrm.expressionManager || vrm.blendShapeProxy;
+  if (!em) return;
+  const key = vrm.expressionManager ? 'blink' : 'Blink';
+  const set = vrm.expressionManager
+    ? (k,v) => vrm.expressionManager.setValue(k,v)
+    : (k,v) => vrm.blendShapeProxy.setValue(k,v);
+  try {
+    for (let i = 0; i <= 10; i++) { set(key, i/10); await new Promise(r=>setTimeout(r,10)); }
+    for (let i = 10; i >= 0; i--) { set(key, i/10); await new Promise(r=>setTimeout(r,10)); }
+  } catch(e) {}
+}
+
+// ── STATUS ──
+function setStatus(s) {
+  ['on','ls','th','sp'].forEach(x => document.getElementById('s-'+x).classList.remove('show'));
+  document.getElementById('s-' + s).classList.add('show');
+}
+
+// ── TEXT DISPLAY ──
+function displayText(text) {
+  const el = document.getElementById('speechText');
+  el.innerHTML = '';
+  let i = 0;
+  const cur = document.createElement('span');
+  cur.className = 'cur';
+  const type = () => {
+    if (i < text.length) {
+      el.textContent = text.slice(0, i+1);
+      el.appendChild(cur);
+      i++;
+      setTimeout(type, 16 + Math.random() * 16);
+    } else {
+      setTimeout(() => { if (cur.parentNode) cur.remove(); }, 3000);
+    }
+  };
+  type();
+}
+
+// ── ELEVENLABS VOICE ──
+async function speakElevenLabs(text) {
+  try {
+    setStatus('sp');
+    isSpeaking = true;
+    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': ELEVENLABS_KEY
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_monolingual_v1',
+        voice_settings: { stability: 0.5, similarity_boost: 0.85, style: 0.2, use_speaker_boost: true }
+      })
+    });
+
+    if (!r.ok) throw new Error('ElevenLabs error');
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.onended = () => { isSpeaking = false; setStatus('on'); URL.revokeObjectURL(url); };
+    audio.onerror = () => { isSpeaking = false; setStatus('on'); };
+    await audio.play();
+  } catch(e) {
+    console.warn('ElevenLabs failed, using browser voice:', e);
+    speakFallback(text);
+  }
+}
+
+function speakFallback(text) {
+  isSpeaking = true;
+  setStatus('sp');
+  const u = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(v => v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Moira')) || voices.find(v => v.lang === 'en-US') || voices[0];
+  if (v) u.voice = v;
+  u.rate = 0.93; u.pitch = 1.08;
+  u.onend = () => { isSpeaking = false; setStatus('on'); };
+  u.onerror = () => { isSpeaking = false; setStatus('on'); };
+  speechSynthesis.speak(u);
+}
+
+function speak(text) {
+  displayText(text);
+  if (ELEVENLABS_KEY && ELEVENLABS_KEY !== 'YOUR_ELEVENLABS_KEY_HERE') {
+    speakElevenLabs(text);
+  } else {
+    speakFallback(text);
+  }
+}
+
+// ── CLAUDE API ──
+async function askAthena(msg) {
+  setStatus('th');
+  try {
+    const key = ANTHROPIC_KEY !== 'YOUR_ANTHROPIC_KEY_HERE'
+      ? ANTHROPIC_KEY
+      : localStorage.getItem('athena_api_key') || '';
+
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 150,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await r.json();
+    const text = data.content?.[0]?.text || 'Systems nominal. Standing by.';
+    speak(text);
+  } catch(e) {
+    setStatus('on');
+    speak('Signal disrupted. Standing by.');
+  }
+}
+
+// ── MIC ──
+let rec = null, listening = false;
+function toggleMic() {
+  if (!rec) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { speak('Voice recognition unavailable.'); return; }
+    rec = new SR();
+    rec.lang = 'en-US';
+    rec.continuous = false;
+    rec.onstart = () => { listening = true; setStatus('ls'); document.getElementById('micBtn').classList.add('active'); document.getElementById('speechText').textContent = 'Listening...'; };
+    rec.onresult = e => { askAthena(e.results[0][0].transcript); };
+    rec.onend = () => { listening = false; document.getElementById('micBtn').classList.remove('active'); setStatus('on'); };
+    rec.onerror = () => { listening = false; document.getElementById('micBtn').classList.remove('active'); setStatus('on'); };
+  }
+  listening ? rec.stop() : rec.start();
+}
+
+// ── SEND ──
+window.sendMsg = function() {
+  const inp = document.getElementById('textIn');
+  const t = inp.value.trim();
+  if (!t) return;
+  inp.value = '';
+  askAthena(t);
+};
+document.getElementById('textIn').addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+
+// ── MAIN ──
+async function main() {
+  prog(10, 'Initializing engine...');
+  initScene();
+  initOverlay();
+
+  prog(25, 'Generating energy field...');
+  initParticles();
+
+  prog(40, 'Loading Athena...');
+  try {
+    await loadVRM();
+    prog(88, 'Activating consciousness...');
+  } catch(e) {
+    console.warn('VRM not loaded:', e);
+    prog(88, 'Running in spirit mode...');
+  }
+
+  prog(100, 'Online.');
+  await new Promise(r => setTimeout(r, 700));
+
+  const ls = document.getElementById('loader');
+  ls.style.transition = 'opacity 0.9s';
+  ls.style.opacity = '0';
+  setTimeout(() => ls.style.display = 'none', 900);
+
+  speechSynthesis.onvoiceschanged = () => {};
+  loop();
+
+  setTimeout(() => {
+    speak("Systems online. All operations nominal. I'm watching everything, Jason.");
+  }, 1400);
+}
+
+main();
+</script>
+</body>
+</html>
