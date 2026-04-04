@@ -22,7 +22,7 @@ SYMBOL           = "BTC-USDT"
 STARTING_BALANCE = 100.0
 TRADE_FRACTION   = 0.95       # fraction of balance to deploy per trade
 MOMENTUM_WINDOW  = 5          # number of price samples for momentum calc
-MOMENTUM_THRESH  = 0.0015     # 0.15% move = signal
+MOMENTUM_THRESH  = 0.00005    # 0.005% move = signal (AGGRESSIVE)
 PROFIT_TARGET    = 0.005      # exit at +0.5%
 STOP_LOSS        = 0.003      # exit at -0.3%
 CHECK_INTERVAL   = 30         # seconds between price checks
@@ -76,24 +76,27 @@ def main():
         try:
             price = get_price()
             prices.append(price)
+            log(f"PRICE CHECK: ${price:.2f} | Prices: {len(prices)}/{MOMENTUM_WINDOW}")
 
             if position is None:
                 if len(prices) == MOMENTUM_WINDOW:
                     oldest = prices[0]
                     momentum = (price - oldest) / oldest
+                    log(f"MOMENTUM: {momentum:.6f} (threshold: {MOMENTUM_THRESH:.6f}) | Entry condition: {momentum >= MOMENTUM_THRESH}")
                     if momentum >= MOMENTUM_THRESH:
                         size = round((balance * TRADE_FRACTION) / price, 6)
                         position = {'price': price, 'size': size}
-                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                        log(f"ENTRY SIGNAL! BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
             else:
                 entry = position['price']
                 size  = position['size']
                 pct   = (price - entry) / entry
+                log(f"POSITION MONITOR: Entry=${entry:.2f} | Current=${price:.2f} | PnL%={pct*100:.4f}% | Target={PROFIT_TARGET*100:.2f}% | Stop={-STOP_LOSS*100:.2f}%")
 
                 if pct >= PROFIT_TARGET or pct <= -STOP_LOSS:
                     pnl = round((price - entry) * size, 4)
                     balance = round(balance + pnl, 2)
-                    log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                    log(f"EXIT SIGNAL! SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
                     position = None
 
         except Exception as e:

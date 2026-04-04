@@ -21,7 +21,7 @@ SYMBOL           = "BTC-USDT"
 STARTING_BALANCE = 100.0
 TRADE_FRACTION   = 0.90
 WINDOW           = 3          # very short window for micro-momentum
-ENTRY_THRESH     = 0.0008     # 0.08% move triggers entry
+ENTRY_THRESH     = 0.000005   # 0.0005% move triggers entry (AGGRESSIVE - scalp EVERY move)
 PROFIT_TARGET    = 0.003      # exit at +0.3%
 STOP_LOSS        = 0.002      # exit at -0.2%
 CHECK_INTERVAL   = 30
@@ -71,22 +71,24 @@ def main():
         try:
             price = get_price()
             prices.append(price)
+            log(f"PRICE CHECK: ${price:.2f} | Prices: {len(prices)}/{WINDOW}")
 
             if position is None:
                 if len(prices) == WINDOW:
                     oldest = prices[0]
                     move = (price - oldest) / oldest
+                    log(f"MICRO MOVE: {move*100:.6f}% (threshold: {ENTRY_THRESH*100:.6f}%) | Entry condition: {abs(move) >= ENTRY_THRESH}")
 
                     if move >= ENTRY_THRESH:
                         # Micro uptrend → long
                         size = round((balance * TRADE_FRACTION) / price, 6)
                         position = {'price': price, 'size': size, 'side': 'long'}
-                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                        log(f"SCALP ENTRY! BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
                     elif move <= -ENTRY_THRESH:
                         # Micro downtrend → short
                         size = round((balance * TRADE_FRACTION) / price, 6)
                         position = {'price': price, 'size': size, 'side': 'short'}
-                        log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                        log(f"SCALP ENTRY! SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
             else:
                 entry = position['price']
                 size  = position['size']
@@ -94,17 +96,19 @@ def main():
 
                 if side == 'long':
                     pct = (price - entry) / entry
+                    log(f"SCALP MONITOR LONG: Entry=${entry:.2f} | Current=${price:.2f} | PnL%={pct*100:.6f}%")
                     if pct >= PROFIT_TARGET or pct <= -STOP_LOSS:
                         pnl = round((price - entry) * size, 4)
                         balance = round(balance + pnl, 2)
-                        log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                        log(f"SCALP EXIT! SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
                         position = None
                 else:  # short
                     pct = (entry - price) / entry
+                    log(f"SCALP MONITOR SHORT: Entry=${entry:.2f} | Current=${price:.2f} | PnL%={pct*100:.6f}%")
                     if pct >= PROFIT_TARGET or pct <= -STOP_LOSS:
                         pnl = round((entry - price) * size, 4)
                         balance = round(balance + pnl, 2)
-                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                        log(f"SCALP EXIT! BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
                         position = None
 
         except Exception as e:

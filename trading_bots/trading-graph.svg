@@ -1,0 +1,33 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#000510"/>
+  
+  <!-- Grid -->
+  <line x1="20" y1="200" x2="240" y2="200" stroke="rgba(0,212,255,0.1)" stroke-width="1"/>
+  <line x1="20" y1="150" x2="240" y2="150" stroke="rgba(0,212,255,0.1)" stroke-width="1"/>
+  <line x1="20" y1="100" x2="240" y2="100" stroke="rgba(0,212,255,0.1)" stroke-width="1"/>
+  <line x1="20" y1="50" x2="240" y2="50" stroke="rgba(0,212,255,0.1)" stroke-width="1"/>
+  
+  <!-- Y-axis -->
+  <line x1="20" y1="30" x2="20" y2="210" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+  <!-- X-axis -->
+  <line x1="20" y1="210" x2="240" y2="210" stroke="rgba(0,212,255,0.3)" stroke-width="2"/>
+  
+  <!-- Trading graph line (uptrend with volatility) -->
+  <polyline points="30,200 50,180 70,190 90,160 110,170 130,140 150,150 170,120 190,130 210,100 230,110" 
+            stroke="#00d4ff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Positive area fill (subtle) -->
+  <polygon points="30,200 50,180 70,190 90,160 110,170 130,140 150,150 170,120 190,130 210,100 230,110 230,210 30,210" 
+           fill="rgba(0,255,157,0.15)"/>
+  
+  <!-- Small candlestick indicators -->
+  <rect x="50" y="175" width="3" height="15" fill="#00ff9d"/>
+  <rect x="90" y="155" width="3" height="20" fill="#00ff9d"/>
+  <rect x="170" y="115" width="3" height="25" fill="#00ff9d"/>
+  
+  <!-- Title -->
+  <text x="128" y="240" font-family="Monaco, monospace" font-size="16" font-weight="bold" text-anchor="middle" fill="#00d4ff">
+    Trading Hub
+  </text>
+</svg>

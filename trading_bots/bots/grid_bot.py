@@ -75,12 +75,14 @@ def main():
     grid_center  = None
     buy_levels   = []
     sell_levels  = []
+    grid_initialized = False
 
     log(f"Grid Bot started | Balance: ${balance:.2f}")
 
     while True:
         try:
             price = get_price()
+            log(f"PRICE CHECK: ${price:.2f}")
 
             # Initialize or rebuild grid if price drifts too far from center
             if grid_center is None or abs(price - grid_center) / grid_center > GRID_RESET_PCT:
@@ -90,17 +92,28 @@ def main():
                 log(f"GRID SET center=${grid_center:.2f} | "
                     f"buy_levels={[f'${p:.0f}' for p in buy_levels[:2]]}... "
                     f"sell_levels={[f'${p:.0f}' for p in sell_levels[:2]]}...")
+                
+                # FORCE FIRST BUY AT LOWEST LEVEL IMMEDIATELY
+                if not grid_initialized and buy_levels:
+                    lowest_level = min(buy_levels)
+                    alloc = balance * TRADE_FRACTION
+                    size = round(alloc / price, 6)
+                    positions[lowest_level] = {'price': price, 'size': size}
+                    log(f"FORCE INITIAL BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                    grid_initialized = True
 
             if prev_price is not None:
+                log(f"GRID MONITOR | Positions: {len(positions)} | Prev: ${prev_price:.2f} | Current: ${price:.2f}")
                 # Check buy triggers — price crossed down through a buy level
                 for level in buy_levels:
                     if prev_price > level >= price and level not in positions:
                         alloc = balance * TRADE_FRACTION
                         if alloc < 0.50:
+                            log(f"BUY LEVEL {level} skipped - allocation too small (${alloc:.2f})")
                             continue
                         size = round(alloc / price, 6)
                         positions[level] = {'price': price, 'size': size}
-                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                        log(f"GRID BUY TRIGGER! {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
 
                 # Check sell triggers — price crossed up through a sell level
                 for sell_level in sell_levels:
@@ -109,7 +122,7 @@ def main():
                             if buy_level < sell_level:
                                 pnl = round((price - pos['price']) * pos['size'], 4)
                                 balance = round(balance + pnl, 2)
-                                log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {pos['size']:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                                log(f"GRID SELL TRIGGER! {SYMBOL} @ ${price:.2f} | Size: {pos['size']:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
                                 del positions[buy_level]
                                 break
 
