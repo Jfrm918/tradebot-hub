@@ -26,7 +26,7 @@ logging.basicConfig(
 )
 
 class VWAPMomentumBot:
-    def __init__(self, config_path='../config.json'):
+    def __init__(self, config_path='/Users/jfrm918/.openclaw/workspace/trading_bots/config.json'):
         with open(config_path, 'r') as f:
             self.config = json.load(f)
         
