@@ -12,7 +12,9 @@ BOT_MAP = {
     'mean_reversion_bot.log': 'reversion',
     'scalp_bot.log': 'scalp',
     'grid_bot.log': 'grid',
-    'swing.log': 'swing'
+    'swing.log': 'swing',
+    'vwap_reversion_bot.log': 'vwap_rev',
+    'vwap_momentum_bot.log': 'vwap_mom'
 }
 
 def parse_bot_log(log_file):

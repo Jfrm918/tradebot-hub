@@ -1068,6 +1068,26 @@
                         <div class="metric"><div class="metric-label">Win %</div><div class="metric-value" id="swing-wr">—</div></div>
                     </div>
                 </div>
+
+                <div class="bot-card"><div class="bar"></div>
+                    <div class="bot-header"><div class="status-dot"></div><div class="bot-name">VWAP Reversion</div></div>
+                    <div class="metrics">
+                        <div class="metric"><div class="metric-label">Capital</div><div class="metric-value">$100</div></div>
+                        <div class="metric"><div class="metric-label">PnL</div><div class="metric-value" id="vwap_rev-pnl">—</div></div>
+                        <div class="metric"><div class="metric-label">Trades</div><div class="metric-value" id="vwap_rev-trades">0</div></div>
+                        <div class="metric"><div class="metric-label">Win %</div><div class="metric-value" id="vwap_rev-wr">—</div></div>
+                    </div>
+                </div>
+
+                <div class="bot-card"><div class="bar"></div>
+                    <div class="bot-header"><div class="status-dot"></div><div class="bot-name">VWAP Momentum</div></div>
+                    <div class="metrics">
+                        <div class="metric"><div class="metric-label">Capital</div><div class="metric-value">$100</div></div>
+                        <div class="metric"><div class="metric-label">PnL</div><div class="metric-value" id="vwap_mom-pnl">—</div></div>
+                        <div class="metric"><div class="metric-label">Trades</div><div class="metric-value" id="vwap_mom-trades">0</div></div>
+                        <div class="metric"><div class="metric-label">Win %</div><div class="metric-value" id="vwap_mom-wr">—</div></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1579,7 +1599,8 @@
 
         const BOT_LABELS = {
             momentum: 'Momentum', reversion: 'Mean Reversion',
-            grid: 'Grid', scalp: 'Scalping', swing: 'Swing'
+            grid: 'Grid', scalp: 'Scalping', swing: 'Swing',
+            vwap_rev: 'VWAP Reversion', vwap_mom: 'VWAP Momentum'
         };
 
         function showReport() {
