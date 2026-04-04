@@ -1609,91 +1609,113 @@ function fmt(v) {
 }
 
 /* ───────────────────────────────────────
-   updateTrading — fetch snapshot.json
+   renderSnapshot — Safe rendering pattern
+   CRITICAL FIX: Never write a value unless it exists in data
+─────────────────────────────────────── */
+function renderSnapshot(data) {
+  window.lastSnapshot = data;
+  let totalPnl = 0, totalTrades = 0, totalWins = 0, totalCap = 0, activeBotsCount = 0;
+
+  for (const [name, bot] of Object.entries(data.bots || {})) {
+    // ONLY set values if they exist in bot data
+    if (bot.pnl !== undefined) {
+      const pnl = parseFloat(bot.pnl);
+      totalPnl += pnl;
+      const pnlEl = document.getElementById(`${name}-pnl`);
+      if (pnlEl) {
+        pnlEl.textContent = fmt(pnl);
+        pnlEl.className = 'bot-pnl' + (pnl > 0 ? ' pos' : pnl < 0 ? ' neg' : '');
+      }
+    }
+
+    if (bot.trades !== undefined) {
+      const trades = parseInt(bot.trades);
+      totalTrades += trades;
+      const tEl = document.getElementById(`${name}-trades`);
+      if (tEl) tEl.textContent = trades;
+    }
+
+    if (bot.wins !== undefined) {
+      const wins = parseInt(bot.wins);
+      totalWins += wins;
+    }
+
+    if (bot.balance !== undefined) {
+      const bal = parseFloat(bot.balance);
+      totalCap += bal;
+      const cEl = document.getElementById(`cap-${name}`);
+      if (cEl) cEl.textContent = `Capital: $${bal.toFixed(2)}`;
+    }
+
+    // Only show status/progress if trades exist
+    if (bot.trades !== undefined && parseInt(bot.trades) > 0) {
+      activeBotsCount++;
+      const trades = parseInt(bot.trades);
+      const wins = bot.wins ? parseInt(bot.wins) : 0;
+      const wr = trades > 0 ? ((wins / trades) * 100).toFixed(1) + '%' : '—';
+      const wrPct = trades > 0 ? (wins / trades) * 100 : 0;
+
+      const wEl = document.getElementById(`${name}-wr`);
+      if (wEl) wEl.textContent = wr;
+
+      const barEl = document.getElementById(`bar-${name}`);
+      if (barEl) barEl.style.width = Math.min(100, wrPct) + '%';
+
+      const dotEl = document.getElementById(`dot-${name}`);
+      if (dotEl) dotEl.classList.add('active');
+    } else {
+      // Clear active status if no trades
+      const dotEl = document.getElementById(`dot-${name}`);
+      if (dotEl) dotEl.classList.remove('active');
+    }
+  }
+
+  // Update summary only if values exist
+  if (data.cycle !== undefined) {
+    const cycleEl = document.getElementById('cycleInfo');
+    if (cycleEl) cycleEl.textContent = `Cycle #${data.cycle}`;
+  }
+
+  const pEl = document.getElementById('totalPnL');
+  if (pEl) {
+    pEl.textContent = fmt(totalPnl);
+    pEl.className = 'stat-value' + (totalPnl > 0 ? ' green' : totalPnl < 0 ? ' red' : '');
+  }
+
+  const tEl2 = document.getElementById('totalTrades');
+  if (tEl2) tEl2.textContent = totalTrades;
+
+  const pvEl = document.getElementById('portfolioValue');
+  if (pvEl) pvEl.textContent = `$${totalCap.toFixed(2)}`;
+
+  const tcEl = document.getElementById('totalCapital');
+  if (tcEl) tcEl.textContent = `$${totalCap.toFixed(2)}`;
+
+  // Update header
+  const headerPort = document.getElementById('headerPortfolio');
+  if (headerPort) headerPort.textContent = `$${totalCap.toFixed(2)}`;
+
+  const headerBots = document.getElementById('headerBots');
+  if (headerBots) headerBots.textContent = `${activeBotsCount}/7 ACTIVE`;
+
+  const globalWR = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
+  const headerWR = document.getElementById('headerWinRate');
+  if (headerWR) headerWR.textContent = globalWR + '%';
+
+  // Update metrics
+  updateMetrics(data, totalCap, totalTrades, totalWins, totalPnl);
+}
+
+/* ───────────────────────────────────────
+   updateTrading — fetch and render safely
 ─────────────────────────────────────── */
 function updateTrading() {
   fetch('./snapshot.json?t=' + Date.now())
     .then(r => r.json())
-    .then(data => {
-      window.lastSnapshot = data; // Store for fallback
-      let totalPnl = 0, totalTrades = 0, totalWins = 0, totalCap = 0, activeBotsCount = 0;
-
-      for (const [name, bot] of Object.entries(data.bots)) {
-        const pnl    = parseFloat(bot.pnl)    || 0;
-        const trades = parseInt(bot.trades)   || 0;
-        const wins   = parseInt(bot.wins)     || 0;
-        const bal    = parseFloat(bot.balance)|| 100;
-        const open   = bot.open_position === true;
-        const wr     = trades > 0 ? ((wins / trades) * 100).toFixed(1) + '%' : '—';
-        const wrPct  = trades > 0 ? (wins / trades) * 100 : 0;
-
-        if (trades > 0) activeBotsCount++;
-        totalPnl    += pnl;
-        totalTrades += trades;
-        totalWins   += wins;
-        totalCap    += bal;
-
-        // PnL
-        const pnlEl = document.getElementById(`${name}-pnl`);
-        if (pnlEl) {
-          pnlEl.textContent = fmt(pnl);
-          pnlEl.className   = 'bot-pnl' + (pnl > 0 ? ' pos' : pnl < 0 ? ' neg' : '');
-        }
-
-        // Trades
-        const tEl = document.getElementById(`${name}-trades`);
-        if (tEl) tEl.textContent = trades;
-
-        // Win rate
-        const wEl = document.getElementById(`${name}-wr`);
-        if (wEl) wEl.textContent = wr;
-
-        // Capital
-        const cEl = document.getElementById(`cap-${name}`);
-        if (cEl) cEl.textContent = `Capital: $${bal.toFixed(2)}`;
-
-        // Progress bar
-        const barEl = document.getElementById(`bar-${name}`);
-        if (barEl) barEl.style.width = Math.min(100, wrPct) + '%';
-
-        // Status dot
-        const dotEl = document.getElementById(`dot-${name}`);
-        if (dotEl) {
-          if (trades > 0) { dotEl.classList.add('active'); }
-          else            { dotEl.classList.remove('active'); }
-        }
-      }
-
-      // Summary stats
-      const cycleEl = document.getElementById('cycleInfo');
-      if (cycleEl) cycleEl.textContent = `Cycle #${data.cycle || 0}`;
-
-      const pEl  = document.getElementById('totalPnL');
-      const tEl2 = document.getElementById('totalTrades');
-      const pvEl = document.getElementById('portfolioValue');
-      const tcEl = document.getElementById('totalCapital');
-
-      if (pEl) {
-        pEl.textContent = fmt(totalPnl);
-        pEl.className   = 'stat-value' + (totalPnl > 0 ? ' green' : totalPnl < 0 ? ' red' : '');
-      }
-      if (tEl2)  tEl2.textContent  = totalTrades;
-      if (pvEl)  pvEl.textContent  = `$${totalCap.toFixed(2)}`;
-      if (tcEl)  tcEl.textContent  = `$${totalCap.toFixed(2)}`;
-
-      // Update header
-      document.getElementById('headerPortfolio').textContent = `$${totalCap.toFixed(2)}`;
-      document.getElementById('headerBots').textContent = `${activeBotsCount}/7 ACTIVE`;
-      const globalWR = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
-      document.getElementById('headerWinRate').textContent = globalWR + '%';
-
-      // UPDATE METRIC CARDS
-      updateMetrics(data, totalCap, totalTrades, totalWins, totalPnl);
-    })
+    .then(data => renderSnapshot(data))
     .catch(() => {
-      // On error, use last known snapshot if available
       if (window.lastSnapshot) {
-        updateTrading(); // Retry with cached data
+        renderSnapshot(window.lastSnapshot);
       }
     });
 }
@@ -1983,7 +2005,7 @@ function updateMetrics(snapshotData, portfolioVal, totalTrades, totalWins, total
   document.getElementById('metricBotsStatus').textContent = botStatus;
 
   // 📊 CARD 3: TRADE THROUGHPUT
-  const tournamentStart = new Date('2026-04-02T00:00:00').getTime();
+  const tournamentStart = new Date('2026-04-04T00:00:00').getTime();
   const elapsed = (Date.now() - tournamentStart) / (1000 * 3600); // hours
   const tradesPerHour = elapsed > 0 ? (totalTrades / elapsed).toFixed(2) : '0.00';
   document.getElementById('metricTradesVal').textContent = `${tradesPerHour} trades/hr`;

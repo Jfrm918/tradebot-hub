@@ -68,8 +68,13 @@
     },
     {
       "date": "2026-04-03",
-      "status": "active",
+      "status": "complete",
       "task": "Gallagher Operation project card added to hub — awaiting Jason final decision"
+    },
+    {
+      "date": "2026-04-04",
+      "status": "complete",
+      "task": "Tournament reset — Cycle 1 starts 2026-04-04, ends 2026-04-18. All 7 bots competing. Winner determined by scorecard."
     }
   ]
 }

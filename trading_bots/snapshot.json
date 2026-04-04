@@ -1,53 +1,55 @@
 {
   "cycle": 1,
+  "tournament_start": "2026-04-04",
+  "cycle_end": "2026-04-18",
   "bots": {
     "momentum": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     },
     "reversion": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     },
     "scalp": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     },
     "grid": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     },
     "swing": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     },
     "vwap_rev": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     },
     "vwap_mom": {
-      "pnl": 0.0,
+      "pnl": 0,
       "trades": 0,
       "wins": 0,
-      "balance": 100.0,
+      "balance": 100,
       "open_position": false
     }
   }
