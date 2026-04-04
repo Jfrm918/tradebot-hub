@@ -86,6 +86,7 @@ class Sim:
                 'grid': {'balance': 100.0, 'pnl': 0.0, 'trades': 0, 'wins': 0},
                 'scalp': {'balance': 100.0, 'pnl': 0.0, 'trades': 0, 'wins': 0},
                 'swing': {'balance': 100.0, 'pnl': 0.0, 'trades': 0, 'wins': 0},
+                'vwap': {'balance': 100.0, 'pnl': 0.0, 'trades': 0, 'wins': 0},
             }
         }
         with open(SNAPSHOT, 'w') as f:

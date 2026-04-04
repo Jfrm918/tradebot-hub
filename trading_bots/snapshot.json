@@ -1,0 +1,54 @@
+{
+  "cycle": 1,
+  "bots": {
+    "momentum": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    },
+    "reversion": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    },
+    "scalp": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    },
+    "grid": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    },
+    "swing": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    },
+    "vwap_rev": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    },
+    "vwap_mom": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false
+    }
+  }
+}

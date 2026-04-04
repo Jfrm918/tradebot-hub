@@ -27,6 +27,11 @@
       "enabled": true,
       "capital": 100,
       "description": "4-24hr holds targeting 2-5% moves"
+    },
+    "vwap_momentum": {
+      "enabled": true,
+      "capital": 100,
+      "description": "VWAP-based momentum trading with volume confirmation"
     }
   },
   "total_capital": 500,
