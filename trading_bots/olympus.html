@@ -1452,6 +1452,11 @@
                     <div class="settings-row"><span class="settings-key">Snapshot Interval</span><span class="settings-val">Every 50 cycles</span></div>
                     <div class="settings-row"><span class="settings-key">Auto-Deploy</span><span class="settings-val green">● GitHub → Vercel</span></div>
                     <div class="settings-row"><span class="settings-key">Credits Refresh</span><span class="settings-val">Every 30 sec</span></div>
+                    <div class="settings-row">
+                        <span class="settings-key">Athena API Key</span>
+                        <input id="apiKeyInput" type="password" placeholder="sk-ant-..." style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:6px;padding:6px 12px;color:var(--cyan);font-family:'Space Mono',monospace;font-size:0.8em;width:280px;outline:none;" />
+                        <button onclick="saveApiKey()" style="padding:6px 14px;background:rgba(0,255,157,0.1);border:1px solid rgba(0,255,157,0.3);border-radius:6px;color:#00ff9d;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7em;margin-left:8px;">SAVE</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2203,7 +2208,7 @@
         })();
 
         /* ── ATHENA VOICE + API ── */
-        const ATHENA_KEY = 'YOUR_API_KEY_HERE';
+        const ATHENA_KEY = localStorage.getItem('athena_api_key') || '';
         const ATHENA_PROMPT = 'You are Athena, Jason\'s AI familiar and warrior goddess inside the Olympus Command Center. Direct, powerful, loyal. Max 2 sentences. You monitor his trading bots, income funnels, and empire. Speak like a commander, not an assistant.';
 
         let athenaRec = null, athenaListening = false, athenaCurrentUtt = null;
@@ -2288,6 +2293,15 @@
         document.getElementById('athenaInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') talkToAthena(); });
         speechSynthesis.onvoiceschanged = () => {};
         setTimeout(() => { athenaSpeak('Systems online, Jason.'); }, 1200);
+
+        /* ── API KEY MANAGEMENT ── */
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) { 
+                localStorage.setItem('athena_api_key', key); 
+                alert('API key saved. Reload the page.');
+            }
+        }
     </script>
 </body>
 </html>
