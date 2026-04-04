@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ OLYMPUS v2 — Athena Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & ROOT ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  color-scheme: dark;
+  --cyan:        #00d4ff;
+  --cyan-dim:    rgba(0,212,255,0.5);
+  --cyan-ghost:  rgba(0,212,255,0.08);
+  --cyan-glow:   rgba(0,212,255,0.4);
+  --orange:      #ff6b00;
+  --orange-dim:  rgba(255,107,0,0.6);
+  --orange-ghost:rgba(255,107,0,0.08);
+  --green:       #00ff9d;
+  --green-dim:   rgba(0,255,157,0.5);
+  --red:         #ff4455;
+  --bg:          #000510;
+  --bg-deep:     #000820;
+  --text:        #e2e8f0;
+  --text-dim:    rgba(226,232,240,0.55);
+  --sidebar-w:   220px;
+  --header-h:    60px;
+  --radius:      12px;
+  --border-cyan: 1px solid rgba(0,212,255,0.18);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* ── CUSTOM SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #00eeff; }
+
+/* ── BACKGROUND ── */
+#bgCanvas {
+  position: fixed; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse at 40% 40%, #0a0520 0%, #000510 100%);
+}
+
+/* ── NEBULA BLOBS ── */
+.nebula {
+  position: fixed; pointer-events: none; z-index: 1;
+  border-radius: 50%; filter: blur(80px); opacity: 0.18;
+}
+.nebula-1 {
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, #6600ff 0%, transparent 70%);
+  top: -100px; left: -100px;
+  animation: nebulaFloat1 22s ease-in-out infinite;
+}
+.nebula-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse, #0044ff 0%, transparent 70%);
+  bottom: -150px; right: 200px;
+  animation: nebulaFloat2 28s ease-in-out infinite;
+}
+.nebula-3 {
+  width: 400px; height: 350px;
+  background: radial-gradient(ellipse, #aa00ff 0%, transparent 70%);
+  top: 40%; left: 40%;
+  animation: nebulaFloat3 18s ease-in-out infinite;
+}
+@keyframes nebulaFloat1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(60px, 40px) scale(1.08); }
+  66%  { transform: translate(-30px, 80px) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes nebulaFloat2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-80px, -60px) scale(1.12); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes nebulaFloat3 {
+  0%   { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(50px, -40px) scale(1.05); }
+  75%  { transform: translate(-40px, 50px) scale(0.97); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* ── SCANLINES ── */
+.scanlines {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+}
+.scanlines::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.12) 2px,
+    rgba(0,0,0,0.12) 4px
+  );
+}
+
+/* ── APP SHELL ── */
+.app { display: flex; height: 100vh; position: relative; z-index: 10; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(5,10,30,0.75);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(0,212,255,0.12);
+  position: relative;
+  z-index: 20;
+  overflow: hidden;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.4);
+  border-bottom: 1px solid rgba(0,212,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.nav-item:hover {
+  background: rgba(0,212,255,0.06);
+  color: var(--cyan);
+  border-color: rgba(0,212,255,0.12);
+}
+.nav-item.active {
+  background: rgba(0,212,255,0.12);
+  color: var(--cyan);
+  border-color: rgba(0,212,255,0.3);
+  box-shadow: 0 0 12px rgba(0,212,255,0.15), inset 0 0 12px rgba(0,212,255,0.05);
+  text-shadow: 0 0 12px rgba(0,212,255,0.6);
+}
+.nav-icon { font-size: 1.1em; flex-shrink: 0; }
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(0,212,255,0.08);
+  font-size: 0.7em;
+  color: rgba(0,212,255,0.3);
+  font-family: 'Space Grotesk', monospace;
+  letter-spacing: 1px;
+}
+
+/* ── MAIN AREA ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  height: var(--header-h);
+  min-height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: rgba(0,5,16,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,212,255,0.1);
+  z-index: 15;
+}
+.header-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.header-stat-label {
+  font-size: 0.6em;
+  color: rgba(0,212,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.header-stat-value {
+  font-size: 0.9em;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.header-stat-value.orange { color: var(--orange); text-shadow: 0 0 10px rgba(255,107,0,0.5); }
+.header-stat-value.cyan   { color: var(--cyan); }
+.header-divider {
+  width: 1px;
+  height: 30px;
+  background: rgba(0,212,255,0.12);
+}
+.header-spacer { flex: 1; }
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border: 1px solid rgba(0,212,255,0.4);
+  background: rgba(0,212,255,0.08);
+  color: var(--cyan);
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+.btn:hover {
+  background: rgba(0,212,255,0.18);
+  box-shadow: 0 0 12px rgba(0,212,255,0.3);
+  transform: translateY(-1px);
+}
+.btn.btn-primary {
+  background: rgba(0,212,255,0.15);
+  border-color: var(--cyan);
+}
+.btn.spinning { animation: spin 0.8s linear infinite; }
+.btn.done { background: rgba(0,255,157,0.15); border-color: var(--green); color: var(--green); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── CONTENT AREA ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  position: relative;
+}
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── GLASS CARDS ── */
+.card-glass {
+  background: rgba(13,21,38,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.25s ease;
+}
+.card-glass:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0,212,255,0.45);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.12);
+}
+.card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--cyan-dim);
+  margin-bottom: 14px;
+}
+.card-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── UTILITY ── */
+.glow-cyan {
+  text-shadow: 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.4);
+  box-shadow: 0 0 20px rgba(0,212,255,0.3);
+}
+.text-glow-cyan {
+  text-shadow: 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.4);
+}
+.text-green { color: var(--green); }
+.text-red   { color: var(--red); }
+.text-cyan  { color: var(--cyan); }
+.text-orange{ color: var(--orange); }
+.text-dim   { color: var(--text-dim); }
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 12px rgba(0,212,255,0.5);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ═══════════════════════════════════════
+   TRADING PANEL
+═══════════════════════════════════════ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: rgba(13,21,38,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  transition: all 0.25s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0,212,255,0.45);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.12);
+}
+.stat-label {
+  font-size: 0.65em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--cyan-dim);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6em;
+  font-weight: 700;
+  color: var(--text);
+}
+.stat-value.green { color: var(--green); text-shadow: 0 0 10px rgba(0,255,157,0.4); }
+.stat-value.red   { color: var(--red); }
+
+/* BOT GRID */
+.bot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.bot-card {
+  background: rgba(13,21,38,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,212,255,0.15);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.bot-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0,212,255,0.45);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.12);
+}
+.bot-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.bot-card:hover::before { opacity: 1; }
+.bot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.bot-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(0,212,255,0.2);
+  border: 1px solid rgba(0,212,255,0.3);
+  flex-shrink: 0;
+}
+.status-dot.active {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 6px rgba(0,255,157,0.8);
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(0,255,157,0.8); }
+  50%       { box-shadow: 0 0 12px rgba(0,255,157,0.8), 0 0 20px rgba(0,255,157,0.4); }
+}
+.bot-pnl {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-dim);
+}
+.bot-pnl.pos { color: var(--green); text-shadow: 0 0 10px rgba(0,255,157,0.5); }
+.bot-pnl.neg { color: var(--red); }
+.bot-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7em;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+.bot-meta-item span { color: var(--cyan); font-weight: 600; }
+.bot-progress-wrap {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bot-progress-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), #0099ff);
+  transition: width 0.8s ease;
+}
+.bot-capital {
+  font-size: 0.65em;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════
+   FOAMDIAL PANEL
+═══════════════════════════════════════ */
+.foamdial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.foamdial-card {
+  background: rgba(13,21,38,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.25s ease;
+}
+.foamdial-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0,212,255,0.45);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.12);
+}
+.foamdial-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  text-shadow: 0 0 10px rgba(0,212,255,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.foamdial-data {
+  font-size: 0.82em;
+  line-height: 2;
+  color: var(--text);
+}
+.foamdial-data strong { color: var(--cyan); }
+.foamdial-data .hl-orange { color: var(--orange); font-weight: 600; }
+.badge {
+  display: inline-block;
+  font-size: 0.65em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(0,212,255,0.3);
+  color: var(--cyan);
+  background: rgba(0,212,255,0.08);
+  margin: 2px;
+}
+.badge.green { border-color: rgba(0,255,157,0.3); color: var(--green); background: rgba(0,255,157,0.06); }
+.badge.orange { border-color: rgba(255,107,0,0.3); color: var(--orange); background: rgba(255,107,0,0.06); }
+.badge.red { border-color: rgba(255,68,85,0.3); color: var(--red); background: rgba(255,68,85,0.06); }
+.foamdial-badges { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* ═══════════════════════════════════════
+   ATHENA PANEL
+═══════════════════════════════════════ */
+.athena-panel {
+  height: calc(100vh - var(--header-h) - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+#athenaCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  background: rgba(0,5,20,0.5);
+}
+.athena-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.athena-avatar-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.athena-avatar-ring {
+  position: absolute;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,212,255,0.3);
+  box-shadow: 0 0 30px rgba(0,212,255,0.2), inset 0 0 30px rgba(0,212,255,0.05);
+  animation: ringPulse 3s ease-in-out infinite;
+}
+.athena-avatar-ring.ring2 {
+  width: 260px; height: 260px;
+  border-color: rgba(0,212,255,0.12);
+  animation-delay: 1s;
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50%       { transform: scale(1.05); opacity: 0.4; }
+}
+.athena-avatar {
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(0,212,255,0.5);
+  box-shadow: 0 0 40px rgba(0,212,255,0.4), 0 0 80px rgba(0,212,255,0.15);
+  position: relative;
+  z-index: 2;
+}
+.athena-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.4);
+  letter-spacing: 4px;
+}
+.athena-subtitle {
+  font-size: 0.75em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS PANEL
+═══════════════════════════════════════ */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+.settings-card {
+  background: rgba(13,21,38,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.25s ease;
+}
+.settings-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0,212,255,0.4);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.1);
+}
+.settings-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--cyan-dim);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,212,255,0.1);
+}
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.82em;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row-label { color: var(--text-dim); }
+.settings-row-value { font-weight: 600; font-family: 'Space Grotesk', sans-serif; color: var(--text); }
+.settings-row-value.green { color: var(--green); }
+.settings-row-value.orange { color: var(--orange); }
+.settings-row-value.cyan { color: var(--cyan); }
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.status-pill.online { background: rgba(0,255,157,0.1); color: var(--green); border: 1px solid rgba(0,255,157,0.25); }
+.status-pill.offline { background: rgba(255,68,85,0.1); color: var(--red); border: 1px solid rgba(255,68,85,0.25); }
+.status-pill.unknown { background: rgba(255,107,0,0.1); color: var(--orange); border: 1px solid rgba(255,107,0,0.25); }
+.status-dot-sm {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot-sm.green { background: var(--green); box-shadow: 0 0 4px rgba(0,255,157,0.8); animation: dotPulse 2s infinite; }
+.status-dot-sm.red   { background: var(--red); }
+.status-dot-sm.orange{ background: var(--orange); }
+
+/* API KEY INPUT */
+.api-input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 0.82em;
+  font-family: 'Space Grotesk', monospace;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 8px;
+}
+.api-input:focus { border-color: rgba(0,212,255,0.5); box-shadow: 0 0 8px rgba(0,212,255,0.15); }
+
+/* ═══════════════════════════════════════
+   MODAL
+═══════════════════════════════════════ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: rgba(8,14,35,0.95);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(0,212,255,0.1);
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(0,212,255,0.15);
+}
+.modal-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 12px rgba(0,212,255,0.5);
+}
+.modal-close {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(255,68,85,0.15); border-color: rgba(255,68,85,0.3); color: var(--red); }
+.modal-ts {
+  font-size: 0.7em;
+  color: var(--text-dim);
+  margin-bottom: 18px;
+  font-family: 'Space Grotesk', monospace;
+}
+.report-bot {
+  background: rgba(0,212,255,0.04);
+  border: 1px solid rgba(0,212,255,0.1);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.report-bot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.report-bot-name { font-weight: 600; font-size: 0.9em; color: var(--text); }
+.report-bot-pnl { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1em; }
+.report-bot-pnl.pos { color: var(--green); }
+.report-bot-pnl.neg { color: var(--red); }
+.report-bot-pnl.neu { color: var(--text-dim); }
+.report-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.report-stat { text-align: center; }
+.report-stat-label { font-size: 0.62em; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.report-stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 0.9em; font-weight: 600; }
+.wl-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7em;
+  color: var(--text-dim);
+}
+.wl-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.wl-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  border-radius: 2px;
+  transition: width 0.8s ease;
+}
+.report-total {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(0,212,255,0.06);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 8px;
+  text-align: center;
+}
+.report-total-label { font-size: 0.62em; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.report-total-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.1em; font-weight: 700; color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- Background canvas (star field) -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Nebula blobs -->
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<!-- Scanlines -->
+<div class="scanlines"></div>
+
+<!-- APP SHELL -->
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>⚡</span>
+      <span>OLYMPUS</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" id="nav-trading" onclick="switchTab('trading')">
+        <span class="nav-icon">🤖</span>
+        <span>Trading</span>
+      </div>
+      <div class="nav-item" id="nav-foamdial" onclick="switchTab('foamdial')">
+        <span class="nav-icon">🔧</span>
+        <span>FoamDial</span>
+      </div>
+      <div class="nav-item" id="nav-athena" onclick="switchTab('athena')">
+        <span class="nav-icon">🦉</span>
+        <span>Athena</span>
+      </div>
+      <div class="nav-item" id="nav-settings" onclick="switchTab('settings')">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      OLYMPUS v2.0<br>
+      <span id="sidebarTime" style="color:rgba(0,212,255,0.4);">—</span>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-stat">
+        <div class="header-stat-label">Athena Credits</div>
+        <div class="header-stat-value orange" id="credits">$99.83</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-stat">
+        <div class="header-stat-label">Hourly Burn</div>
+        <div class="header-stat-value cyan" id="hourlyBurn">$0.0210/hr</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-stat">
+        <div class="header-stat-label">Last Sync</div>
+        <div class="header-stat-value cyan" id="lastUpdate">—</div>
+      </div>
+      <div class="header-spacer"></div>
+      <button class="btn btn-primary" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
+      <button class="btn" onclick="showReport()">📊 STATUS REPORT</button>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ════════════════════════════════
+           TRADING PANEL
+      ════════════════════════════════ -->
+      <div id="panel-trading" class="panel active">
+
+        <div class="section-header">
+          🤖 Trading Bots
+          <span style="font-size:0.65em;color:var(--text-dim);font-weight:400;letter-spacing:1px;" id="cycleInfo">Loading...</span>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Capital</div>
+            <div class="stat-value" id="totalCapital">$700.00</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Trades</div>
+            <div class="stat-value" id="totalTrades">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total P&L</div>
+            <div class="stat-value" id="totalPnL">$0.00</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Portfolio Value</div>
+            <div class="stat-value" id="portfolioValue">$700.00</div>
+          </div>
+        </div>
+
+        <!-- Bot grid -->
+        <div class="bot-grid">
+
+          <!-- Momentum -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">Momentum</div>
+              <div class="status-dot" id="dot-momentum"></div>
+            </div>
+            <div class="bot-pnl" id="momentum-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="momentum-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="momentum-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-momentum" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-momentum">Capital: $100.00</div>
+          </div>
+
+          <!-- Mean Reversion -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">Mean Reversion</div>
+              <div class="status-dot" id="dot-reversion"></div>
+            </div>
+            <div class="bot-pnl" id="reversion-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="reversion-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="reversion-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-reversion" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-reversion">Capital: $100.00</div>
+          </div>
+
+          <!-- Grid -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">Grid</div>
+              <div class="status-dot" id="dot-grid"></div>
+            </div>
+            <div class="bot-pnl" id="grid-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="grid-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="grid-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-grid" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-grid">Capital: $100.00</div>
+          </div>
+
+          <!-- Scalping -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">Scalping</div>
+              <div class="status-dot" id="dot-scalp"></div>
+            </div>
+            <div class="bot-pnl" id="scalp-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="scalp-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="scalp-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-scalp" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-scalp">Capital: $100.00</div>
+          </div>
+
+          <!-- Swing -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">Swing</div>
+              <div class="status-dot" id="dot-swing"></div>
+            </div>
+            <div class="bot-pnl" id="swing-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="swing-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="swing-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-swing" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-swing">Capital: $100.00</div>
+          </div>
+
+          <!-- VWAP Reversion -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">VWAP Reversion</div>
+              <div class="status-dot" id="dot-vwap_rev"></div>
+            </div>
+            <div class="bot-pnl" id="vwap_rev-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="vwap_rev-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="vwap_rev-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-vwap_rev" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-vwap_rev">Capital: $100.00</div>
+          </div>
+
+          <!-- VWAP Momentum -->
+          <div class="bot-card">
+            <div class="bot-header">
+              <div class="bot-name">VWAP Momentum</div>
+              <div class="status-dot" id="dot-vwap_mom"></div>
+            </div>
+            <div class="bot-pnl" id="vwap_mom-pnl">$0.00</div>
+            <div class="bot-meta">
+              <div class="bot-meta-item">Trades: <span id="vwap_mom-trades">0</span></div>
+              <div class="bot-meta-item">Win%: <span id="vwap_mom-wr">—</span></div>
+            </div>
+            <div class="bot-progress-wrap">
+              <div class="bot-progress-bar" id="bar-vwap_mom" style="width:0%"></div>
+            </div>
+            <div class="bot-capital text-dim" id="cap-vwap_mom">Capital: $100.00</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════
+           FOAMDIAL PANEL
+      ════════════════════════════════ -->
+      <div id="panel-foamdial" class="panel">
+
+        <div class="section-header">🔧 FoamDial — Spray Foam Intelligence</div>
+
+        <div class="foamdial-grid">
+
+          <div class="foamdial-card">
+            <div class="foamdial-title">⚡ Graco Reactor² E-30</div>
+            <div class="foamdial-data">
+              <strong>Pressure:</strong> Single setpoint controls both sides | A/B NOT independently adjustable electronically<br>
+              <strong>A/B Imbalance (E24):</strong> Mechanical — dirty strainer, worn check valves, T1 pump wear, low drum<br>
+              <strong>Temps:</strong> A, B, Hose set INDEPENDENTLY on Targets screen<br>
+              <strong>Targets:</strong> Press setpoint soft key → Up/Down arrows → confirm → back<br>
+              <strong>Setup Mode password:</strong> 0000 (default)<br>
+              <strong>Daily must-do:</strong> Wet cups (TSL fluid) + inlet strainers — both sides<br>
+              <strong>Guns:</strong> Graco Fusion AP | Tips: 4242 / 4747 / 5252 only<br>
+              <strong>PASSENGER:</strong> 300 ft hose + 10 ft whip (primary)<br>
+              <strong>DRIVER:</strong> 300 ft + 20 ft whip
+            </div>
+            <div class="foamdial-badges">
+              <span class="badge green">✅ Active Rig</span>
+              <span class="badge green">✅ Manual Studied</span>
+            </div>
+          </div>
+
+          <div class="foamdial-card">
+            <div class="foamdial-title">🧪 Chemical Reference</div>
+            <div class="foamdial-data">
+              <span class="hl-orange">Ambit AMBI-SEAL 5.0 (current)</span><br>
+              Open cell | Wide temp range | Less rise than Enverge | 2-pass for 5-6"<br>
+              Air bubbles = product characteristic or A/B imbalance<br>
+              Substrate min: 40°F | Excellent wood adhesion<br><br>
+              <span class="hl-orange">Enverge (transitioning to)</span><br>
+              OC + CC | Baseline: 145°F / 1,400 psi | Proven on metal + wood<br>
+              Full brief: memory/spray-foam-mission.md
+            </div>
+            <div class="foamdial-badges">
+              <span class="badge red">🔴 Ambit Active</span>
+              <span class="badge">Enverge Coming</span>
+            </div>
+          </div>
+
+          <div class="foamdial-card">
+            <div class="foamdial-title">🌡️ Critical Field Parameters</div>
+            <div class="foamdial-data">
+              <strong>Substrate min:</strong> 40°F+ and ≥5°F above dew point — no exceptions<br>
+              <strong>Humidity watch:</strong> Above 70% — adhesion risk increases<br>
+              <strong>4242:</strong> General walls, standard coverage<br>
+              <strong>4747:</strong> Higher output, larger cavities<br>
+              <strong>5252:</strong> Max output<br>
+              <strong>Bullard Box:</strong> April–August (heat — no filters)<br>
+              <strong>Filter System:</strong> September–March
+            </div>
+            <div class="foamdial-badges">
+              <span class="badge green">✅ Active Reference</span>
+            </div>
+          </div>
+
+          <div class="foamdial-card">
+            <div class="foamdial-title">📋 Spray Log</div>
+            <div class="foamdial-data">
+              <span class="hl-orange">Job #1 — 2026-03-30 — Chouteau, OK</span><br>
+              Metal | Enverge OC | 4242 | 71°F | 145°F / 1,400 psi | ✅ EXCELLENT<br><br>
+              <span class="hl-orange">Job #2 — 2026-04-01 — Monkey Island, OK</span><br>
+              Wood 76°F | Ambit OC | 4242 | 74°F / 69% RH<br>
+              131/133°F | 1,080–1,094 psi | A/B gap 54 psi noted<br>
+              2-pass to 5-6" | In progress
+            </div>
+            <div class="foamdial-badges">
+              <span class="badge">2 Jobs Logged</span>
+              <span class="badge">FoamDial Training Data</span>
+            </div>
+          </div>
+
+          <div class="foamdial-card">
+            <div class="foamdial-title">📚 Knowledge Status</div>
+            <div class="foamdial-data">
+              <span class="text-green">✅</span> Enverge TDS + application guide<br>
+              <span class="text-green">✅</span> Ambit AMBI-SEAL 5.0 product specs<br>
+              <span class="text-green">✅</span> Graco Fusion AP gun + tip selection<br>
+              <span class="text-green">✅</span> Field conditions protocol<br>
+              <span class="text-green">✅</span> Spray log: 2 jobs<br>
+              <span class="text-green">✅</span> Graco Reactor² E-30 full manual — complete<br>
+              <span class="text-green">✅</span> Graco T1 pump specs — complete<br>
+              <span style="color:var(--cyan-dim);">⏳</span> Generator make/model — need from Jason<br>
+              <span style="color:var(--cyan-dim);">⏳</span> Compressor make/model — need from Jason<br>
+              <span style="color:var(--cyan-dim);">⏳</span> 300 ft hose pressure/heat data — pending
+            </div>
+            <div class="foamdial-badges">
+              <span class="badge">7 / 10 Complete</span>
+            </div>
+          </div>
+
+          <div class="foamdial-card">
+            <div class="foamdial-title">🔫 Gun &amp; Hose Specs</div>
+            <div class="foamdial-data">
+              <strong>Gun:</strong> Graco Fusion AP (air purge)<br>
+              <strong>Tips in rotation:</strong> 4242, 4747, 5252<br>
+              <strong>Tip coding:</strong> First two digits = orifice size ×10, last two = fan width<br>
+              <strong>Hose config (Passenger):</strong> 300 ft heated + 10 ft whip<br>
+              <strong>Hose config (Driver):</strong> 300 ft heated + 20 ft whip<br>
+              <strong>Hose temps:</strong> Set independently from A/B on Targets screen<br>
+              <strong>Purge agent:</strong> Graco Fusion Solvent
+            </div>
+            <div class="foamdial-badges">
+              <span class="badge green">✅ Configured</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════
+           ATHENA PANEL
+      ════════════════════════════════ -->
+      <div id="panel-athena" class="panel">
+        <div class="athena-panel">
+          <canvas id="athenaCanvas"></canvas>
+          <div class="athena-content">
+            <div class="athena-avatar-wrap">
+              <div class="athena-avatar-ring ring2"></div>
+              <div class="athena-avatar-ring"></div>
+              <img class="athena-avatar" src="./athena.jpg" alt="Athena"
+                   onerror="this.style.display='none';document.getElementById('athenaFallback').style.display='flex'">
+              <div id="athenaFallback" style="display:none;width:180px;height:180px;border-radius:50%;border:3px solid rgba(0,212,255,0.5);background:rgba(0,212,255,0.08);align-items:center;justify-content:center;font-size:4em;box-shadow:0 0 40px rgba(0,212,255,0.4);">🦉</div>
+            </div>
+            <div class="athena-name text-glow-cyan">ATHENA</div>
+            <div class="athena-subtitle">AI Familiar — Olympus Command</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════
+           SETTINGS PANEL
+      ════════════════════════════════ -->
+      <div id="panel-settings" class="panel">
+
+        <div class="section-header">⚙️ Settings &amp; System</div>
+
+        <div class="settings-grid">
+
+          <!-- Credits -->
+          <div class="settings-card">
+            <div class="settings-title">💳 Athena Credits</div>
+            <div class="settings-row">
+              <div class="settings-row-label">Current Balance</div>
+              <div class="settings-row-value orange" id="creditsBalance">$99.83</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Total Spent</div>
+              <div class="settings-row-value" id="creditsSpent">$0.17</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Daily Burn</div>
+              <div class="settings-row-value" id="dailyBurn">$0.170/day</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Days Remaining</div>
+              <div class="settings-row-value green" id="daysRemaining">587 days</div>
+            </div>
+          </div>
+
+          <!-- System Status -->
+          <div class="settings-card">
+            <div class="settings-title">🔌 System Status</div>
+            <div class="settings-row">
+              <div class="settings-row-label">Trading Simulator</div>
+              <div class="settings-row-value">
+                <div class="status-pill online"><div class="status-dot-sm green"></div>Online</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Web Server</div>
+              <div class="settings-row-value">
+                <div class="status-pill online"><div class="status-dot-sm green"></div>localhost:8000</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">GitHub</div>
+              <div class="settings-row-value">
+                <div class="status-pill online"><div class="status-dot-sm green"></div>Connected</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Vercel</div>
+              <div class="settings-row-value">
+                <div class="status-pill online"><div class="status-dot-sm green"></div>Deployed</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Model</div>
+              <div class="settings-row-value cyan">claude-sonnet-4-6</div>
+            </div>
+          </div>
+
+          <!-- Config -->
+          <div class="settings-card">
+            <div class="settings-title">⚙️ Configuration</div>
+            <div class="settings-row">
+              <div class="settings-row-label">Total Capital</div>
+              <div class="settings-row-value">$700.00</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Active Strategies</div>
+              <div class="settings-row-value cyan">7</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Capital Per Bot</div>
+              <div class="settings-row-value">$100.00</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Snapshot Interval</div>
+              <div class="settings-row-value">5s</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Credits Refresh</div>
+              <div class="settings-row-value">60s</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Last Snapshot</div>
+              <div class="settings-row-value" id="timestamp">—</div>
+            </div>
+            <div style="margin-top:14px;">
+              <div class="settings-row-label" style="margin-bottom:4px;font-size:0.75em;color:var(--text-dim);">API Key</div>
+              <input class="api-input" type="password" id="apiKeyInput" placeholder="sk-... (stored locally only)">
+            </div>
+          </div>
+
+          <!-- About -->
+          <div class="settings-card">
+            <div class="settings-title">ℹ️ About Olympus v2</div>
+            <div class="settings-row">
+              <div class="settings-row-label">Version</div>
+              <div class="settings-row-value cyan">2.0.0</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Build</div>
+              <div class="settings-row-value">2026-04-04</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">AI Familiar</div>
+              <div class="settings-row-value cyan">🦉 Athena</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Operator</div>
+              <div class="settings-row-value">Jason</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Stack</div>
+              <div class="settings-row-value text-dim">Pure HTML/CSS/JS</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── STATUS REPORT MODAL ── -->
+<div id="reportModal" class="modal-overlay" onclick="closeReportModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📊 Performance Report</div>
+      <div class="modal-close" onclick="document.getElementById('reportModal').classList.remove('open')">✕</div>
+    </div>
+    <div class="modal-ts" id="reportTs">Fetching data...</div>
+    <div id="reportContent">
+      <div style="text-align:center;padding:30px;color:var(--cyan-dim);">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── JAVASCRIPT ── -->
+<script>
+/* ───────────────────────────────────────
+   STAR FIELD CANVAS
+─────────────────────────────────────── */
+(function initStarField() {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function createStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height,
+        r:     Math.random() * 1.4 + 0.2,
+        alpha: Math.random(),
+        speed: Math.random() * 0.008 + 0.002,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // deep background gradient
+    const grad = ctx.createRadialGradient(
+      canvas.width * 0.4, canvas.height * 0.4, 0,
+      canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.8
+    );
+    grad.addColorStop(0, '#0a0520');
+    grad.addColorStop(1, '#000510');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // stars
+    for (const s of stars) {
+      const a = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,220,255,${a * s.alpha})`;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', () => { resize(); createStars(200); });
+  createStars(200);
+  requestAnimationFrame(draw);
+})();
+
+/* ───────────────────────────────────────
+   ATHENA PARTICLE CANVAS
+─────────────────────────────────────── */
+let athenaParticles = [];
+let athenaAnimating = false;
+
+function initAthenaCanvas() {
+  const canvas = document.getElementById('athenaCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  function createParticles(n) {
+    athenaParticles = [];
+    for (let i = 0; i < n; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 0.4 + 0.1;
+      athenaParticles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: Math.random() * 1.8 + 0.4,
+        alpha: Math.random() * 0.6 + 0.2,
+        color: Math.random() > 0.6 ? '0,212,255' : Math.random() > 0.5 ? '100,80,255' : '0,255,157'
+      });
+    }
+  }
+
+  function drawFrame() {
+    if (!athenaAnimating) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // connections
+    ctx.lineWidth = 0.4;
+    for (let i = 0; i < athenaParticles.length; i++) {
+      for (let j = i + 1; j < athenaParticles.length; j++) {
+        const a = athenaParticles[i], b = athenaParticles[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 80) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0,212,255,${0.08 * (1 - dist / 80)})`;
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // particles
+    for (const p of athenaParticles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(drawFrame);
+  }
+
+  resize();
+  window.addEventListener('resize', () => { resize(); createParticles(120); });
+  createParticles(120);
+  athenaAnimating = true;
+  drawFrame();
+}
+
+/* ───────────────────────────────────────
+   TAB SWITCHING
+─────────────────────────────────────── */
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  document.getElementById(`nav-${name}`).classList.add('active');
+
+  if (name === 'athena') {
+    if (!athenaAnimating) initAthenaCanvas();
+    else athenaAnimating = true;
+  } else {
+    // pause athena canvas when not visible (saves CPU)
+  }
+}
+
+/* ───────────────────────────────────────
+   P&L FORMATTER
+─────────────────────────────────────── */
+function fmt(v) {
+  const n = parseFloat(v) || 0;
+  return n >= 0 ? `+$${n.toFixed(2)}` : `-$${Math.abs(n).toFixed(2)}`;
+}
+
+/* ───────────────────────────────────────
+   updateTrading — fetch snapshot.json
+─────────────────────────────────────── */
+function updateTrading() {
+  fetch('./snapshot.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      let totalPnl = 0, totalTrades = 0, totalCap = 0;
+
+      for (const [name, bot] of Object.entries(data.bots)) {
+        const pnl    = parseFloat(bot.pnl)    || 0;
+        const trades = parseInt(bot.trades)   || 0;
+        const wins   = parseInt(bot.wins)     || 0;
+        const bal    = parseFloat(bot.balance)|| 100;
+        const open   = bot.open_position === true;
+        const wr     = trades > 0 ? ((wins / trades) * 100).toFixed(1) + '%' : '—';
+        const wrPct  = trades > 0 ? (wins / trades) * 100 : 0;
+
+        totalPnl    += pnl;
+        totalTrades += trades;
+        totalCap    += bal;
+
+        // PnL
+        const pnlEl = document.getElementById(`${name}-pnl`);
+        if (pnlEl) {
+          pnlEl.textContent = fmt(pnl);
+          pnlEl.className   = 'bot-pnl' + (pnl > 0 ? ' pos' : pnl < 0 ? ' neg' : '');
+        }
+
+        // Trades
+        const tEl = document.getElementById(`${name}-trades`);
+        if (tEl) tEl.textContent = trades;
+
+        // Win rate
+        const wEl = document.getElementById(`${name}-wr`);
+        if (wEl) wEl.textContent = wr;
+
+        // Capital
+        const cEl = document.getElementById(`cap-${name}`);
+        if (cEl) cEl.textContent = `Capital: $${bal.toFixed(2)}`;
+
+        // Progress bar
+        const barEl = document.getElementById(`bar-${name}`);
+        if (barEl) barEl.style.width = Math.min(100, wrPct) + '%';
+
+        // Status dot
+        const dotEl = document.getElementById(`dot-${name}`);
+        if (dotEl) {
+          if (open) { dotEl.classList.add('active'); }
+          else      { dotEl.classList.remove('active'); }
+        }
+      }
+
+      // Summary stats
+      const cycleEl = document.getElementById('cycleInfo');
+      if (cycleEl) cycleEl.textContent = `Cycle #${data.cycle || 0}`;
+
+      const pEl  = document.getElementById('totalPnL');
+      const tEl2 = document.getElementById('totalTrades');
+      const pvEl = document.getElementById('portfolioValue');
+      const tcEl = document.getElementById('totalCapital');
+
+      if (pEl) {
+        pEl.textContent = fmt(totalPnl);
+        pEl.className   = 'stat-value' + (totalPnl > 0 ? ' green' : totalPnl < 0 ? ' red' : '');
+      }
+      if (tEl2)  tEl2.textContent  = totalTrades;
+      if (pvEl)  pvEl.textContent  = `$${totalCap.toFixed(2)}`;
+      if (tcEl)  tcEl.textContent  = `$${totalCap.toFixed(2)}`;
+    })
+    .catch(() => {/* snapshot not yet available */});
+}
+
+/* ───────────────────────────────────────
+   updateCredits — fetch usage_tracker.json
+─────────────────────────────────────── */
+function updateCredits() {
+  fetch('./usage_tracker.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const c = data.credits, b = data.burn_rate;
+      const bal   = parseFloat(c.current_balance);
+      const spent = parseFloat(c.total_spent);
+      const dly   = parseFloat(b.daily_average);
+      const hrly  = parseFloat(b.hourly_average);
+      const days  = b.days_remaining || Math.floor(bal / (dly || 0.01));
+
+      // Header
+      const credEl   = document.getElementById('credits');
+      const hrBurnEl = document.getElementById('hourlyBurn');
+      if (credEl)   credEl.textContent   = `$${bal.toFixed(2)}`;
+      if (hrBurnEl) hrBurnEl.textContent = `$${hrly.toFixed(4)}/hr`;
+
+      // Settings cards
+      const cbEl  = document.getElementById('creditsBalance');
+      const csEl  = document.getElementById('creditsSpent');
+      const dbEl  = document.getElementById('dailyBurn');
+      const drEl  = document.getElementById('daysRemaining');
+      if (cbEl) cbEl.textContent = `$${bal.toFixed(2)}`;
+      if (csEl) csEl.textContent = `$${spent.toFixed(2)}`;
+      if (dbEl) dbEl.textContent = `$${dly.toFixed(3)}/day`;
+      if (drEl) drEl.textContent = `${days} days`;
+    })
+    .catch(() => {});
+
+  const now = new Date();
+  const lu  = document.getElementById('lastUpdate');
+  const ts  = document.getElementById('timestamp');
+  if (lu) lu.textContent = now.toLocaleTimeString();
+  if (ts) ts.textContent = now.toLocaleString();
+}
+
+/* ───────────────────────────────────────
+   manualUpdate — force refresh everything
+─────────────────────────────────────── */
+function manualUpdate() {
+  const btn = document.getElementById('updateBtn');
+  btn.textContent = '↺';
+  btn.classList.add('spinning');
+  btn.classList.remove('done');
+
+  Promise.all([
+    fetch('./snapshot.json?t='     + Date.now()).then(r => r.json()).catch(() => null),
+    fetch('./usage_tracker.json?t='+ Date.now()).then(r => r.json()).catch(() => null)
+  ]).then(([snap, usage]) => {
+    if (snap)  updateTrading();
+    if (usage) updateCredits();
+
+    btn.classList.remove('spinning');
+    btn.classList.add('done');
+    btn.textContent = '✓ UPDATED';
+    setTimeout(() => {
+      btn.textContent = '↺ UPDATE';
+      btn.classList.remove('done');
+    }, 2500);
+  });
+}
+
+/* ───────────────────────────────────────
+   showReport — status report modal
+─────────────────────────────────────── */
+const BOT_LABELS = {
+  momentum:  'Momentum',
+  reversion: 'Mean Reversion',
+  grid:      'Grid',
+  scalp:     'Scalping',
+  swing:     'Swing',
+  vwap_rev:  'VWAP Reversion',
+  vwap_mom:  'VWAP Momentum'
+};
+
+function showReport() {
+  document.getElementById('reportModal').classList.add('open');
+  document.getElementById('reportTs').textContent = 'Fetching latest data...';
+  document.getElementById('reportContent').innerHTML =
+    '<div style="text-align:center;padding:30px;color:var(--cyan-dim);">Loading...</div>';
+
+  fetch('./snapshot.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('reportTs').textContent =
+        `Generated: ${new Date().toLocaleString()} — Cycle #${data.cycle || '—'}`;
+
+      let totalPnl = 0, totalTrades = 0, totalWins = 0;
+      let html = '';
+
+      for (const [name, bot] of Object.entries(data.bots)) {
+        const pnl    = parseFloat(bot.pnl)    || 0;
+        const trades = parseInt(bot.trades)   || 0;
+        const wins   = parseInt(bot.wins)     || 0;
+        const losses = trades - wins;
+        const wr     = trades > 0 ? ((wins / trades) * 100).toFixed(1) : 0;
+        const bal    = parseFloat(bot.balance) || 100;
+        const roi    = ((bal - 100) / 100 * 100).toFixed(1);
+
+        totalPnl    += pnl;
+        totalTrades += trades;
+        totalWins   += wins;
+
+        let icon = '⚡';
+        if (pnl > 2)       icon = '🔥';
+        else if (pnl > 0)  icon = '📈';
+        else if (pnl < -2) icon = '⚠️';
+        else if (pnl < 0)  icon = '📉';
+
+        const pClass = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : 'neu';
+        const pStr   = pnl >= 0 ? `+$${pnl.toFixed(2)}` : `-$${Math.abs(pnl).toFixed(2)}`;
+        const roiCol = parseFloat(roi) >= 0 ? 'var(--green)' : 'var(--red)';
+
+        html += `
+        <div class="report-bot">
+          <div class="report-bot-header">
+            <div class="report-bot-name">${icon} ${BOT_LABELS[name] || name}</div>
+            <div class="report-bot-pnl ${pClass}">${pStr}</div>
+          </div>
+          <div class="report-stats">
+            <div class="report-stat">
+              <div class="report-stat-label">Trades</div>
+              <div class="report-stat-value">${trades}</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-label">Wins</div>
+              <div class="report-stat-value" style="color:var(--green)">${wins}</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-label">Losses</div>
+              <div class="report-stat-value" style="color:var(--red)">${losses}</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-label">ROI</div>
+              <div class="report-stat-value" style="color:${roiCol}">${roi}%</div>
+            </div>
+          </div>
+          <div class="wl-bar-wrap">
+            <span class="wl-label">W/L</span>
+            <div class="wl-bar-track">
+              <div class="wl-bar-fill" data-width="${wr}%" style="width:0%"></div>
+            </div>
+            <span class="wl-label">${wr}%</span>
+          </div>
+          <div style="font-size:0.7em;color:rgba(0,212,255,0.35);margin-top:6px;font-family:'Space Grotesk',monospace;">
+            Balance: $${bal.toFixed(2)}
+          </div>
+        </div>`;
+      }
+
+      const totalLosses = totalTrades - totalWins;
+      const totalWR     = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : 0;
+      const portVal     = (700 + totalPnl).toFixed(2);
+
+      html += `
+      <div class="report-total">
+        <div>
+          <div class="report-total-label">Portfolio</div>
+          <div class="report-total-value">$${portVal}</div>
+        </div>
+        <div>
+          <div class="report-total-label">Total P&L</div>
+          <div class="report-total-value" style="color:${totalPnl>=0?'var(--green)':'var(--red)'}">
+            ${totalPnl>=0?'+':''}$${totalPnl.toFixed(2)}
+          </div>
+        </div>
+        <div>
+          <div class="report-total-label">W / L</div>
+          <div class="report-total-value">${totalWins} / ${totalLosses}</div>
+        </div>
+        <div>
+          <div class="report-total-label">Win Rate</div>
+          <div class="report-total-value">${totalWR}%</div>
+        </div>
+      </div>`;
+
+      document.getElementById('reportContent').innerHTML = html;
+
+      // Animate bars
+      setTimeout(() => {
+        document.querySelectorAll('.wl-bar-fill[data-width]').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+      }, 60);
+    })
+    .catch(() => {
+      document.getElementById('reportContent').innerHTML =
+        '<div style="text-align:center;padding:30px;color:var(--orange);">⚠️ No bot data available yet. Bots may still be warming up.</div>';
+    });
+}
+
+function closeReportModal(e) {
+  if (e.target === document.getElementById('reportModal')) {
+    document.getElementById('reportModal').classList.remove('open');
+  }
+}
+
+/* ───────────────────────────────────────
+   SIDEBAR CLOCK
+─────────────────────────────────────── */
+function updateSidebarTime() {
+  const el = document.getElementById('sidebarTime');
+  if (el) el.textContent = new Date().toLocaleTimeString();
+}
+
+/* ───────────────────────────────────────
+   BOOT
+─────────────────────────────────────── */
+updateTrading();
+updateCredits();
+updateSidebarTime();
+initAthenaCanvas();
+
+setInterval(updateTrading,    5000);
+setInterval(updateCredits,   60000);
+setInterval(updateSidebarTime, 1000);
+</script>
+
+</body>
+</html>
