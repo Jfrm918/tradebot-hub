@@ -2228,34 +2228,65 @@
             speechSynthesis.speak(u);
         }
 
-        window.talkToAthena = function() {
+        async function talkToAthena() {
             const inp = document.getElementById('athenaInput');
-            const msg = inp.value.trim();
+            const msg = inp ? inp.value.trim() : '';
             if (!msg) return;
-            inp.value = '';
+            if (inp) inp.value = '';
             athenaSetStatus('thinking');
-            // Placeholder response until API is configured
-            setTimeout(() => {
-                athenaSpeak('Systems nominal, Jason.');
+            try {
+                const r = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': ATHENA_KEY, 'anthropic-version': '2023-06-01' },
+                    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 120, system: ATHENA_PROMPT, messages: [{ role: 'user', content: msg }] })
+                });
+                const d = await r.json();
                 athenaSetStatus('online');
-            }, 600);
-        };
+                athenaSpeak(d.content?.[0]?.text || 'Systems nominal.');
+            } catch (e) {
+                athenaSetStatus('online');
+                athenaSpeak('Signal disrupted. Standing by.');
+            }
+        }
 
-        window.athenaMicToggle = function() {
+        window.talkToAthena = talkToAthena;
+
+        function athenaMicToggle() {
             if (!athenaRec) {
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SR) { athenaSpeak('Voice unavailable.'); return; }
+                if (!SR) { athenaSpeak('Voice unavailable. Type to me.'); return; }
                 athenaRec = new SR();
                 athenaRec.lang = 'en-US';
-                athenaRec.onstart = () => { athenaListening = true; athenaSetStatus('listening'); };
-                athenaRec.onresult = (e) => { document.getElementById('athenaInput').value = e.results[0][0].transcript; talkToAthena(); };
-                athenaRec.onend = () => { athenaListening = false; athenaSetStatus('online'); };
+                athenaRec.onstart = () => { athenaListening = true; athenaSetStatus('listening'); document.getElementById('athenaMic').style.borderColor = 'rgba(255,107,0,0.8)'; };
+                athenaRec.onresult = e => { talkToAthenaVoice(e.results[0][0].transcript); };
+                athenaRec.onend = () => { athenaListening = false; athenaSetStatus('online'); document.getElementById('athenaMic').style.borderColor = ''; };
+                athenaRec.onerror = () => { athenaListening = false; athenaSetStatus('online'); document.getElementById('athenaMic').style.borderColor = ''; };
             }
             athenaListening ? athenaRec.stop() : athenaRec.start();
-        };
+        }
+
+        window.athenaMicToggle = athenaMicToggle;
+
+        async function talkToAthenaVoice(msg) {
+            athenaSetStatus('thinking');
+            try {
+                const r = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': ATHENA_KEY, 'anthropic-version': '2023-06-01' },
+                    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 120, system: ATHENA_PROMPT, messages: [{ role: 'user', content: msg }] })
+                });
+                const d = await r.json();
+                athenaSetStatus('online');
+                athenaSpeak(d.content?.[0]?.text || 'Systems nominal.');
+            } catch (e) {
+                athenaSetStatus('online');
+                athenaSpeak('Signal disrupted. Standing by.');
+            }
+        }
 
         // Init
-        document.getElementById('athenaInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') talkToAthena(); });
+        document.getElementById('athenaInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') talkToAthena(); });
+        speechSynthesis.onvoiceschanged = () => {};
         setTimeout(() => { athenaSpeak('Systems online, Jason.'); }, 1200);
     </script>
 </body>
