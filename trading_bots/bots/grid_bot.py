@@ -1,145 +1,125 @@
 #!/usr/bin/env python3
 """
-Grid Trading Bot
-Sets up buy/sell orders in a grid pattern on volatile pairs
+Grid Bot — BTC range-bound strategy
+Places virtual buy/sell grid levels around current price.
+Fills grid orders as price crosses levels. $100 starting capital. No config.json.
+
+Price sources (in priority order):
+  1. Coinbase  — api.coinbase.com (free, no auth)
+  2. Kraken    — api.kraken.com   (free, no auth)
+  3. CoinGecko — api.coingecko.com (free, no auth)
 """
 
-import json
 import time
-import logging
+import requests
 from datetime import datetime
-import ccxt
+import os
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - GRID - %(levelname)s - %(message)s'
-)
+# ─── Config ───────────────────────────────────────────────────────────────────
+SYMBOL           = "BTC-USDT"
+STARTING_BALANCE = 100.0
+GRID_LEVELS      = 5          # number of buy/sell levels each side
+GRID_SPACING_PCT = 0.002      # 0.2% between grid levels
+TRADE_FRACTION   = 0.10       # fraction of balance per grid level
+GRID_RESET_PCT   = 0.02       # rebuild grid if price drifts >2% from center
+CHECK_INTERVAL   = 30
+LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+LOG_FILE = os.path.join(LOG_DIR, 'grid.log')
+# ──────────────────────────────────────────────────────────────────────────────
 
-class GridBot:
-    def __init__(self, config_path='/Users/jfrm918/.openclaw/workspace/trading_bots/config.json'):
-        with open(config_path, 'r') as f:
-            self.config = json.load(f)
-        
-        self.strategy = self.config['strategies']['grid_trading']
-        self.capital = self.strategy['capital']
-        self.exchange = self._init_exchange()
-        self.trades = []
-        self.balance = self.capital
-        self.pnl = 0
-        self.grid_orders = {}
-        
-        logging.info(f"Grid Trading Bot initialized | Capital: ${self.capital}")
-    
-    def _init_exchange(self):
-        try:
-            exchange_class = getattr(ccxt, self.config['exchange'])
-            exchange = exchange_class({
-                'apiKey': self.config['api_keys']['key'],
-                'secret': self.config['api_keys']['secret'],
-                'enableRateLimit': True,
-                'test': self.config['testnet'],
-            })
-            logging.info(f"Connected to {self.config['exchange']} testnet")
-            return exchange
-        except Exception as e:
-            logging.error(f"Failed to initialize exchange: {e}")
-            return None
-    
-    def _create_grid(self, pair, current_price, grid_levels=5, grid_range=0.02):
-        """Create buy/sell grid around current price"""
-        grid = []
-        step = (current_price * grid_range) / grid_levels
-        
-        for i in range(1, grid_levels + 1):
-            buy_price = current_price - (step * i)
-            sell_price = current_price + (step * i)
-            grid.append({
-                'buy': buy_price,
-                'sell': sell_price,
-                'level': i
-            })
-        
-        return grid
-    
-    def execute_trade(self, pair, action, price, amount):
-        trade = {
-            'timestamp': datetime.now().isoformat(),
-            'pair': pair,
-            'action': action,
-            'price': price,
-            'amount': amount,
-            'cost': price * amount
-        }
-        self.trades.append(trade)
-        
-        if action == 'BUY':
-            self.balance -= trade['cost']
-        else:
-            self.balance += trade['cost']
-            if len(self.trades) > 1:
-                self.pnl += trade['cost'] - self.trades[-2]['cost']
-        
-        logging.info(f"{action} GRID {pair} Level | Price: ${price:.2f} | PnL: ${self.pnl:.2f}")
-        return trade
-    
-    def run(self):
-        if not self.exchange:
-            logging.error("Cannot run without exchange connection")
-            return
-        
-        try:
-            for pair in self.config['trading_pairs']:
-                try:
-                    # Get current market price
-                    ticker = self.exchange.fetch_ticker(pair)
-                    current_price = ticker['last']
-                    
-                    # Create or update grid
-                    if pair not in self.grid_orders:
-                        grid = self._create_grid(pair, current_price)
-                        self.grid_orders[pair] = grid
-                        logging.info(f"Grid created for {pair} | Center: ${current_price:.2f}")
-                    
-                    grid = self.grid_orders[pair]
-                    
-                    # Simulate grid order fills based on current price
-                    for level_order in grid:
-                        # Buy fills
-                        if current_price <= level_order['buy'] * 1.001:  # Allow 0.1% slippage
-                            amount = (self.capital * 0.1) / level_order['buy']
-                            self.execute_trade(pair, 'BUY', level_order['buy'], amount)
-                        
-                        # Sell fills (paired with buys)
-                        if current_price >= level_order['sell'] * 0.999:
-                            self.execute_trade(pair, 'SELL', level_order['sell'], amount if 'amount' in locals() else 0)
-                
-                except Exception as e:
-                    logging.warning(f"Error processing {pair}: {e}")
-        
-        except Exception as e:
-            logging.error(f"Bot error: {e}")
-    
-    def report(self):
-        report = {
-            'strategy': 'Grid Trading',
-            'total_trades': len(self.trades),
-            'active_grids': len(self.grid_orders),
-            'pnl': f"${self.pnl:.2f}",
-            'balance': f"${self.balance:.2f}",
-            'recent_trades': self.trades[-5:]
-        }
-        logging.info(f"Report: {json.dumps(report, indent=2)}")
-        return report
 
-if __name__ == '__main__':
-    bot = GridBot()
+def get_price():
+    try:
+        r = requests.get('https://api.coinbase.com/v2/prices/BTC-USD/spot', timeout=10)
+        r.raise_for_status()
+        return float(r.json()['data']['amount'])
+    except Exception:
+        pass
+    try:
+        r = requests.get('https://api.kraken.com/0/public/Ticker?pair=XBTUSD', timeout=10)
+        r.raise_for_status()
+        return float(r.json()['result']['XXBTZUSD']['c'][0])
+    except Exception:
+        pass
+    r = requests.get(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+        timeout=15
+    )
+    r.raise_for_status()
+    return float(r.json()['bitcoin']['usd'])
+
+
+def log(msg):
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f"[{ts}] {msg}"
+    print(line, flush=True)
+    os.makedirs(LOG_DIR, exist_ok=True)
+    with open(LOG_FILE, 'a') as f:
+        f.write(line + '\n')
+
+
+def build_grid(center_price):
+    """Build buy levels below center and sell levels above."""
+    buys  = []
+    sells = []
+    for i in range(1, GRID_LEVELS + 1):
+        buys.append(round(center_price * (1 - i * GRID_SPACING_PCT), 2))
+        sells.append(round(center_price * (1 + i * GRID_SPACING_PCT), 2))
+    return buys, sells
+
+
+def main():
+    balance = STARTING_BALANCE
+    positions    = {}    # buy_level_price -> {price, size}
+    prev_price   = None
+    grid_center  = None
+    buy_levels   = []
+    sell_levels  = []
+
+    log(f"Grid Bot started | Balance: ${balance:.2f}")
+
     while True:
         try:
-            bot.run()
-            time.sleep(300)
-        except KeyboardInterrupt:
-            logging.info("Bot stopped by user")
-            break
+            price = get_price()
+
+            # Initialize or rebuild grid if price drifts too far from center
+            if grid_center is None or abs(price - grid_center) / grid_center > GRID_RESET_PCT:
+                grid_center = price
+                buy_levels, sell_levels = build_grid(grid_center)
+                positions = {}
+                log(f"GRID SET center=${grid_center:.2f} | "
+                    f"buy_levels={[f'${p:.0f}' for p in buy_levels[:2]]}... "
+                    f"sell_levels={[f'${p:.0f}' for p in sell_levels[:2]]}...")
+
+            if prev_price is not None:
+                # Check buy triggers — price crossed down through a buy level
+                for level in buy_levels:
+                    if prev_price > level >= price and level not in positions:
+                        alloc = balance * TRADE_FRACTION
+                        if alloc < 0.50:
+                            continue
+                        size = round(alloc / price, 6)
+                        positions[level] = {'price': price, 'size': size}
+                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+
+                # Check sell triggers — price crossed up through a sell level
+                for sell_level in sell_levels:
+                    if prev_price < sell_level <= price:
+                        for buy_level, pos in list(positions.items()):
+                            if buy_level < sell_level:
+                                pnl = round((price - pos['price']) * pos['size'], 4)
+                                balance = round(balance + pnl, 2)
+                                log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {pos['size']:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                                del positions[buy_level]
+                                break
+
+            prev_price = price
+
         except Exception as e:
-            logging.error(f"Unexpected error: {e}")
-            time.sleep(60)
+            log(f"ERROR: {e}")
+
+        time.sleep(CHECK_INTERVAL)
+
+
+if __name__ == '__main__':
+    main()

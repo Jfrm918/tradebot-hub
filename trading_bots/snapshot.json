@@ -1,54 +1,64 @@
 {
   "cycle": 1,
+  "tournament_start": "2026-04-04",
+  "cycle_end": "2026-04-18",
+  "last_updated": "2026-04-04T15:32:04.047347",
   "bots": {
     "momentum": {
       "pnl": 0.0,
       "trades": 0,
       "wins": 0,
       "balance": 100.0,
-      "open_position": false
+      "open_position": false,
+      "last_trade": null
     },
     "reversion": {
-      "pnl": 0.0,
-      "trades": 0,
-      "wins": 0,
-      "balance": 100.0,
-      "open_position": false
-    },
-    "scalp": {
-      "pnl": 0.0,
-      "trades": 0,
-      "wins": 0,
-      "balance": 100.0,
-      "open_position": false
+      "pnl": 0.0194,
+      "trades": 1,
+      "wins": 1,
+      "balance": 100.03,
+      "open_position": false,
+      "last_trade": "[2026-04-04 15:28:33] BUY BTC-USDT @ $67253.99 | Size: 0.001412 | PnL: $0.0194 | Balance: $100.03"
     },
     "grid": {
       "pnl": 0.0,
       "trades": 0,
       "wins": 0,
       "balance": 100.0,
-      "open_position": false
+      "open_position": false,
+      "last_trade": null
+    },
+    "scalp": {
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "balance": 100.0,
+      "open_position": false,
+      "last_trade": null
     },
     "swing": {
       "pnl": 0.0,
       "trades": 0,
       "wins": 0,
       "balance": 100.0,
-      "open_position": false
+      "open_position": false,
+      "last_trade": null
     },
     "vwap_rev": {
       "pnl": 0.0,
       "trades": 0,
       "wins": 0,
       "balance": 100.0,
-      "open_position": false
+      "open_position": false,
+      "last_trade": null
     },
     "vwap_mom": {
       "pnl": 0.0,
       "trades": 0,
       "wins": 0,
       "balance": 100.0,
-      "open_position": false
+      "open_position": false,
+      "last_trade": null
     }
   }
 }

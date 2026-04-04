@@ -1,150 +1,127 @@
 #!/usr/bin/env python3
 """
-Mean Reversion Trading Bot
-Identifies overbought/oversold conditions using RSI, enters on extremes, exits on reversion
+Mean Reversion Bot — BTC strategy
+Enters when price deviates significantly from rolling mean, exits on reversion.
+$100 starting capital. No config.json dependency.
+
+Price sources (in priority order):
+  1. Coinbase  — api.coinbase.com (free, no auth)
+  2. Kraken    — api.kraken.com   (free, no auth)
+  3. CoinGecko — api.coingecko.com (free, no auth)
 """
 
-import json
 import time
-import logging
+import requests
 from datetime import datetime
-import ccxt
+from collections import deque
+import os
+import statistics
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - MEAN_REVERSION - %(levelname)s - %(message)s'
-)
+# ─── Config ───────────────────────────────────────────────────────────────────
+SYMBOL           = "BTC-USDT"
+STARTING_BALANCE = 100.0
+TRADE_FRACTION   = 0.95
+WINDOW           = 10        # rolling mean window (number of ticks)
+ENTRY_ZSCORE     = 1.5       # enter when price is 1.5 std devs from mean
+EXIT_ZSCORE      = 0.2       # exit when price reverts near mean
+STOP_LOSS        = 0.005     # -0.5% hard stop
+CHECK_INTERVAL   = 30
+LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+LOG_FILE = os.path.join(LOG_DIR, 'reversion.log')
+# ──────────────────────────────────────────────────────────────────────────────
 
-class MeanReversionBot:
-    def __init__(self, config_path='/Users/jfrm918/.openclaw/workspace/trading_bots/config.json'):
-        with open(config_path, 'r') as f:
-            self.config = json.load(f)
-        
-        self.strategy = self.config['strategies']['mean_reversion']
-        self.capital = self.strategy['capital']
-        self.exchange = self._init_exchange()
-        self.trades = []
-        self.balance = self.capital
-        self.pnl = 0
-        self.position_rsi = None
-        
-        logging.info(f"Mean Reversion Bot initialized | Capital: ${self.capital}")
-    
-    def _init_exchange(self):
-        try:
-            exchange_class = getattr(ccxt, self.config['exchange'])
-            exchange = exchange_class({
-                'apiKey': self.config['api_keys']['key'],
-                'secret': self.config['api_keys']['secret'],
-                'enableRateLimit': True,
-                'test': self.config['testnet'],
-            })
-            logging.info(f"Connected to {self.config['exchange']} testnet")
-            return exchange
-        except Exception as e:
-            logging.error(f"Failed to initialize exchange: {e}")
-            return None
-    
-    def _calculate_rsi(self, prices, period=14):
-        """Calculate RSI indicator"""
-        if len(prices) < period:
-            return None
-        
-        deltas = [prices[i+1] - prices[i] for i in range(len(prices)-1)]
-        gains = sum([d for d in deltas[-period:] if d > 0]) / period
-        losses = sum([abs(d) for d in deltas[-period:] if d < 0]) / period
-        
-        if losses == 0:
-            return 100 if gains > 0 else 0
-        
-        rs = gains / losses
-        rsi = 100 - (100 / (1 + rs))
-        return rsi
-    
-    def _is_oversold(self, rsi, threshold=30):
-        return rsi is not None and rsi < threshold
-    
-    def _is_overbought(self, rsi, threshold=70):
-        return rsi is not None and rsi > threshold
-    
-    def execute_trade(self, pair, action, price, amount):
-        trade = {
-            'timestamp': datetime.now().isoformat(),
-            'pair': pair,
-            'action': action,
-            'price': price,
-            'amount': amount,
-            'cost': price * amount
-        }
-        self.trades.append(trade)
-        
-        if action == 'BUY':
-            self.balance -= trade['cost']
-        else:
-            self.balance += trade['cost']
-            if len(self.trades) > 1:
-                self.pnl += trade['cost'] - self.trades[-2]['cost']
-        
-        logging.info(f"{action} {amount:.4f} {pair} @ ${price:.2f} | RSI: {self.position_rsi:.1f} | PnL: ${self.pnl:.2f}")
-        return trade
-    
-    def run(self):
-        if not self.exchange:
-            logging.error("Cannot run without exchange connection")
-            return
-        
-        try:
-            for pair in self.config['trading_pairs']:
-                try:
-                    ohlcv = self.exchange.fetch_ohlcv(pair, '1h', limit=50)
-                    prices = [o[4] for o in ohlcv]
-                    
-                    rsi = self._calculate_rsi(prices)
-                    self.position_rsi = rsi
-                    
-                    current_price = prices[-1]
-                    
-                    # Entry on oversold
-                    if self._is_oversold(rsi):
-                        amount = (self.capital * 0.5) / current_price
-                        self.execute_trade(pair, 'BUY', current_price, amount)
-                        logging.info(f"✅ OVERSOLD entry on {pair} (RSI: {rsi:.1f})")
-                    
-                    # Exit on overbought or reversion
-                    if self._is_overbought(rsi) and len(self.trades) > 0:
-                        last_buy = [t for t in self.trades if t['action'] == 'BUY'][-1]
-                        if last_buy not in [t for t in self.trades if t['action'] == 'SELL']:
-                            self.execute_trade(pair, 'SELL', current_price, last_buy['amount'])
-                            logging.info(f"✅ OVERBOUGHT exit on {pair} (RSI: {rsi:.1f})")
-                
-                except Exception as e:
-                    logging.warning(f"Error processing {pair}: {e}")
-        
-        except Exception as e:
-            logging.error(f"Bot error: {e}")
-    
-    def report(self):
-        wins = len([t for t in self.trades if t['action'] == 'SELL'])
-        report = {
-            'strategy': 'Mean Reversion',
-            'total_trades': len(self.trades),
-            'completed_pairs': wins,
-            'pnl': f"${self.pnl:.2f}",
-            'balance': f"${self.balance:.2f}",
-            'recent_trades': self.trades[-5:]
-        }
-        logging.info(f"Report: {json.dumps(report, indent=2)}")
-        return report
 
-if __name__ == '__main__':
-    bot = MeanReversionBot()
+def get_price():
+    try:
+        r = requests.get('https://api.coinbase.com/v2/prices/BTC-USD/spot', timeout=10)
+        r.raise_for_status()
+        return float(r.json()['data']['amount'])
+    except Exception:
+        pass
+    try:
+        r = requests.get('https://api.kraken.com/0/public/Ticker?pair=XBTUSD', timeout=10)
+        r.raise_for_status()
+        return float(r.json()['result']['XXBTZUSD']['c'][0])
+    except Exception:
+        pass
+    r = requests.get(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+        timeout=15
+    )
+    r.raise_for_status()
+    return float(r.json()['bitcoin']['usd'])
+
+
+def log(msg):
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f"[{ts}] {msg}"
+    print(line, flush=True)
+    os.makedirs(LOG_DIR, exist_ok=True)
+    with open(LOG_FILE, 'a') as f:
+        f.write(line + '\n')
+
+
+def main():
+    balance = STARTING_BALANCE
+    position = None   # dict: {price, size, side}
+    prices = deque(maxlen=WINDOW)
+
+    log(f"Mean Reversion Bot started | Balance: ${balance:.2f}")
+
     while True:
         try:
-            bot.run()
-            time.sleep(300)
-        except KeyboardInterrupt:
-            logging.info("Bot stopped by user")
-            break
+            price = get_price()
+            prices.append(price)
+
+            if len(prices) < WINDOW:
+                time.sleep(CHECK_INTERVAL)
+                continue
+
+            mean  = statistics.mean(prices)
+            stdev = statistics.stdev(prices)
+
+            if stdev == 0:
+                time.sleep(CHECK_INTERVAL)
+                continue
+
+            zscore = (price - mean) / stdev
+
+            if position is None:
+                if zscore <= -ENTRY_ZSCORE:
+                    # Price well below mean — expect reversion up → long
+                    size = round((balance * TRADE_FRACTION) / price, 6)
+                    position = {'price': price, 'size': size, 'side': 'long'}
+                    log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                elif zscore >= ENTRY_ZSCORE:
+                    # Price well above mean — expect reversion down → short
+                    size = round((balance * TRADE_FRACTION) / price, 6)
+                    position = {'price': price, 'size': size, 'side': 'short'}
+                    log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+            else:
+                entry = position['price']
+                size  = position['size']
+                side  = position['side']
+
+                if side == 'long':
+                    pct = (price - entry) / entry
+                    if abs(zscore) <= EXIT_ZSCORE or pct <= -STOP_LOSS:
+                        pnl = round((price - entry) * size, 4)
+                        balance = round(balance + pnl, 2)
+                        log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                        position = None
+                else:  # short
+                    pct = (entry - price) / entry
+                    if abs(zscore) <= EXIT_ZSCORE or pct <= -STOP_LOSS:
+                        pnl = round((entry - price) * size, 4)
+                        balance = round(balance + pnl, 2)
+                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                        position = None
+
         except Exception as e:
-            logging.error(f"Unexpected error: {e}")
-            time.sleep(60)
+            log(f"ERROR: {e}")
+
+        time.sleep(CHECK_INTERVAL)
+
+
+if __name__ == '__main__':
+    main()

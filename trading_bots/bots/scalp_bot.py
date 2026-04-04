@@ -1,145 +1,117 @@
 #!/usr/bin/env python3
 """
-Scalping Bot
-Rapid entry/exit trades on 1-5 minute charts targeting 0.5-2% gains
+Scalp Bot — BTC ultra-short-term strategy
+Enters on small micro-momentum, exits quickly at tight profit/stop targets.
+$100 starting capital. No config.json dependency.
+
+Price sources (in priority order):
+  1. Coinbase  — api.coinbase.com (free, no auth)
+  2. Kraken    — api.kraken.com   (free, no auth)
+  3. CoinGecko — api.coingecko.com (free, no auth)
 """
 
-import json
 import time
-import logging
+import requests
 from datetime import datetime
-import ccxt
+from collections import deque
+import os
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - SCALP - %(levelname)s - %(message)s'
-)
+# ─── Config ───────────────────────────────────────────────────────────────────
+SYMBOL           = "BTC-USDT"
+STARTING_BALANCE = 100.0
+TRADE_FRACTION   = 0.90
+WINDOW           = 3          # very short window for micro-momentum
+ENTRY_THRESH     = 0.0008     # 0.08% move triggers entry
+PROFIT_TARGET    = 0.003      # exit at +0.3%
+STOP_LOSS        = 0.002      # exit at -0.2%
+CHECK_INTERVAL   = 30
+LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+LOG_FILE = os.path.join(LOG_DIR, 'scalp.log')
+# ──────────────────────────────────────────────────────────────────────────────
 
-class ScalpBot:
-    def __init__(self, config_path='/Users/jfrm918/.openclaw/workspace/trading_bots/config.json'):
-        with open(config_path, 'r') as f:
-            self.config = json.load(f)
-        
-        self.strategy = self.config['strategies']['scalping']
-        self.capital = self.strategy['capital']
-        self.exchange = self._init_exchange()
-        self.trades = []
-        self.balance = self.capital
-        self.pnl = 0
-        self.profit_target = 0.015  # 1.5% target
-        self.stop_loss = 0.005     # 0.5% stop loss
-        
-        logging.info(f"Scalping Bot initialized | Capital: ${self.capital} | Target: {self.profit_target*100:.1f}%")
-    
-    def _init_exchange(self):
-        try:
-            exchange_class = getattr(ccxt, self.config['exchange'])
-            exchange = exchange_class({
-                'apiKey': self.config['api_keys']['key'],
-                'secret': self.config['api_keys']['secret'],
-                'enableRateLimit': True,
-                'test': self.config['testnet'],
-            })
-            logging.info(f"Connected to {self.config['exchange']} testnet")
-            return exchange
-        except Exception as e:
-            logging.error(f"Failed to initialize exchange: {e}")
-            return None
-    
-    def _calculate_volatility(self, prices, period=5):
-        """Quick volatility check for pair selection"""
-        if len(prices) < period:
-            return 0
-        changes = [abs(prices[i+1] - prices[i]) / prices[i] for i in range(len(prices)-period, len(prices)-1)]
-        return sum(changes) / len(changes)
-    
-    def execute_trade(self, pair, action, price, amount):
-        trade = {
-            'timestamp': datetime.now().isoformat(),
-            'pair': pair,
-            'action': action,
-            'price': price,
-            'amount': amount,
-            'cost': price * amount
-        }
-        self.trades.append(trade)
-        
-        if action == 'BUY':
-            self.balance -= trade['cost']
-        else:
-            self.balance += trade['cost']
-            if len(self.trades) > 1:
-                self.pnl += trade['cost'] - self.trades[-2]['cost']
-        
-        logging.info(f"{action} {amount:.6f} {pair} @ ${price:.4f} | PnL: ${self.pnl:.4f}")
-        return trade
-    
-    def run(self):
-        if not self.exchange:
-            logging.error("Cannot run without exchange connection")
-            return
-        
-        try:
-            for pair in self.config['trading_pairs']:
-                try:
-                    # Fetch 1-minute candles
-                    ohlcv = self.exchange.fetch_ohlcv(pair, '1m', limit=10)
-                    prices = [o[4] for o in ohlcv]
-                    
-                    volatility = self._calculate_volatility(prices)
-                    current_price = prices[-1]
-                    
-                    # Only trade volatile pairs
-                    if volatility > 0.001:  # 0.1% volatility threshold
-                        # Entry: price spike
-                        if current_price > prices[-2] * 1.002:  # 0.2% move up
-                            amount = (self.capital * 0.3) / current_price
-                            entry_price = current_price
-                            self.execute_trade(pair, 'BUY', entry_price, amount)
-                            
-                            # Exit conditions
-                            profit_price = entry_price * (1 + self.profit_target)
-                            stop_price = entry_price * (1 - self.stop_loss)
-                            
-                            # Simulate fill
-                            if current_price >= profit_price:
-                                self.execute_trade(pair, 'SELL', profit_price, amount)
-                                logging.info(f"✅ SCALP win on {pair} | +{self.profit_target*100:.1f}%")
-                            elif current_price <= stop_price:
-                                self.execute_trade(pair, 'SELL', stop_price, amount)
-                                logging.info(f"⚠️ SCALP stop on {pair}")
-                
-                except Exception as e:
-                    logging.warning(f"Error processing {pair}: {e}")
-        
-        except Exception as e:
-            logging.error(f"Bot error: {e}")
-    
-    def report(self):
-        wins = len([t for t in self.trades if t['action'] == 'SELL' and self.pnl > 0])
-        total = len([t for t in self.trades if t['action'] == 'SELL'])
-        win_rate = (wins / total * 100) if total > 0 else 0
-        
-        report = {
-            'strategy': 'Scalping',
-            'total_trades': len(self.trades),
-            'win_rate': f"{win_rate:.1f}%",
-            'pnl': f"${self.pnl:.4f}",
-            'balance': f"${self.balance:.4f}",
-            'recent_trades': self.trades[-5:]
-        }
-        logging.info(f"Report: {json.dumps(report, indent=2)}")
-        return report
 
-if __name__ == '__main__':
-    bot = ScalpBot()
+def get_price():
+    try:
+        r = requests.get('https://api.coinbase.com/v2/prices/BTC-USD/spot', timeout=10)
+        r.raise_for_status()
+        return float(r.json()['data']['amount'])
+    except Exception:
+        pass
+    try:
+        r = requests.get('https://api.kraken.com/0/public/Ticker?pair=XBTUSD', timeout=10)
+        r.raise_for_status()
+        return float(r.json()['result']['XXBTZUSD']['c'][0])
+    except Exception:
+        pass
+    r = requests.get(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+        timeout=15
+    )
+    r.raise_for_status()
+    return float(r.json()['bitcoin']['usd'])
+
+
+def log(msg):
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f"[{ts}] {msg}"
+    print(line, flush=True)
+    os.makedirs(LOG_DIR, exist_ok=True)
+    with open(LOG_FILE, 'a') as f:
+        f.write(line + '\n')
+
+
+def main():
+    balance = STARTING_BALANCE
+    position = None   # dict: {price, size, side}
+    prices = deque(maxlen=WINDOW)
+
+    log(f"Scalp Bot started | Balance: ${balance:.2f}")
+
     while True:
         try:
-            bot.run()
-            time.sleep(30)  # Rapid updates for scalping
-        except KeyboardInterrupt:
-            logging.info("Bot stopped by user")
-            break
+            price = get_price()
+            prices.append(price)
+
+            if position is None:
+                if len(prices) == WINDOW:
+                    oldest = prices[0]
+                    move = (price - oldest) / oldest
+
+                    if move >= ENTRY_THRESH:
+                        # Micro uptrend → long
+                        size = round((balance * TRADE_FRACTION) / price, 6)
+                        position = {'price': price, 'size': size, 'side': 'long'}
+                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+                    elif move <= -ENTRY_THRESH:
+                        # Micro downtrend → short
+                        size = round((balance * TRADE_FRACTION) / price, 6)
+                        position = {'price': price, 'size': size, 'side': 'short'}
+                        log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | Balance: ${balance:.2f}")
+            else:
+                entry = position['price']
+                size  = position['size']
+                side  = position['side']
+
+                if side == 'long':
+                    pct = (price - entry) / entry
+                    if pct >= PROFIT_TARGET or pct <= -STOP_LOSS:
+                        pnl = round((price - entry) * size, 4)
+                        balance = round(balance + pnl, 2)
+                        log(f"SELL {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                        position = None
+                else:  # short
+                    pct = (entry - price) / entry
+                    if pct >= PROFIT_TARGET or pct <= -STOP_LOSS:
+                        pnl = round((entry - price) * size, 4)
+                        balance = round(balance + pnl, 2)
+                        log(f"BUY {SYMBOL} @ ${price:.2f} | Size: {size:.6f} | PnL: ${pnl:.4f} | Balance: ${balance:.2f}")
+                        position = None
+
         except Exception as e:
-            logging.error(f"Unexpected error: {e}")
-            time.sleep(10)
+            log(f"ERROR: {e}")
+
+        time.sleep(CHECK_INTERVAL)
+
+
+if __name__ == '__main__':
+    main()
