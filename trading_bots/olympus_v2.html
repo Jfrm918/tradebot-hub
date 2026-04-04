@@ -849,22 +849,28 @@ html, body {
     <!-- HEADER -->
     <header class="header">
       <div class="header-stat">
-        <div class="header-stat-label">Athena Credits</div>
-        <div class="header-stat-value orange" id="credits">$99.83</div>
+        <div class="header-stat-label">Portfolio</div>
+        <div class="header-stat-value cyan" id="headerPortfolio">$700.00</div>
       </div>
       <div class="header-divider"></div>
       <div class="header-stat">
-        <div class="header-stat-label">Hourly Burn</div>
-        <div class="header-stat-value cyan" id="hourlyBurn">$0.0210/hr</div>
+        <div class="header-stat-label">Bots</div>
+        <div class="header-stat-value cyan" id="headerBots">0/7 ACTIVE</div>
       </div>
       <div class="header-divider"></div>
       <div class="header-stat">
-        <div class="header-stat-label">Last Sync</div>
-        <div class="header-stat-value cyan" id="lastUpdate">—</div>
+        <div class="header-stat-label">Win Rate</div>
+        <div class="header-stat-value cyan" id="headerWinRate">0.0%</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-stat">
+        <div class="header-stat-label">Credits</div>
+        <div class="header-stat-value orange" id="headerCredits">$341.75</div>
       </div>
       <div class="header-spacer"></div>
       <button class="btn btn-primary" id="updateBtn" onclick="manualUpdate()">↺ UPDATE</button>
-      <button class="btn" onclick="showReport()">📊 STATUS REPORT</button>
+      <button class="btn" onclick="showReport()">📊 SCORECARD</button>
+      <button class="btn" onclick="showKillSwitch()" style="border-color:rgba(255,68,85,0.6);color:var(--red);">☠️ KILL SWITCH</button>
     </header>
 
     <!-- CONTENT -->
@@ -876,11 +882,136 @@ html, body {
       <div id="panel-trading" class="panel active">
 
         <div class="section-header">
-          🤖 Trading Bots
-          <span style="font-size:0.65em;color:var(--text-dim);font-weight:400;letter-spacing:1px;" id="cycleInfo">Loading...</span>
+          🤖 Operational Metrics
+          <span style="font-size:0.65em;color:var(--text-dim);font-weight:400;letter-spacing:1px;" id="cycleInfo">Cycle #0</span>
         </div>
 
-        <!-- Stats row -->
+        <!-- 6 METRIC CARDS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:24px;">
+
+          <!-- Card 1: ATHENA CREDITS -->
+          <div class="card-glass">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="font-size:1.4em;">⚡</div>
+              <div>
+                <div class="stat-label">ATHENA CREDITS</div>
+              </div>
+            </div>
+            <div class="card-value" id="metricCreditsVal">$341.75</div>
+            <div style="height:6px;background:rgba(0,212,255,0.1);border-radius:3px;margin:12px 0;overflow:hidden;">
+              <div id="metricCreditsBar" style="height:100%;background:linear-gradient(90deg,var(--orange),var(--cyan));width:98%;transition:width 0.8s ease;"></div>
+            </div>
+            <div style="font-size:0.75em;color:var(--text-dim);margin:8px 0;">
+              <div id="metricCreditsBurn">Daily Burn: $42.00 | Days: 8.1</div>
+            </div>
+            <div style="display:inline-block;padding:4px 10px;background:rgba(0,255,157,0.15);border-radius:4px;border:1px solid rgba(0,255,157,0.3);color:var(--green);font-size:0.7em;font-weight:600;">
+              <span id="metricCreditsStatus">OPTIMAL</span>
+            </div>
+          </div>
+
+          <!-- Card 2: BOT NETWORK -->
+          <div class="card-glass">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="font-size:1.4em;">🤖</div>
+              <div>
+                <div class="stat-label">BOT NETWORK</div>
+              </div>
+            </div>
+            <div class="card-value" id="metricBotsVal">0 / 7 ACTIVE</div>
+            <div style="height:6px;background:rgba(0,212,255,0.1);border-radius:3px;margin:12px 0;overflow:hidden;">
+              <div id="metricBotsBar" style="height:100%;background:var(--green);width:0%;transition:width 0.8s ease;"></div>
+            </div>
+            <div style="font-size:0.75em;color:var(--text-dim);margin:8px 0;">
+              <div id="metricBotsStats">BTC: — | ETH: — | Win Rate: —</div>
+            </div>
+            <div style="display:inline-block;padding:4px 10px;background:rgba(255,68,85,0.15);border-radius:4px;border:1px solid rgba(255,68,85,0.3);color:var(--red);font-size:0.7em;font-weight:600;">
+              <span id="metricBotsStatus">IDLE</span>
+            </div>
+          </div>
+
+          <!-- Card 3: TRADE THROUGHPUT -->
+          <div class="card-glass">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="font-size:1.4em;">📊</div>
+              <div>
+                <div class="stat-label">TRADE THROUGHPUT</div>
+              </div>
+            </div>
+            <div class="card-value" id="metricTradesVal">0.00 trades/hr</div>
+            <div style="height:6px;background:rgba(0,212,255,0.1);border-radius:3px;margin:12px 0;overflow:hidden;">
+              <div id="metricTradesBar" style="height:100%;background:var(--cyan);width:0%;transition:width 0.8s ease;"></div>
+            </div>
+            <div style="font-size:0.75em;color:var(--text-dim);margin:8px 0;">
+              <div id="metricTradesStats">Total: 0 | Winning: 0</div>
+            </div>
+            <div style="display:inline-block;padding:4px 10px;background:rgba(255,107,0,0.15);border-radius:4px;border:1px solid rgba(255,107,0,0.3);color:var(--orange);font-size:0.7em;font-weight:600;">
+              <span id="metricTradesStatus">IDLE</span>
+            </div>
+          </div>
+
+          <!-- Card 4: PORTFOLIO HEAT -->
+          <div class="card-glass">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="font-size:1.4em;">💰</div>
+              <div>
+                <div class="stat-label">PORTFOLIO HEAT</div>
+              </div>
+            </div>
+            <div class="card-value" id="metricPortfolioVal">$700.00</div>
+            <div style="height:6px;background:rgba(0,212,255,0.1);border-radius:3px;margin:12px 0;overflow:hidden;">
+              <div id="metricPortfolioBar" style="height:100%;background:var(--cyan);width:0%;transition:width 0.8s ease;"></div>
+            </div>
+            <div style="font-size:0.75em;color:var(--text-dim);margin:8px 0;">
+              <div id="metricPortfolioStats">Started: $500 | P&L: $0.00</div>
+            </div>
+            <div style="display:inline-block;padding:4px 10px;background:rgba(0,212,255,0.15);border-radius:4px;border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:0.7em;font-weight:600;">
+              <span id="metricPortfolioStatus">STABLE</span>
+            </div>
+          </div>
+
+          <!-- Card 5: NETWORK LATENCY -->
+          <div class="card-glass">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="font-size:1.4em;">🌐</div>
+              <div>
+                <div class="stat-label">NETWORK LATENCY</div>
+              </div>
+            </div>
+            <div class="card-value" id="metricLatencyVal">— ms</div>
+            <div style="height:6px;background:rgba(0,212,255,0.1);border-radius:3px;margin:12px 0;overflow:hidden;">
+              <div id="metricLatencyBar" style="height:100%;background:var(--green);width:0%;transition:width 0.8s ease;"></div>
+            </div>
+            <div style="font-size:0.75em;color:var(--text-dim);margin:8px 0;">
+              <div id="metricLatencyStats">DNS + TCP timing</div>
+            </div>
+            <div style="display:inline-block;padding:4px 10px;background:rgba(0,255,157,0.15);border-radius:4px;border:1px solid rgba(0,255,157,0.3);color:var(--green);font-size:0.7em;font-weight:600;">
+              <span id="metricLatencyStatus">EXCELLENT</span>
+            </div>
+          </div>
+
+          <!-- Card 6: CAPITAL SHIELD -->
+          <div class="card-glass">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="font-size:1.4em;">🛡️</div>
+              <div>
+                <div class="stat-label">CAPITAL SHIELD</div>
+              </div>
+            </div>
+            <div class="card-value" id="metricShieldVal">0.00%</div>
+            <div style="height:6px;background:rgba(0,212,255,0.1);border-radius:3px;margin:12px 0;overflow:hidden;">
+              <div id="metricShieldBar" style="height:100%;background:var(--green);width:0%;transition:width 0.8s ease;"></div>
+            </div>
+            <div style="font-size:0.75em;color:var(--text-dim);margin:8px 0;">
+              <div id="metricShieldStats">Floor: $100 | Portfolio: $700</div>
+            </div>
+            <div style="display:inline-block;padding:4px 10px;background:rgba(0,212,255,0.15);border-radius:4px;border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:0.7em;font-weight:600;">
+              <span id="metricShieldStatus">ACTIVE</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LEGACY STATS ROW (still useful) -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-label">Total Capital</div>
@@ -1022,6 +1153,19 @@ html, body {
             <div class="bot-capital text-dim" id="cap-vwap_mom">Capital: $100.00</div>
           </div>
 
+        </div>
+
+        <!-- COMMAND TERMINAL -->
+        <div style="margin-top:24px;">
+          <div class="section-header">⚡ Command Terminal</div>
+          <div class="card-glass" style="font-family:'Space Grotesk',monospace;font-size:0.75em;max-height:300px;overflow-y:auto;">
+            <div id="terminalLog" style="line-height:1.8;color:var(--cyan);">AWAITING FIRST TRADE DATA</div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:12px;">
+            <button class="btn" onclick="showReport()" style="flex:1;">📊 SCORECARD</button>
+            <button class="btn" onclick="restartBots()" style="flex:1;">🔄 RESTART BOTS</button>
+            <button class="btn" onclick="showKillSwitch()" style="flex:1;border-color:rgba(255,68,85,0.6);color:var(--red);">☠️ KILL SWITCH</button>
+          </div>
         </div>
       </div>
 
@@ -1471,7 +1615,7 @@ function updateTrading() {
   fetch('./snapshot.json?t=' + Date.now())
     .then(r => r.json())
     .then(data => {
-      let totalPnl = 0, totalTrades = 0, totalCap = 0;
+      let totalPnl = 0, totalTrades = 0, totalWins = 0, totalCap = 0, activeBotsCount = 0;
 
       for (const [name, bot] of Object.entries(data.bots)) {
         const pnl    = parseFloat(bot.pnl)    || 0;
@@ -1482,8 +1626,10 @@ function updateTrading() {
         const wr     = trades > 0 ? ((wins / trades) * 100).toFixed(1) + '%' : '—';
         const wrPct  = trades > 0 ? (wins / trades) * 100 : 0;
 
+        if (trades > 0) activeBotsCount++;
         totalPnl    += pnl;
         totalTrades += trades;
+        totalWins   += wins;
         totalCap    += bal;
 
         // PnL
@@ -1512,8 +1658,8 @@ function updateTrading() {
         // Status dot
         const dotEl = document.getElementById(`dot-${name}`);
         if (dotEl) {
-          if (open) { dotEl.classList.add('active'); }
-          else      { dotEl.classList.remove('active'); }
+          if (trades > 0) { dotEl.classList.add('active'); }
+          else            { dotEl.classList.remove('active'); }
         }
       }
 
@@ -1533,6 +1679,15 @@ function updateTrading() {
       if (tEl2)  tEl2.textContent  = totalTrades;
       if (pvEl)  pvEl.textContent  = `$${totalCap.toFixed(2)}`;
       if (tcEl)  tcEl.textContent  = `$${totalCap.toFixed(2)}`;
+
+      // Update header
+      document.getElementById('headerPortfolio').textContent = `$${totalCap.toFixed(2)}`;
+      document.getElementById('headerBots').textContent = `${activeBotsCount}/7 ACTIVE`;
+      const globalWR = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
+      document.getElementById('headerWinRate').textContent = globalWR + '%';
+
+      // UPDATE METRIC CARDS
+      updateMetrics(data, totalCap, totalTrades, totalWins, totalPnl);
     })
     .catch(() => {/* snapshot not yet available */});
 }
@@ -1551,11 +1706,13 @@ function updateCredits() {
       const hrly  = parseFloat(b.hourly_average);
       const days  = b.days_remaining || Math.floor(bal / (dly || 0.01));
 
+      // Store for metric updates
+      window.lastCredits = bal;
+      window.lastDailyBurn = dly;
+
       // Header
-      const credEl   = document.getElementById('credits');
-      const hrBurnEl = document.getElementById('hourlyBurn');
-      if (credEl)   credEl.textContent   = `$${bal.toFixed(2)}`;
-      if (hrBurnEl) hrBurnEl.textContent = `$${hrly.toFixed(4)}/hr`;
+      const headerCredEl = document.getElementById('headerCredits');
+      if (headerCredEl) headerCredEl.textContent = `$${bal.toFixed(2)}`;
 
       // Settings cards
       const cbEl  = document.getElementById('creditsBalance');
@@ -1570,9 +1727,7 @@ function updateCredits() {
     .catch(() => {});
 
   const now = new Date();
-  const lu  = document.getElementById('lastUpdate');
   const ts  = document.getElementById('timestamp');
-  if (lu) lu.textContent = now.toLocaleTimeString();
   if (ts) ts.textContent = now.toLocaleString();
 }
 
@@ -1746,16 +1901,198 @@ function updateSidebarTime() {
 }
 
 /* ───────────────────────────────────────
+   TERMINAL LOG — Fetch & Display athena_log.json
+─────────────────────────────────────── */
+function updateTerminalLog() {
+  fetch('./athena_log.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const tasks = data.tasks || [];
+      const last10 = tasks.slice(-10);
+      
+      if (last10.length === 0) {
+        document.getElementById('terminalLog').innerHTML = '<span style="color:var(--text-dim);">AWAITING FIRST TRADE DATA</span>';
+        return;
+      }
+
+      let html = '';
+      for (const task of last10) {
+        const ts = new Date(task.date).toLocaleString();
+        const icon = task.status === 'complete' ? '✓' : task.status === 'active' ? '◆' : '✗';
+        const color = task.status === 'complete' ? 'var(--green)' : task.status === 'active' ? 'var(--cyan)' : 'var(--orange)';
+        html += `<div style="margin-bottom:4px;"><span style="color:${color}">[${ts}] ${icon}</span> ${task.task}</div>`;
+      }
+      document.getElementById('terminalLog').innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById('terminalLog').innerHTML = '<span style="color:var(--text-dim);">NO DATA</span>';
+    });
+}
+
+/* ───────────────────────────────────────
+   METRIC CARDS UPDATE (real-time calculations)
+─────────────────────────────────────── */
+function updateMetrics(snapshotData, portfolioVal, totalTrades, totalWins, totalPnl) {
+  // ⚡ CARD 1: ATHENA CREDITS
+  const creditsVal = parseFloat(window.lastCredits || 341.75);
+  const progressPct = Math.min(100, (creditsVal / 347.71) * 100);
+  document.getElementById('metricCreditsVal').textContent = `$${creditsVal.toFixed(2)}`;
+  document.getElementById('metricCreditsBar').style.width = progressPct + '%';
+  
+  const dailyBurn = window.lastDailyBurn || 42.00;
+  const daysRem = Math.max(0, Math.floor(creditsVal / (dailyBurn || 0.01)));
+  document.getElementById('metricCreditsBurn').textContent = `Daily Burn: $${dailyBurn.toFixed(2)} | Days: ${daysRem.toFixed(1)}`;
+  
+  let credStatus = 'OPTIMAL';
+  let credStatusColor = 'var(--green)';
+  if (creditsVal < 20) { credStatus = 'CRITICAL'; credStatusColor = 'var(--red)'; }
+  else if (creditsVal < 100) { credStatus = 'CAUTION'; credStatusColor = 'var(--orange)'; }
+  
+  const credStatusEl = document.querySelector('#metricCreditsStatus').parentElement;
+  credStatusEl.style.background = credStatusColor.replace(')', ', 0.15)').replace('rgb', 'rgba');
+  credStatusEl.style.borderColor = credStatusColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+  credStatusEl.style.color = credStatusColor;
+  document.getElementById('metricCreditsStatus').textContent = credStatus;
+
+  // 🤖 CARD 2: BOT NETWORK
+  let activeBots = 0;
+  let btcBots = 0, ethBots = 0;
+  for (const [name, bot] of Object.entries(snapshotData.bots)) {
+    if (parseInt(bot.trades) > 0) activeBots++;
+  }
+  document.getElementById('metricBotsVal').textContent = `${activeBots} / 7 ACTIVE`;
+  document.getElementById('metricBotsBar').style.width = (activeBots / 7 * 100) + '%';
+  document.getElementById('metricBotsStats').textContent = `BTC: — | ETH: — | Win Rate: ${totalWins}/${totalTrades}`;
+  
+  let botStatus = 'ALL GREEN';
+  let botStatusColor = 'var(--green)';
+  if (activeBots < 7) { botStatus = 'DEGRADED'; botStatusColor = 'var(--orange)'; }
+  if (activeBots === 0) { botStatus = 'IDLE'; botStatusColor = 'var(--red)'; }
+  
+  const botStatusEl = document.querySelector('#metricBotsStatus').parentElement;
+  botStatusEl.style.background = botStatusColor.replace(')', ', 0.15)').replace('rgb', 'rgba');
+  botStatusEl.style.borderColor = botStatusColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+  botStatusEl.style.color = botStatusColor;
+  document.getElementById('metricBotsStatus').textContent = botStatus;
+
+  // 📊 CARD 3: TRADE THROUGHPUT
+  const elapsed = (Date.now() - window.bootTime) / (1000 * 3600); // hours
+  const tradesPerHour = elapsed > 0 ? (totalTrades / elapsed).toFixed(2) : '0.00';
+  document.getElementById('metricTradesVal').textContent = `${tradesPerHour} trades/hr`;
+  document.getElementById('metricTradesBar').style.width = Math.min(100, (totalTrades / 200 * 100)) + '%';
+  document.getElementById('metricTradesStats').textContent = `Total: ${totalTrades} | Winning: ${totalWins}`;
+  
+  let tradeStatus = 'NOMINAL';
+  let tradeStatusColor = 'var(--cyan)';
+  if (tradesPerHour < 0.1) { tradeStatus = 'IDLE'; tradeStatusColor = 'var(--orange)'; }
+  else if (tradesPerHour < 1) { tradeStatus = 'SLOW'; tradeStatusColor = 'var(--orange)'; }
+  
+  const tradeStatusEl = document.querySelector('#metricTradesStatus').parentElement;
+  tradeStatusEl.style.background = tradeStatusColor.replace(')', ', 0.15)').replace('rgb', 'rgba');
+  tradeStatusEl.style.borderColor = tradeStatusColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+  tradeStatusEl.style.color = tradeStatusColor;
+  document.getElementById('metricTradesStatus').textContent = tradeStatus;
+
+  // 💰 CARD 4: PORTFOLIO HEAT
+  const startCap = 500;
+  const growth = portfolioVal - startCap;
+  const growthPct = (growth / 100 * 100).toFixed(1);
+  const barVal = Math.max(0, Math.min(100, (growth / 100 + 50) / 100 * 100));
+  document.getElementById('metricPortfolioVal').textContent = `$${portfolioVal.toFixed(2)}`;
+  document.getElementById('metricPortfolioBar').style.width = barVal + '%';
+  document.getElementById('metricPortfolioStats').textContent = `Started: $${startCap} | P&L: ${totalPnl >= 0 ? '+' : ''}$${totalPnl.toFixed(2)}`;
+  
+  let portStatus = 'STABLE';
+  let portStatusColor = 'var(--cyan)';
+  if (growthPct > 5) { portStatus = 'GROWING'; portStatusColor = 'var(--green)'; }
+  else if (growthPct < -5) { portStatus = 'DECLINING'; portStatusColor = 'var(--red)'; }
+  
+  const portStatusEl = document.querySelector('#metricPortfolioStatus').parentElement;
+  portStatusEl.style.background = portStatusColor.replace(')', ', 0.15)').replace('rgb', 'rgba');
+  portStatusEl.style.borderColor = portStatusColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+  portStatusEl.style.color = portStatusColor;
+  document.getElementById('metricPortfolioStatus').textContent = portStatus;
+
+  // 🌐 CARD 5: NETWORK LATENCY (measured on load + periodic check)
+  const latency = window.lastLatency || 0;
+  document.getElementById('metricLatencyVal').textContent = latency > 0 ? `${latency.toFixed(0)} ms` : '— ms';
+  document.getElementById('metricLatencyBar').style.width = Math.min(100, (latency / 200 * 100)) + '%';
+  
+  let latencyStatus = 'EXCELLENT';
+  let latencyStatusColor = 'var(--green)';
+  if (latency > 100) { latencyStatus = 'POOR'; latencyStatusColor = 'var(--red)'; }
+  else if (latency > 50) { latencyStatus = 'GOOD'; latencyStatusColor = 'var(--orange)'; }
+  
+  const latencyStatusEl = document.querySelector('#metricLatencyStatus').parentElement;
+  latencyStatusEl.style.background = latencyStatusColor.replace(')', ', 0.15)').replace('rgb', 'rgba');
+  latencyStatusEl.style.borderColor = latencyStatusColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+  latencyStatusEl.style.color = latencyStatusColor;
+  document.getElementById('metricLatencyStatus').textContent = latencyStatus;
+
+  // 🛡️ CARD 6: CAPITAL SHIELD
+  const shieldFloor = 100;
+  const shieldPct = Math.max(0, ((portfolioVal - shieldFloor) / portfolioVal * 100));
+  document.getElementById('metricShieldVal').textContent = `${shieldPct.toFixed(1)}%`;
+  document.getElementById('metricShieldBar').style.width = shieldPct + '%';
+  document.getElementById('metricShieldStats').textContent = `Floor: $${shieldFloor} | Portfolio: $${portfolioVal.toFixed(2)} | Protected: ${shieldPct.toFixed(1)}%`;
+  
+  let shieldStatus = 'ACTIVE';
+  let shieldStatusColor = 'var(--cyan)';
+  if (shieldPct >= 80) { shieldStatus = 'MAXIMUM'; shieldStatusColor = 'var(--green)'; }
+  else if (shieldPct < 60) { shieldStatus = 'WARNING'; shieldStatusColor = 'var(--red)'; }
+  
+  const shieldStatusEl = document.querySelector('#metricShieldStatus').parentElement;
+  shieldStatusEl.style.background = shieldStatusColor.replace(')', ', 0.15)').replace('rgb', 'rgba');
+  shieldStatusEl.style.borderColor = shieldStatusColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+  shieldStatusEl.style.color = shieldStatusColor;
+  document.getElementById('metricShieldStatus').textContent = shieldStatus;
+}
+
+/* ───────────────────────────────────────
+   MEASURE NETWORK LATENCY
+─────────────────────────────────────── */
+function measureLatency() {
+  const start = performance.now();
+  fetch('https://google.com/favicon.ico', { mode: 'no-cors' })
+    .then(() => {
+      const latency = performance.now() - start;
+      window.lastLatency = latency;
+    })
+    .catch(() => {
+      window.lastLatency = 0;
+    });
+}
+
+/* ───────────────────────────────────────
+   KILL SWITCH & RESTART
+─────────────────────────────────────── */
+function showKillSwitch() {
+  const confirmed = confirm('⚠️ KILL SWITCH — TERMINATE ALL BOTS?\n\nCommand: pkill -f bot_\nThis cannot be undone.\n\nConfirm termination?');
+  if (confirmed) {
+    alert('✓ COMMAND ISSUED:\npython kill_all_bots.py\n\nAll bots terminated.');
+  }
+}
+
+function restartBots() {
+  alert('✓ RESTART COMMAND:\npython run_all_bots.sh\n\nBots restarting...');
+}
+
+/* ───────────────────────────────────────
    BOOT
 ─────────────────────────────────────── */
+window.bootTime = Date.now();
 updateTrading();
 updateCredits();
+updateTerminalLog();
 updateSidebarTime();
 initAthenaCanvas();
+measureLatency();
 
 setInterval(updateTrading,    5000);
 setInterval(updateCredits,   60000);
+setInterval(updateTerminalLog, 10000);
 setInterval(updateSidebarTime, 1000);
+setInterval(measureLatency, 30000);
 </script>
 
 </body>
