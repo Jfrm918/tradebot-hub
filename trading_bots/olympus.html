@@ -2037,59 +2037,110 @@
             let t = 0;
             const particles = [];
 
-            for(let i = 0; i < 120; i++) {
+            for (let i = 0; i < 120; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 80 + Math.random() * 220;
                 particles.push({
-                    x: Math.random() * W,
-                    y: Math.random() * H,
-                    vx: (Math.random() - 0.5) * 0.8,
-                    vy: (Math.random() - 0.5) * 0.8,
-                    size: 1 + Math.random() * 2,
-                    hue: Math.random() > 0.6 ? 280 : 200,
-                    life: 1
+                    x: cx + Math.cos(angle) * radius,
+                    y: cy + Math.sin(angle) * radius * 0.5,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.3 - 0.15,
+                    size: 0.8 + Math.random() * 2.5,
+                    cyan: Math.random() > 0.4,
+                    alpha: 0.4 + Math.random() * 0.6,
+                    orbit: angle,
+                    orbitR: radius,
+                    orbitSpeed: (Math.random() - 0.5) * 0.008
                 });
             }
 
-            function draw() {
-                ctx.fillStyle = 'rgba(0, 0, 8, 0.1)';
+            // Load Athena image
+            const img = new Image();
+            img.src = './athena.jpg';
+
+            function drawFrame() {
+                requestAnimationFrame(drawFrame);
+                t += 0.016;
+                ctx.clearRect(0, 0, W, H);
+
+                // Deep bg gradient
+                const bg = ctx.createRadialGradient(cx, cy + 80, 0, cx, cy + 80, H * 0.7);
+                bg.addColorStop(0, 'rgba(40,0,100,0.12)');
+                bg.addColorStop(1, 'rgba(0,0,8,0)');
+                ctx.fillStyle = bg;
                 ctx.fillRect(0, 0, W, H);
 
-                // Atmosphere
-                const g1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 300);
-                g1.addColorStop(0, 'rgba(0, 212, 255, 0.08)');
-                g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = g1;
+                // Floor glow
+                const fg = ctx.createRadialGradient(cx, cy + 240, 0, cx, cy + 240, 200);
+                fg.addColorStop(0, 'rgba(0,212,255,0.06)');
+                fg.addColorStop(1, 'rgba(0,212,255,0)');
+                ctx.fillStyle = fg;
                 ctx.fillRect(0, 0, W, H);
 
-                // Draw particles
+                // Particles
                 particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.life -= 0.005;
-
-                    if (p.life <= 0) {
-                        p.x = Math.random() * W;
-                        p.y = Math.random() * H;
-                        p.life = 1;
-                    }
-
-                    const brightness = Math.sin(t * 0.01 + p.x) * 0.3 + 0.5;
-                    ctx.fillStyle = `hsla(${p.hue}, 100%, 60%, ${p.life * brightness * 0.4})`;
+                    p.orbit += p.orbitSpeed;
+                    p.x = cx + Math.cos(p.orbit) * p.orbitR;
+                    p.y = cy + Math.sin(p.orbit) * p.orbitR * 0.45 + Math.sin(t * 0.5 + p.orbit) * 8;
+                    const pulse = 0.5 + Math.sin(t * 2 + p.orbit * 3) * 0.5;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.cyan
+                        ? `rgba(0,212,255,${p.alpha * pulse})`
+                        : `rgba(120,0,255,${p.alpha * pulse})`;
                     ctx.fill();
+                    if (p.size > 1.5) {
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = p.cyan ? '#00d4ff' : '#7800ff';
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
                 });
 
-                // Rim light
-                const g2 = ctx.createRadialGradient(cx - 40, cy - 80, 20, cx - 40, cy - 80, 200);
-                g2.addColorStop(0, 'rgba(0, 212, 255, 0.15)');
-                g2.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = g2;
-                ctx.fillRect(0, 0, W, H);
+                // Draw avatar image or fallback circle
+                const avatarH = Math.min(H * 0.65, 380);
+                const avatarW = avatarH * 0.72;
+                const ax = cx - avatarW / 2;
+                const ay = cy - avatarH * 0.6 + Math.sin(t * 0.6) * 5;
 
-                t++;
-                requestAnimationFrame(draw);
+                if (img.complete && img.naturalHeight > 0) {
+                    // Rim glow behind avatar
+                    const rim = ctx.createRadialGradient(cx, cy, avatarW * 0.3, cx, cy, avatarW * 0.9);
+                    rim.addColorStop(0, 'rgba(0,212,255,0)');
+                    rim.addColorStop(0.7, 'rgba(0,212,255,0.04)');
+                    rim.addColorStop(1, 'rgba(0,212,255,0.12)');
+                    ctx.fillStyle = rim;
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, avatarW * 0.9, avatarH * 0.6, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Clip to rounded rect
+                    ctx.save();
+                    const r = 16;
+                    ctx.beginPath();
+                    ctx.moveTo(ax + r, ay);
+                    ctx.lineTo(ax + avatarW - r, ay);
+                    ctx.quadraticCurveTo(ax + avatarW, ay, ax + avatarW, ay + r);
+                    ctx.lineTo(ax + avatarW, ay + avatarH - r);
+                    ctx.quadraticCurveTo(ax + avatarW, ay + avatarH, ax + avatarW - r, ay + avatarH);
+                    ctx.lineTo(ax + r, ay + avatarH);
+                    ctx.quadraticCurveTo(ax, ay + avatarH, ax, ay + avatarH - r);
+                    ctx.lineTo(ax, ay + r);
+                    ctx.quadraticCurveTo(ax, ay, ax + r, ay);
+                    ctx.closePath();
+                    ctx.clip();
+                    ctx.drawImage(img, ax, ay, avatarW, avatarH);
+
+                    // Bottom fade
+                    const fade = ctx.createLinearGradient(0, ay + avatarH * 0.65, 0, ay + avatarH);
+                    fade.addColorStop(0, 'rgba(0,0,8,0)');
+                    fade.addColorStop(1, 'rgba(0,0,8,0.75)');
+                    ctx.fillStyle = fade;
+                    ctx.fillRect(ax, ay, avatarW, avatarH);
+                    ctx.restore();
+                }
             }
-            draw();
+            drawFrame();
         })();
 
         // Athena voice interface
