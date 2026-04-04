@@ -2,7 +2,7 @@
   "cycle": 1,
   "tournament_start": "2026-04-04",
   "cycle_end": "2026-04-18",
-  "last_updated": "2026-04-04T16:25:41.946017",
+  "last_updated": "2026-04-04T16:31:33.822477",
   "bots": {
     "momentum": {
       "pnl": 0.0,
@@ -41,7 +41,7 @@
       "trades": 10,
       "wins": 1,
       "balance": 100.0,
-      "open_position": false,
+      "open_position": true,
       "last_trade": "[2026-04-04 16:12:43] SELL BTC-USDT @ $67260.01 | Size: 0.001412 | PnL: $-0.0176 | Balance: $99.97"
     },
     "vwap_rev": {
