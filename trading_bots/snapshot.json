@@ -2,55 +2,55 @@
   "cycle": 1,
   "tournament_start": "2026-04-04",
   "cycle_end": "2026-04-18",
-  "last_updated": "2026-04-04T16:31:33.822477",
+  "last_updated": "2026-04-05T18:45:19.255193",
   "bots": {
     "momentum": {
-      "pnl": 0.0,
-      "trades": 0,
-      "wins": 0,
-      "balance": 100.0,
+      "pnl": 4.5856,
+      "trades": 26,
+      "wins": 14,
+      "balance": 102.26,
       "open_position": true,
-      "last_trade": null
+      "last_trade": "[2026-04-05 18:15:52] EXIT SIGNAL! SELL BTC-USDT @ $68764.74 | Size: 0.001413 | PnL: $0.5938 | Balance: $102.26"
     },
     "reversion": {
-      "pnl": 0.105,
-      "trades": 9,
-      "wins": 7,
-      "balance": 100.0,
-      "open_position": false,
-      "last_trade": "[2026-04-04 16:24:11] SELL BTC-USDT @ $67266.37 | Size: 0.001412 | Balance: $100.00"
+      "pnl": -0.8611,
+      "trades": 485,
+      "wins": 277,
+      "balance": 97.93,
+      "open_position": true,
+      "last_trade": "[2026-04-05 18:41:11] BUY BTC-USDT @ $69011.01 | Size: 0.001348 | PnL: $-0.0045 | Balance: $97.93"
     },
     "grid": {
-      "pnl": 0.0,
-      "trades": 0,
-      "wins": 0,
-      "balance": 100.0,
-      "open_position": true,
-      "last_trade": null
+      "pnl": 0.7312,
+      "trades": 10,
+      "wins": 10,
+      "balance": 100.36,
+      "open_position": false,
+      "last_trade": "[2026-04-05 10:38:07] GRID SELL TRIGGER! BTC-USDT @ $67510.65 | Size: 0.000150 | PnL: $0.1262 | Balance: $100.36"
     },
     "scalp": {
-      "pnl": 0.0,
-      "trades": 0,
-      "wins": 0,
-      "balance": 100.0,
-      "open_position": true,
-      "last_trade": null
+      "pnl": 8.5246,
+      "trades": 78,
+      "wins": 40,
+      "balance": 101.23,
+      "open_position": false,
+      "last_trade": "[2026-04-05 18:43:33] SCALP ENTRY! SELL BTC-USDT @ $68883.02 | Size: 0.001323 | Balance: $101.23"
     },
     "swing": {
-      "pnl": -0.1354,
-      "trades": 10,
-      "wins": 1,
-      "balance": 100.0,
-      "open_position": true,
-      "last_trade": "[2026-04-04 16:12:43] SELL BTC-USDT @ $67260.01 | Size: 0.001412 | PnL: $-0.0176 | Balance: $99.97"
+      "pnl": 0.1202,
+      "trades": 384,
+      "wins": 129,
+      "balance": 100.03,
+      "open_position": false,
+      "last_trade": "[2026-04-05 18:38:33] SELL BTC-USDT @ $68973.80 | Size: 0.001378 | PnL: $-0.0467 | Balance: $100.03"
     },
     "vwap_rev": {
-      "pnl": 0.0,
-      "trades": 0,
-      "wins": 0,
-      "balance": 100.0,
+      "pnl": 12.9906,
+      "trades": 100,
+      "wins": 72,
+      "balance": 99.6,
       "open_position": false,
-      "last_trade": null
+      "last_trade": "[2026-04-05 18:44:33] SELL BTC-USDT @ $68899.32 | Size: 0.001373 | PnL: $0.0346 | Balance: $99.60"
     },
     "vwap_mom": {
       "pnl": 0.0,

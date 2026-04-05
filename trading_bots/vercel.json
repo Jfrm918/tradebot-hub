@@ -1,7 +1,5 @@
 {
-  "buildCommand": "mkdir -p .vercel/output/static && cp *.html .vercel/output/static/ && cp *.json .vercel/output/static/ 2>/dev/null || true",
-  "outputDirectory": ".vercel/output/static",
-  "rewrites": [
-    { "source": "/", "destination": "/olympus.html" }
-  ]
+  "buildCommand": "echo 'Static site — no build needed'",
+  "outputDirectory": ".",
+  "public": true
 }

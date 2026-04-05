@@ -191,72 +191,68 @@ Run for 1-2 weeks, collect 100+ trades per bot, then analyze logs to find the wi
 - **Athena's Budget Model:** Minimum $200–$300/week for ad spend + tools + creation. Willing to give seed capital ($1K+) + ongoing budget for Athena to execute autonomously and hit $4–5K/month
 - **Operating Model:** Athena runs 2–3 income streams in parallel, reports daily metrics, Jason approves big decisions but trusts execution
 
-## CURRENT OPERATIONAL STATUS (2026-04-02)
+## CURRENT OPERATIONAL STATUS (2026-04-05)
 
 ### Balance & Credits
-- Current balance: $341.75
-- Hard cap tonight: $5.00 maximum spend
-- Expected tomorrow morning: $336.75+
+- Current balance: [Check session_status]
 - Monthly contribution: $500 sacred (non-negotiable)
 
-### Active Projects (3 Core)
+### Active Projects (PRIMARY FOCUS)
 
-#### 1. TradeBot Tournament (LIVE)
-- Status: Cycle 1 active, Day 1
-- 5 bots trading on Blofin real data: Momentum, Mean Reversion, Grid, Scalping, Swing
-- Paper trading with $10,000 simulated capital per bot
-- Tournament: 6 cycles × 2 weeks each, 1 bot eliminated per cycle
-- Kill switch: 20% drawdown = auto-suspend
-- Snapshot writer: Updates every 60 seconds to hub
-- Mission: Find winning strategy, deploy real money Phase 4
+#### GCAI Service & Hub (PRIMARY)
+- **Status:** Transition to GCAI service model — old income projects permanently cancelled
+- **Hub Live:** jfrm918.github.io/gcai-hub
+- **Repository:** github.com/Jfrm918/gcai-hub (Desktop folder IS the repo from 2026-04-05 onward)
+- **Deploy Process:** Claude finalizes changes → Athena copies to Desktop/gcai-hub → git add . && git commit -m "update" && git push → Vercel auto-deploys
 
-#### 2. Income Operation — ADHD Niches (PHASE 2 COMPLETE)
-- Status: 68 products built, all in pipeline as "Pending Approval"
-- Breakdown: 40 KDP + 20 Etsy + 8 Gumroad
-- All products in income_tracker.json pipeline array
-- Revenue projection: $9,200–$13,800/month ($110K–$166K annual)
-- Tomorrow: Setup Etsy + Gumroad accounts, prepare upload packages
+#### GCAI Pricing (CURRENT — Updated 2026-04-05)
+**Core Packages:**
+- Starter: $497/month
+- Pro: $797/month
 
-#### 3. FoamDial — Spray Foam Intelligence
-- Status: Research + field logging active
-- Latest job: April 1 Monkey Island, Ambit AMBI-SEAL 5.0, excellent results
-- Mission: Build predictive dial-in system for spray foam optimization
+**Add-On Modules:**
+- Proposal Generator (trades): $500 setup + $150/month
+- Renewal & Upsell Alerts: $400 setup + $150/month
+- Onboarding Automation: $300 setup + $100/month
 
-### Hub Status
-- **Olympus Command Center** live at localhost:8000 and tradingbots-tau.vercel.app
-- **Features:** Trading tab (5 bot metrics), Income tab (68 products, $5K ad fund bar), Athena tab (task log), Projects, Settings
-- **Latest:** Ad fund power bar, pipeline save button, athena task log, snapshot updating real-time
+**Standalone Services:**
+- Done-For-You AI Setup: $1,500–$2,500 flat
+- Workshop Live seat: $150–$200
+- Workshop Replay: $99
+- Private team session: $500–$800
 
-## CAPITAL PROTECTION LAWS — PERMANENT
+**Hub Tabs (Deployed/Pending Merge):**
+- Packages (new, pending merge)
+- Workshop (new, pending merge)
+- The Team (new, pending merge)
+- [Existing tabs to be confirmed post-merge]
 
-### Spend Rules
-- **Floor:** 20% of account always untouchable, trades 80% only
-- **Monthly contribution:** $500/month added regardless of performance (sacred)
-- **Tier 1:** 15% drawdown = alert Jason + reduce positions 50%
-- **Tier 2:** 20% drawdown = auto-suspend all trading
-- **Tier 3:** 30% total account = full stop, everything halts
-- **Decision authority:** Jason only. Athena recommends, Jason decides.
+## PROJECTS PERMANENTLY CANCELLED (2026-04-05)
 
-## $5K AD FUND UNLOCK CONDITIONS — PERMANENT
+The following are archived/deleted and should not be referenced:
+- ✅ KDP (40 products) — deleted from workspace
+- ✅ Etsy (20 products) — deleted from workspace
+- ✅ Gumroad (8 products) — deleted from workspace
+- ✅ HerHorizon funnel — deleted from workspace
+- ✅ SleepShift funnel — deleted from workspace
+- ✅ ADHD niches income model — deleted from workspace
+- ✅ Passive income funnels — deleted from workspace
+- ✅ Old GCAI pricing ($750 Starter, $1,500 Pro) — replaced with current pricing
 
-Must meet ALL four before deployment:
-1. 50+ organic sales achieved
-2. Conversion rate above 1.5%
-3. Average order value above $20
-4. Positive ROAS on small test ads
-5. **All four confirmed by Claude before Jason deploys**
+**Related files permanently removed:**
+- `/Users/jfrm918/.openclaw/workspace/adhd_products/` directory
+- `SYSTEME_IO_GUMROAD_SETUP.md`
+- Any references in memory/athena-operating-rules.md (note: mentions KDP for historical context only)
 
-## TOMORROW'S PRIORITY ORDER
+## STANDING WORKFLOW FOR HUB UPDATES (2026-04-05 ONWARD)
 
-1. Jason sets up Etsy and Gumroad accounts
-2. Prepare 40 KDP upload packages (interior PDF, cover PDF, title, description, 7 keywords, 2 categories, price)
-3. Prepare 20 Etsy listing packages
-4. Prepare 8 Gumroad product packages
-5. Fix pipeline approval persistence (implement proper solution)
+1. Changes finalized in Claude chat
+2. Athena copies updated file into `/Users/jfrm918/Desktop/gcai-hub/`
+3. Athena runs: `git add . && git commit -m "update" && git push`
+4. Vercel auto-deploys
+5. Done
 
-## STANDBY MODE RULES (TONIGHT 2026-04-02)
-
-- Hard budget cap: $5.00 maximum
-- Allowed: Passive bot monitoring, kill switch logging, 6am balance check
-- NOT allowed: Sonnet calls, research, builds, any new tasks
-- Expected balance tomorrow: $336.75 or higher (red flag if lower than $336)
+**NO MORE:**
+- Zip files
+- Separate Desktop copies
+- Desktop folder IS the repo from this point forward
