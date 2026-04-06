@@ -191,21 +191,25 @@ Run for 1-2 weeks, collect 100+ trades per bot, then analyze logs to find the wi
 - **Athena's Budget Model:** Minimum $200–$300/week for ad spend + tools + creation. Willing to give seed capital ($1K+) + ongoing budget for Athena to execute autonomously and hit $4–5K/month
 - **Operating Model:** Athena runs 2–3 income streams in parallel, reports daily metrics, Jason approves big decisions but trusts execution
 
-## CURRENT OPERATIONAL STATUS (2026-04-05)
+## CURRENT OPERATIONAL STATUS (2026-04-06 01:35 CDT)
 
 ### Balance & Credits
-- Current balance: [Check session_status]
+- Current balance: ~$336–341 (estimated, check session_status for exact)
 - Monthly contribution: $500 sacred (non-negotiable)
+- Session cap: $5/session max
 
 ### Active Projects (PRIMARY FOCUS)
 
 #### GCAI Service & Hub (PRIMARY)
-- **Status:** Transition to GCAI service model — old income projects permanently cancelled
-- **Hub Live:** jfrm918.github.io/gcai-hub
-- **Repository:** github.com/Jfrm918/gcai-hub (Desktop folder IS the repo from 2026-04-05 onward)
-- **Deploy Process:** Claude finalizes changes → Athena copies to Desktop/gcai-hub → git add . && git commit -m "update" && git push → Vercel auto-deploys
+- **Status:** LIVE — Full operational hub deployed with 11 tabs (Dashboard, Pipeline, Clients, Tasks, Prompts, Financials, Discord, Settings, Packages, Workshop, The Team, Phone Setup, Onboarding, Sales Strategy, How It Runs, Infrastructure)
+- **Hub Live:** https://jfrm918.github.io/gcai-hub (TESTED & WORKING 2026-04-06 01:29 CDT)
+- **Desktop Shortcut:** `/Users/jfrm918/Desktop/GCAI Hub.webloc` → points to live URL
+- **Repository:** github.com/Jfrm918/gcai-hub (Desktop `/Users/jfrm918/Desktop/gcai-hub` IS the repo)
+- **Deploy Process:** Finalize changes in Claude → Athena copies to Desktop/gcai-hub/index.html → git add . && git commit -m "message" && git push → Vercel auto-deploys within 30 seconds
+- **Collaborators:** Johnny (full write access), Celeste (uses Johnny's GitHub account for pushes), Jason (owner)
+- **Latest Deployment:** 2026-04-06 01:28 CDT (commit 33bdcd7)
 
-#### GCAI Pricing (CURRENT — Updated 2026-04-05)
+#### GCAI Pricing (CONFIRMED & LIVE 2026-04-06)
 **Core Packages:**
 - Starter: $497/month
 - Pro: $797/month
@@ -221,13 +225,29 @@ Run for 1-2 weeks, collect 100+ trades per bot, then analyze logs to find the wi
 - Workshop Replay: $99
 - Private team session: $500–$800
 
-**Hub Tabs (Deployed/Pending Merge):**
-- Packages (new, pending merge)
-- Workshop (new, pending merge)
-- The Team (new, pending merge)
-- [Existing tabs to be confirmed post-merge]
+**Hub Tabs (ALL DEPLOYED & FUNCTIONAL):**
+✅ Dashboard | ✅ Pipeline | ✅ Clients | ✅ Tasks | ✅ Prompts | ✅ Financials | ✅ Discord | ✅ Settings | ✅ Packages | ✅ Workshop | ✅ The Team | ✅ Phone Setup | ✅ Onboarding | ✅ Sales Strategy | ✅ How It Runs | ✅ Infrastructure
 
-## PROJECTS PERMANENTLY CANCELLED (2026-04-05)
+## SESSION SUMMARY (2026-04-05 → 2026-04-06 01:35 CDT)
+
+**What Happened:**
+1. Repo cleanup: Deleted /Users/jfrm918/Desktop/gcai-hub, cloned fresh from GitHub
+2. Workspace purge: Deleted /adhd_products (KDP/Etsy/Gumroad projects), SYSTEME_IO_GUMROAD_SETUP.md
+3. MEMORY.md updated: Old income projects marked as PERMANENTLY CANCELLED
+4. Hub merge: Integrated 3 new tabs (Packages, Workshop, The Team) into main hub
+5. Collaborators: Added Johnny & Celeste to GitHub with write access
+6. Deployment: Live hub now accessible at jfrm918.github.io/gcai-hub with all 11 tabs functional
+7. Desktop: Fixed desktop shortcut to point to live URL (was broken, now working)
+8. Team roles updated: Jason & Johnny both marked as "Founder / Employee" in Team tab
+
+**Current Status:**
+- Hub is LIVE and FUNCTIONAL
+- All tabs respond to clicks
+- Desktop shortcut verified working (2026-04-06 01:29 CDT)
+- Repository synced with Vercel auto-deploy active
+- Ready for production use
+
+## PROJECTS PERMANENTLY CANCELLED (2026-04-05 → 2026-04-06)
 
 The following are archived/deleted and should not be referenced:
 - ✅ KDP (40 products) — deleted from workspace
