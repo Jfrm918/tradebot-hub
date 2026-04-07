@@ -1,5 +1,8 @@
 {
-  "buildCommand": "echo 'Static site - no build needed'",
+  "buildCommand": "echo 'Static site'",
   "outputDirectory": ".",
-  "public": true
+  "public": true,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" }
+  ]
 }
