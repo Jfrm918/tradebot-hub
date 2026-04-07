@@ -1,0 +1,185 @@
+{
+  "last_updated": "2026-04-07T00:59:55.873011Z",
+  "tournament_day": 4,
+  "total_bots": 7,
+  "bots": [
+    {
+      "id": "momentum",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:48.572060Z",
+      "rank": 1
+    },
+    {
+      "id": "mean_reversion",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:49.661509Z",
+      "rank": 2
+    },
+    {
+      "id": "grid",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:52.765318Z",
+      "rank": 3
+    },
+    {
+      "id": "scalping",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:53.833462Z",
+      "rank": 4
+    },
+    {
+      "id": "swing",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:54:33.909813Z",
+      "rank": 5
+    },
+    {
+      "id": "vwap_reversion",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:50.711070Z",
+      "rank": 6
+    },
+    {
+      "id": "vwap_momentum",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:51.755700Z",
+      "rank": 7
+    }
+  ],
+  "leaderboard": [
+    {
+      "id": "momentum",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:48.572060Z",
+      "rank": 1
+    },
+    {
+      "id": "mean_reversion",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:49.661509Z",
+      "rank": 2
+    },
+    {
+      "id": "grid",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:52.765318Z",
+      "rank": 3
+    },
+    {
+      "id": "scalping",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:53.833462Z",
+      "rank": 4
+    },
+    {
+      "id": "swing",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:54:33.909813Z",
+      "rank": 5
+    },
+    {
+      "id": "vwap_reversion",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:50.711070Z",
+      "rank": 6
+    },
+    {
+      "id": "vwap_momentum",
+      "status": "ACTIVE",
+      "equity": 100.0,
+      "pnl": 0.0,
+      "trades": 0,
+      "win_rate": 0.0,
+      "max_drawdown": 0.0,
+      "current_drawdown": 0.0,
+      "last_heartbeat": "2026-04-07T00:59:51.755700Z",
+      "rank": 7
+    }
+  ],
+  "summary": {
+    "total_equity": 700.0,
+    "total_pnl": 0.0,
+    "total_trades": 0,
+    "active_bots": 7,
+    "suspended_bots": 0,
+    "terminated_bots": 0
+  }
+}
