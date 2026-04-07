@@ -7,186 +7,24 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
     
+    <script type="text/babel" src="tournament-hub.jsx"></script>
     <script type="text/babel">
-const DEFAULT_URL = "https://raw.githubusercontent.com/Jfrm918/tradebot-tournament/main/snapshot.json";
-const POLL_INTERVAL = 30000;
-
-const BOT_META = {
-  momentum:       { icon: "M",  color: "#FF6B35" },
-  mean_reversion: { icon: "MR", color: "#00d4ff" },
-  grid:           { icon: "G",  color: "#9b59b6" },
-  scalping:       { icon: "SC", color: "#f39c12" },
-  swing:          { icon: "SW", color: "#00ff9d" },
-  vwap_reversion: { icon: "VR", color: "#e74c3c" },
-  vwap_momentum:  { icon: "VM", color: "#1abc9c" },
-};
-
-function label(id) {
-  return id.split("_").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
-}
-function fmt(n, d = 2) { return n == null || isNaN(n) ? "—" : Number(n).toFixed(d); }
-function fmtPct(n) { return n == null || isNaN(n) ? "—" : (n >= 0 ? "+" : "") + Number(n).toFixed(2) + "%"; }
-function fmtMoney(n) { return n == null || isNaN(n) ? "—" : "$" + Number(n).toFixed(2); }
-function timeAgo(iso) {
-  if (!iso) return "—";
-  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
-  if (s < 60) return s + "s ago";
-  if (s < 3600) return Math.floor(s / 60) + "m ago";
-  return Math.floor(s / 3600) + "h ago";
-}
-
-const S = {
-  root: { background: "#000510", minHeight: "100vh", color: "#e0e8ff", fontFamily: "'Segoe UI', system-ui, sans-serif" },
-  header: { borderBottom: "1px solid rgba(0,212,255,0.15)", padding: "16px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,5,16,0.95)", position: "sticky", top: 0, zIndex: 10 },
-  title: { fontSize: 18, fontWeight: 700, color: "#00d4ff", letterSpacing: 2, margin: 0, textTransform: "uppercase" },
-  dot: (ok) => ({ width: 8, height: 8, borderRadius: "50%", background: ok ? "#00ff9d" : "#ff4444", display: "inline-block", marginRight: 6, flexShrink: 0 }),
-  muted: { fontSize: 12, color: "#8899aa" },
-  urlBar: { background: "rgba(0,212,255,0.04)", borderBottom: "1px solid rgba(0,212,255,0.1)", padding: "10px 22px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" },
-  urlLabel: { fontSize: 10, color: "#00d4ff", fontWeight: 700, letterSpacing: 1, whiteSpace: "nowrap", textTransform: "uppercase" },
-  urlInput: { flex: 1, minWidth: 260, background: "rgba(0,5,16,0.8)", border: "1px solid rgba(0,212,255,0.2)", borderRadius: 6, color: "#c0d8f0", fontSize: 11, padding: "5px 10px", outline: "none", fontFamily: "monospace" },
-  btn: { background: "rgba(0,212,255,0.08)", border: "1px solid rgba(0,212,255,0.25)", borderRadius: 6, color: "#00d4ff", fontSize: 11, padding: "5px 12px", cursor: "pointer", whiteSpace: "nowrap" },
-  error: { background: "rgba(255,50,50,0.06)", border: "1px solid rgba(255,50,50,0.2)", borderRadius: 8, margin: "14px 22px", padding: "12px 16px", fontSize: 12, color: "#ff8888" },
-  section: { fontSize: 10, color: "#334455", letterSpacing: 1.5, textTransform: "uppercase", padding: "16px 22px 8px", fontWeight: 700 },
-  metricsBar: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 10, padding: "0 22px 16px" },
-  metricCard: { background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)", borderRadius: 8, padding: "10px 14px" },
-  metricLabel: { fontSize: 10, color: "#445566", letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 4 },
-  metricVal: (color) => ({ fontSize: 22, fontWeight: 700, color: color || "#00d4ff" }),
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(255px, 1fr))", gap: 12, padding: "0 22px 24px" },
-  card: (color, active) => ({ background: active ? "rgba(0,5,16,0.9)" : "rgba(255,255,255,0.02)", border: `1px solid ${active ? color + "44" : "rgba(255,255,255,0.06)"}`, borderRadius: 10, padding: "14px 16px", opacity: active ? 1 : 0.4 }),
-  cardHead: { display: "flex", alignItems: "center", gap: 10, marginBottom: 12 },
-  avatar: (color) => ({ width: 36, height: 36, borderRadius: "50%", background: color + "20", border: `1px solid ${color}55`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color, flexShrink: 0 }),
-  cardName: { fontSize: 14, fontWeight: 600, color: "#e0e8ff", margin: 0 },
-  cardSub: { fontSize: 10, color: "#445566", margin: 0, textTransform: "uppercase", letterSpacing: 0.5 },
-  row: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" },
-  rl: { fontSize: 11, color: "#5577aa" },
-  rv: (pos) => ({ fontSize: 12, fontWeight: 500, color: pos == null ? "#c0d8f0" : pos ? "#00ff9d" : "#ff4444" }),
-  rank: (r) => ({ fontSize: 10, fontWeight: 700, padding: "1px 5px", borderRadius: 4, marginLeft: 6, background: r === 1 ? "#ff6b0020" : r === 2 ? "#00d4ff15" : "transparent", color: r === 1 ? "#ff6b00" : r === 2 ? "#00d4ff" : "#334455", border: r <= 2 ? `1px solid ${r === 1 ? "#ff6b0040" : "#00d4ff30"}` : "none" }),
-  footer: { fontSize: 11, color: "#223344", textAlign: "center", padding: "8px 0 20px" },
-};
-
-function TournamentHub() {
-  const [url, setUrl] = React.useState(DEFAULT_URL);
-  const [inputUrl, setInputUrl] = React.useState(DEFAULT_URL);
-  const [data, setData] = React.useState(null);
-  const [error, setError] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-  const [lastFetch, setLastFetch] = React.useState(null);
-  const timer = React.useRef(null);
-
-  const doFetch = React.useCallback(async (u) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const r = await fetch(u + "?t=" + Date.now());
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      setData(await r.json());
-      setLastFetch(new Date());
-    } catch (e) { setError(e.message); }
-    finally { setLoading(false); }
-  }, []);
-
-  React.useEffect(() => {
-    doFetch(url);
-    timer.current = setInterval(() => doFetch(url), POLL_INTERVAL);
-    return () => clearInterval(timer.current);
-  }, [url, doFetch]);
-
-  const connect = () => setUrl(inputUrl.trim());
-
-  const bots = data?.bots || [];
-  const ranked = [...bots].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
-  const s = data?.summary || {};
-  const pnlPct = (bot) => bot.equity ? ((bot.equity - 100) / 100 * 100) : 0;
-
-  return (
-    <div style={S.root}>
-      <div style={S.header}>
-        <p style={S.title}>TradeBot Tournament</p>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          {loading && <span style={S.muted}>syncing…</span>}
-          <span style={{ display: "flex", alignItems: "center" }}>
-            <span style={S.dot(!!data && !error)} />
-            <span style={S.muted}>{error ? "OFFLINE" : data ? "LIVE" : "—"}</span>
-          </span>
-        </div>
-      </div>
-
-      <div style={S.urlBar}>
-        <span style={S.urlLabel}>Snapshot URL</span>
-        <input style={S.urlInput} value={inputUrl} onChange={e => setInputUrl(e.target.value)} onKeyDown={e => e.key === "Enter" && connect()} spellCheck={false} />
-        <button style={S.btn} onClick={connect}>Connect</button>
-        <button style={S.btn} onClick={() => doFetch(url)}>Refresh</button>
-      </div>
-
-      {error && (
-        <div style={S.error}>
-          <strong>Fetch failed:</strong> {error}
-          <div style={{ marginTop: 4, color: "#775555" }}>Check the URL or wait for Athena to confirm the push.</div>
-        </div>
-      )}
-
-      {data && (
-        <>
-          <div style={S.section}>Tournament Overview — Day {data.tournament_day} of 14</div>
-          <div style={S.metricsBar}>
-            <div style={S.metricCard}><div style={S.metricLabel}>Active Bots</div><div style={S.metricVal()}>{s.active_bots ?? 0} / 7</div></div>
-            <div style={S.metricCard}><div style={S.metricLabel}>Total Equity</div><div style={{ ...S.metricVal(), fontSize: 18 }}>{fmtMoney(s.total_equity)}</div></div>
-            <div style={S.metricCard}><div style={S.metricLabel}>Total P&L</div><div style={{ ...S.metricVal(s.total_pnl >= 0 ? "#00ff9d" : "#ff4444"), fontSize: 18 }}>{fmtMoney(s.total_pnl)}</div></div>
-            <div style={S.metricCard}><div style={S.metricLabel}>Total Trades</div><div style={S.metricVal()}>{s.total_trades ?? 0}</div></div>
-            <div style={S.metricCard}><div style={S.metricLabel}>Snapshot Age</div><div style={{ ...S.metricVal("#8899aa"), fontSize: 14, paddingTop: 6 }}>{timeAgo(data.last_updated)}</div></div>
-          </div>
-
-          <div style={S.section}>Leaderboard</div>
-          <div style={S.grid}>
-            {ranked.map((bot) => {
-              const meta = BOT_META[bot.id] || { icon: bot.id.slice(0, 2).toUpperCase(), color: "#8899aa" };
-              const active = bot.status === "ACTIVE";
-              const pp = pnlPct(bot);
-              return (
-                <div key={bot.id} style={S.card(meta.color, active)}>
-                  <div style={S.cardHead}>
-                    <div style={S.avatar(meta.color)}>{meta.icon}</div>
-                    <div>
-                      <p style={S.cardName}>
-                        {label(bot.id)}
-                        <span style={S.rank(bot.rank)}>#{bot.rank}</span>
-                      </p>
-                      <p style={S.cardSub}>{bot.status}</p>
-                    </div>
-                  </div>
-                  <div style={S.row}><span style={S.rl}>P&L</span><span style={S.rv(bot.pnl >= 0)}>{fmtMoney(bot.pnl)}</span></div>
-                  <div style={S.row}><span style={S.rl}>Return</span><span style={S.rv(pp >= 0)}>{fmtPct(pp)}</span></div>
-                  <div style={S.row}><span style={S.rl}>Equity</span><span style={S.rv(null)}>{fmtMoney(bot.equity)}</span></div>
-                  <div style={S.row}><span style={S.rl}>Win Rate</span><span style={S.rv(null)}>{bot.win_rate ? fmt(bot.win_rate * 100, 1) + "%" : "—"}</span></div>
-                  <div style={S.row}><span style={S.rl}>Max DD</span><span style={S.rv(false)}>{bot.max_drawdown ? fmt(bot.max_drawdown * 100, 1) + "%" : "—"}</span></div>
-                  <div style={S.row}><span style={S.rl}>Trades</span><span style={S.rv(null)}>{bot.trades ?? 0}</span></div>
-                  <div style={{ ...S.row, borderBottom: "none" }}><span style={S.rl}>Heartbeat</span><span style={{ fontSize: 11, color: "#334455" }}>{timeAgo(bot.last_heartbeat)}</span></div>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
-
-      {!data && !error && !loading && (
-        <div style={{ padding: "50px 22px", textAlign: "center", color: "#223344", fontSize: 13 }}>
-          Waiting for connection…
-        </div>
-      )}
-
-      <div style={S.footer}>
-        {lastFetch ? `Last synced: ${lastFetch.toLocaleTimeString()} · Auto-refresh every 30s` : "Not yet fetched"}
-      </div>
-    </div>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<TournamentHub />);
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TournamentHub />);
     </script>
 </body>
 </html>
