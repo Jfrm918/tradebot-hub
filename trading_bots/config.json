@@ -1,0 +1,47 @@
+{
+  "exchange": "blofin",
+  "testnet": false,
+  "trading_pairs": ["BTC-USDT", "ETH-USDT"],
+  "strategies": {
+    "momentum": {
+      "enabled": true,
+      "capital": 100,
+      "description": "Buy on uptrend, sell on momentum loss"
+    },
+    "mean_reversion": {
+      "enabled": true,
+      "capital": 100,
+      "description": "Overbought/oversold entry/exit using RSI"
+    },
+    "grid_trading": {
+      "enabled": true,
+      "capital": 100,
+      "description": "Buy/sell grid for oscillating pairs"
+    },
+    "scalping": {
+      "enabled": true,
+      "capital": 100,
+      "description": "Rapid 1-5min trades for 0.5-2% gains"
+    },
+    "swing_trading": {
+      "enabled": true,
+      "capital": 100,
+      "description": "4-24hr holds targeting 2-5% moves"
+    },
+    "vwap_momentum": {
+      "enabled": true,
+      "capital": 100,
+      "description": "VWAP-based momentum trading with volume confirmation"
+    }
+  },
+  "total_capital": 500,
+  "api_keys": {
+    "key": "b6fe1afe277748f2a929619787c63260",
+    "secret": "KyrieOpie0109"
+  },
+  "logging": {
+    "trades": "./logs/trades.json",
+    "performance": "./logs/performance.json"
+  },
+  "update_interval": 300
+}
