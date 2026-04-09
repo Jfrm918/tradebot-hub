@@ -7,22 +7,4 @@ Base dir: /Users/jfrm918/Desktop/tradebot-hub/trading_bots
   swing: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/swing.log — EXISTS
   vwap_rev: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/vwap_rev.log — EXISTS
   vwap_mom: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/vwap_mom.log — EXISTS
-[19:14:10] Snapshot written — 0 trades, PnL: $0.0000
-[19:14:20] Snapshot written — 0 trades, PnL: $0.0000
-[19:14:30] Snapshot written — 0 trades, PnL: $0.0000
-[19:14:40] Snapshot written — 0 trades, PnL: $0.0000
-[19:14:50] Snapshot written — 0 trades, PnL: $0.0000
-[19:15:00] Snapshot written — 0 trades, PnL: $0.0000
-[19:15:10] Snapshot written — 0 trades, PnL: $0.0000
-[19:15:20] Snapshot written — 0 trades, PnL: $0.0000
-[19:15:30] Snapshot written — 0 trades, PnL: $0.0000
-Snapshot writer starting — monitoring 7 bots
-Base dir: /Users/jfrm918/Desktop/tradebot-hub/trading_bots
-  momentum: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/momentum.log — EXISTS
-  reversion: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/reversion.log — EXISTS
-  grid: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/grid.log — EXISTS
-  scalp: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/scalp.log — EXISTS
-  swing: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/swing.log — EXISTS
-  vwap_rev: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/vwap_rev.log — EXISTS
-  vwap_mom: /Users/jfrm918/Desktop/tradebot-hub/trading_bots/logs/vwap_mom.log — EXISTS
-[19:15:33] Snapshot written — 0 trades, PnL: $0.0000
+[19:21:24] Snapshot written — 0 trades, PnL: $0.0000

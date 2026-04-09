@@ -17,7 +17,7 @@ import os
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 SYMBOL           = "BTC-USDT"
-STARTING_BALANCE = 100.0
+STARTING_BALANCE = 1000.0
 GRID_LEVELS      = 5          # number of buy/sell levels each side
 GRID_SPACING_PCT = 0.002      # 0.2% between grid levels
 TRADE_FRACTION   = 0.10       # fraction of balance per grid level

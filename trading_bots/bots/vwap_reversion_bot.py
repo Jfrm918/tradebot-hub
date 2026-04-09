@@ -18,7 +18,7 @@ import os
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 SYMBOL           = "BTC-USDT"
-STARTING_BALANCE = 100.0
+STARTING_BALANCE = 1000.0
 TRADE_FRACTION   = 0.95
 VWAP_WINDOW      = 20         # reset VWAP accumulator every N ticks
 ENTRY_DEV_PCT    = 0.003      # enter when price >0.3% from VWAP

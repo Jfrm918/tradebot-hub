@@ -19,7 +19,7 @@ import os
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 SYMBOL           = "BTC-USDT"
-STARTING_BALANCE = 100.0
+STARTING_BALANCE = 1000.0
 TRADE_FRACTION   = 0.95       # fraction of balance to deploy per trade
 MOMENTUM_WINDOW  = 5          # number of price samples for momentum calc
 MOMENTUM_THRESH  = 0.0015     # 0.15% move = signal

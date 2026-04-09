@@ -19,7 +19,7 @@ import statistics
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 SYMBOL           = "BTC-USDT"
-STARTING_BALANCE = 100.0
+STARTING_BALANCE = 1000.0
 TRADE_FRACTION   = 0.95
 WINDOW           = 10        # rolling mean window (number of ticks)
 ENTRY_ZSCORE     = 1.5       # enter when price is 1.5 std devs from mean

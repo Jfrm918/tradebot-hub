@@ -18,7 +18,7 @@ import os
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 SYMBOL           = "BTC-USDT"
-STARTING_BALANCE = 100.0
+STARTING_BALANCE = 1000.0
 TRADE_FRACTION   = 0.95
 VWAP_WINDOW      = 15         # reset VWAP accumulator every N ticks
 BREAKOUT_PCT     = 0.002      # 0.2% above/below VWAP needed to confirm breakout
