@@ -5,36 +5,36 @@
   "strategies": {
     "momentum": {
       "enabled": true,
-      "capital": 100,
+      "capital": 1000,
       "description": "Buy on uptrend, sell on momentum loss"
     },
     "mean_reversion": {
       "enabled": true,
-      "capital": 100,
+      "capital": 1000,
       "description": "Overbought/oversold entry/exit using RSI"
     },
     "grid_trading": {
       "enabled": true,
-      "capital": 100,
+      "capital": 1000,
       "description": "Buy/sell grid for oscillating pairs"
     },
     "scalping": {
       "enabled": true,
-      "capital": 100,
+      "capital": 1000,
       "description": "Rapid 1-5min trades for 0.5-2% gains"
     },
     "swing_trading": {
       "enabled": true,
-      "capital": 100,
+      "capital": 1000,
       "description": "4-24hr holds targeting 2-5% moves"
     },
     "vwap_momentum": {
       "enabled": true,
-      "capital": 100,
+      "capital": 1000,
       "description": "VWAP-based momentum trading with volume confirmation"
     }
   },
-  "total_capital": 500,
+  "total_capital": 7000,
   "api_keys": {
     "key": "b6fe1afe277748f2a929619787c63260",
     "secret": "KyrieOpie0109"
